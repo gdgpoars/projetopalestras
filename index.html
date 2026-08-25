@@ -186,6 +186,12 @@ main{
   text-align:center;
 }
 .landing-form input:focus{border-color:var(--create);}
+.landing-error{
+  font-family:var(--font-mono);
+  font-size:12px;
+  color:var(--danger);
+  margin-top:-2px;
+}
 .primary-btn{
   font-family:var(--font-display);
   font-weight:600;
@@ -613,14 +619,31 @@ async function sList(prefix, shared){
   try{ const r = await window.storage.list(prefix, !!shared); return r ? r.keys : []; }
   catch(e){ return []; }
 }
+async function sDelete(key, shared){
+  try{ await window.storage.delete(key, !!shared); return true; }
+  catch(e){ return false; }
+}
 
 /* ---------------- state ---------------- */
-let voterId = null;      // sanitized id used in shared storage key
-let voterName = null;    // display name
+const ADMIN_EMAILS = ['gdgpoars@gmail.com', 'gdgcaxiasdosul@gmail.com'];
+
+let voterId = null;      // = e-mail normalizado (chave única no Firestore)
+let voterEmail = null;   // e-mail exibido
 let order = [];          // array of talk ids in the order this voter sees them
 let votes = {};          // talkId -> {nota, desempate}
 let cursor = 0;           // index into order
-let view = 'loading';     // loading | landing | voting | done | results
+let view = 'loading';     // loading | landing | voting | locked | results
+let landingError = '';    // mensagem de erro exibida na tela de entrada
+
+function isAdminEmail(email){
+  return !!email && ADMIN_EMAILS.includes(email.toLowerCase().trim());
+}
+function normalizeEmail(raw){
+  return (raw || '').trim().toLowerCase();
+}
+function isValidEmail(email){
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
 
 const TAG_PALETTE = {
   'IA / Agentes':      {c:'#5EEAD4', bg:'rgba(94,234,212,0.12)'},
@@ -675,13 +698,13 @@ async function init(){
   const savedId = await sGet('device-voter-id', false);
   if(savedId){
     voterId = savedId;
+    voterEmail = savedId;
     const parsed = await backendGetVoter(voterId);
     if(parsed){
-      voterName = parsed.name;
       order = parsed.order;
       votes = parsed.votes || {};
       cursor = firstUnanswered();
-      view = 'voting';
+      view = (cursor >= order.length) ? 'locked' : 'voting';
       render();
       return;
     }
@@ -694,24 +717,46 @@ function firstUnanswered(){
   for(let i=0;i<order.length;i++){
     if(!votes[order[i]]) return i;
   }
-  return order.length; // all answered -> done
+  return order.length; // all answered
 }
 
-async function startSession(name){
-  voterName = name.trim();
-  const base = slug(voterName) || 'anon';
-  voterId = base + '-' + Math.random().toString(36).slice(2,7);
-  await sSet('device-voter-id', voterId, false);
+async function startSession(rawEmail){
+  const email = normalizeEmail(rawEmail);
+  if(!isValidEmail(email)){
+    landingError = 'Digite um e-mail válido.';
+    render();
+    return;
+  }
+  voterEmail = email;
+  voterId = email;
+
+  const existing = await backendGetVoter(voterId);
+  if(existing){
+    order = existing.order;
+    votes = existing.votes || {};
+    await sSet('device-voter-id', voterId, false);
+    if(Object.keys(votes).length >= order.length){
+      view = 'locked';
+      render();
+      return;
+    }
+    cursor = firstUnanswered();
+    view = 'voting';
+    render();
+    return;
+  }
+
   order = shuffle(TALKS.map(t=>t.id), seedFromString(voterId));
   votes = {};
   cursor = 0;
+  await sSet('device-voter-id', voterId, false);
   await persist();
   view = 'voting';
   render();
 }
 
 async function persist(){
-  await backendSaveVoter(voterId, {name:voterName, order, votes});
+  await backendSaveVoter(voterId, {email:voterEmail, order, votes});
 }
 
 async function castVote(talkId, nota, desempate){
@@ -740,7 +785,7 @@ function render(){
     return;
   }
 
-  // voter chip + results link available in voting/done/results
+  // voter chip + results link available in voting/locked/results
   const backendChip = document.createElement('div');
   backendChip.className = 'voter-chip backend-chip ' + (firebaseReady ? 'ok' : 'warn');
   backendChip.textContent = firebaseReady ? '● Firebase' : '● local';
@@ -751,14 +796,16 @@ function render(){
 
   const chip = document.createElement('div');
   chip.className = 'voter-chip';
-  chip.textContent = voterName ? ('Votando como ' + voterName) : '';
-  if(voterName) topRight.appendChild(chip);
+  chip.textContent = voterEmail ? voterEmail : '';
+  if(voterEmail) topRight.appendChild(chip);
 
-  const resultsBtn = document.createElement('button');
-  resultsBtn.className = 'link-btn';
-  resultsBtn.textContent = view === 'results' ? '← Voltar a votar' : 'Ver resultados';
-  resultsBtn.onclick = () => { view = (view === 'results') ? (cursor>=order.length ? 'done':'voting') : 'results'; render(); };
-  topRight.appendChild(resultsBtn);
+  if(isAdminEmail(voterEmail)){
+    const resultsBtn = document.createElement('button');
+    resultsBtn.className = 'link-btn';
+    resultsBtn.textContent = view === 'results' ? '← Voltar a votar' : 'Ver resultados (admin)';
+    resultsBtn.onclick = () => { view = (view === 'results') ? (cursor>=order.length ? 'locked':'voting') : 'results'; render(); };
+    topRight.appendChild(resultsBtn);
+  }
 
   if(view === 'voting'){
     const answered = Object.keys(votes).length;
@@ -767,9 +814,9 @@ function render(){
     return;
   }
 
-  if(view === 'done'){
+  if(view === 'locked'){
     progressFill.style.width = '100%';
-    renderDone(stage);
+    renderLocked(stage);
     return;
   }
 
@@ -788,21 +835,30 @@ function renderLanding(stage){
         <span class="theme-word s">escalonar</span>
       </div>
       <h1>Avalie as propostas sem saber quem palestra.</h1>
-      <p class="desc">${TALKS.length} propostas de conteúdo para o DevFest Porto Alegre 2026. Cada uma recebe uma nota padrão (1–5) e uma nota de desempate (0–2). A ordem é embaralhada e nenhum nome de autor é exibido.</p>
+      <p class="desc">${TALKS.length} propostas de conteúdo para o DevFest Porto Alegre 2026. Cada uma recebe uma nota padrão (1–5) e uma nota de desempate (0–2). A ordem é embaralhada e nenhum nome de autor é exibido. Cada e-mail vota uma única vez.</p>
       <div class="landing-form">
-        <input id="nameInput" type="text" placeholder="Seu nome ou apelido" maxlength="40" autocomplete="off">
+        <input id="emailInput" type="email" placeholder="seu-email@exemplo.com" maxlength="120" autocomplete="email" inputmode="email">
+        ${landingError ? `<div class="landing-error">${landingError}</div>` : ''}
         <button class="primary-btn" id="startBtn">Começar votação</button>
       </div>
       <div class="landing-meta">devfestportoalegre.com.br</div>
     </div>
   `;
-  const input = document.getElementById('nameInput');
+  const input = document.getElementById('emailInput');
   const btn = document.getElementById('startBtn');
   input.addEventListener('keydown', e => { if(e.key === 'Enter') tryStart(); });
   btn.addEventListener('click', tryStart);
   function tryStart(){
     const v = input.value.trim();
-    if(!v){ input.focus(); input.style.borderColor = 'var(--danger)'; return; }
+    if(!v || !isValidEmail(v)){
+      landingError = 'Digite um e-mail válido.';
+      input.style.borderColor = 'var(--danger)';
+      render();
+      return;
+    }
+    landingError = '';
+    btn.disabled = true;
+    btn.textContent = 'Verificando…';
     startSession(v);
   }
   setTimeout(()=>input.focus(), 50);
@@ -810,7 +866,7 @@ function renderLanding(stage){
 
 function renderVoting(stage, navSlot){
   if(cursor >= order.length){
-    view = 'done';
+    view = 'locked';
     render();
     return;
   }
@@ -892,7 +948,7 @@ function renderVoting(stage, navSlot){
     clearTimeout(advanceTimer);
     advanceTimer = setTimeout(() => {
       if(cursor < order.length - 1){ cursor++; render(); }
-      else { view = 'done'; render(); }
+      else { view = 'locked'; render(); }
     }, 380);
   }
 
@@ -945,12 +1001,11 @@ function goPrev(){ if(cursor>0){ cursor--; render(); } }
 function goNext(){
   const talkId = order[cursor];
   if(cursor < order.length - 1){ cursor++; render(); }
-  else if(votes[talkId]){ view = 'done'; render(); }
+  else if(votes[talkId]){ view = 'locked'; render(); }
 }
 
-function renderDone(stage){
+function renderLocked(stage){
   const answered = Object.keys(votes).length;
-  const pending = order.filter(id => !votes[id]);
   stage.innerHTML = `
     <div class="done">
       <div class="theme-line">
@@ -958,47 +1013,44 @@ function renderDone(stage){
         <span class="theme-word p">proteger</span>·
         <span class="theme-word s">escalonar</span>
       </div>
-      <div class="big">${pending.length===0 ? 'Você votou em todas as propostas 🎉' : 'Quase lá'}</div>
-      <p>${pending.length===0
-        ? (answered + ' propostas avaliadas por ' + voterName + '. Obrigado pela votação.')
-        : (pending.length + ' proposta(s) ainda sem nota.')}</p>
+      <div class="big">Voto registrado ✅</div>
+      <p>${voterEmail} já avaliou as ${answered} propostas. Obrigado por participar da votação do DevFest Porto Alegre 2026 — cada e-mail vota uma única vez, então este e-mail não pode votar novamente.</p>
       <div class="done-actions">
-        ${pending.length>0 ? `<button class="primary-btn" id="continueBtn">Continuar votando</button>` : ''}
-        <button class="nav-btn" id="reviewBtn">Revisar minhas notas</button>
-      </div>
-      <div class="jump-panel">
-        <div class="section-label">Todas as propostas</div>
-        <div class="jump-grid" id="jumpGrid"></div>
+        <button class="nav-btn" id="switchEmailBtn">Entrar com outro e-mail</button>
       </div>
     </div>
   `;
-  const grid = document.getElementById('jumpGrid');
-  order.forEach((id, i) => {
-    const cell = document.createElement('div');
-    cell.className = 'jump-cell' + (votes[id] ? ' answered' : '');
-    cell.textContent = i+1;
-    cell.title = TALKS.find(t=>t.id===id).titulo;
-    cell.onclick = () => { cursor = i; view = 'voting'; render(); };
-    grid.appendChild(cell);
-  });
-  const cBtn = document.getElementById('continueBtn');
-  if(cBtn) cBtn.onclick = () => { cursor = firstUnanswered(); view='voting'; render(); };
-  document.getElementById('reviewBtn').onclick = () => { cursor = 0; view='voting'; render(); };
+  document.getElementById('switchEmailBtn').onclick = async () => {
+    voterId = null;
+    voterEmail = null;
+    order = [];
+    votes = {};
+    cursor = 0;
+    landingError = '';
+    await sDelete('device-voter-id', false);
+    view = 'landing';
+    render();
+  };
 }
 
 /* ---------------- results (aggregated across all voters) ---------------- */
 async function renderResults(stage){
+  if(!isAdminEmail(voterEmail)){
+    view = (order.length && cursor < order.length) ? 'voting' : 'locked';
+    render();
+    return;
+  }
   stage.innerHTML = `<div class="loading-dots">Somando votos de todo mundo…</div>`;
   const allVoters = await backendGetAllVoters();
   const totals = {}; // talkId -> {sumNota, sumDesempate, count}
   TALKS.forEach(t => totals[t.id] = {sumNota:0, sumDesempate:0, count:0});
 
   let voterCount = 0;
-  const rawVoterData = []; // {name, votes} for full backup export
+  const rawVoterData = []; // {email, votes} for full backup export
   for(const parsed of allVoters){
     if(!parsed || !parsed.votes) continue;
     voterCount++;
-    rawVoterData.push({name: parsed.name || '(sem nome)', votes: parsed.votes});
+    rawVoterData.push({email: parsed.email || '(desconhecido)', votes: parsed.votes});
     for(const [talkId, v] of Object.entries(parsed.votes)){
       if(!totals[talkId]) continue;
       totals[talkId].sumNota += v.nota;
