@@ -945,6 +945,8 @@ function renderVoting(stage, navSlot){
     await castVote(talkId, selNota, selDesempate);
     updateNavStatus();
     updateProgress();
+    const nextBtn = document.getElementById('nextBtn');
+    if(nextBtn){ nextBtn.disabled = false; nextBtn.title = ''; }
     clearTimeout(advanceTimer);
     advanceTimer = setTimeout(() => {
       if(cursor < order.length - 1){ cursor++; render(); }
@@ -979,15 +981,19 @@ function renderVoting(stage, navSlot){
 }
 
 function renderVotingNav(navSlot){
+  const talkId = order[cursor];
+  const canAdvance = !!votes[talkId];
   navSlot.innerHTML = `
     <div class="bottom-nav">
       <button class="nav-btn" id="prevBtn">← Anterior</button>
       <span class="nav-status" id="navStatus"></span>
-      <button class="nav-btn primary" id="nextBtn">Próxima →</button>
+      <button class="nav-btn primary" id="nextBtn" ${canAdvance ? '' : 'disabled'}>Próxima →</button>
     </div>
   `;
   document.getElementById('prevBtn').onclick = goPrev;
-  document.getElementById('nextBtn').onclick = goNext;
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.onclick = goNext;
+  nextBtn.title = canAdvance ? '' : 'Escolha a nota e o critério de desempate para continuar';
   document.getElementById('prevBtn').disabled = cursor === 0;
   updateNavStatus();
 }
@@ -1000,8 +1006,9 @@ function updateNavStatus(){
 function goPrev(){ if(cursor>0){ cursor--; render(); } }
 function goNext(){
   const talkId = order[cursor];
+  if(!votes[talkId]) return; // trava: precisa das duas notas antes de avançar
   if(cursor < order.length - 1){ cursor++; render(); }
-  else if(votes[talkId]){ view = 'locked'; render(); }
+  else { view = 'locked'; render(); }
 }
 
 function renderLocked(stage){
