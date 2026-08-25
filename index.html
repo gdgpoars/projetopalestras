@@ -699,6 +699,11 @@ async function init(){
   if(savedId){
     voterId = savedId;
     voterEmail = savedId;
+    if(isAdminEmail(voterEmail)){
+      view = 'results';
+      render();
+      return;
+    }
     const parsed = await backendGetVoter(voterId);
     if(parsed){
       order = parsed.order;
@@ -729,12 +734,19 @@ async function startSession(rawEmail){
   }
   voterEmail = email;
   voterId = email;
+  await sSet('device-voter-id', voterId, false);
+
+  if(isAdminEmail(email)){
+    // administradores só visualizam o ranking, não entram no fluxo de votação
+    view = 'results';
+    render();
+    return;
+  }
 
   const existing = await backendGetVoter(voterId);
   if(existing){
     order = existing.order;
     votes = existing.votes || {};
-    await sSet('device-voter-id', voterId, false);
     if(Object.keys(votes).length >= order.length){
       view = 'locked';
       render();
@@ -749,7 +761,6 @@ async function startSession(rawEmail){
   order = shuffle(TALKS.map(t=>t.id), seedFromString(voterId));
   votes = {};
   cursor = 0;
-  await sSet('device-voter-id', voterId, false);
   await persist();
   view = 'voting';
   render();
@@ -802,8 +813,8 @@ function render(){
   if(isAdminEmail(voterEmail)){
     const resultsBtn = document.createElement('button');
     resultsBtn.className = 'link-btn';
-    resultsBtn.textContent = view === 'results' ? '← Voltar a votar' : 'Ver resultados (admin)';
-    resultsBtn.onclick = () => { view = (view === 'results') ? (cursor>=order.length ? 'locked':'voting') : 'results'; render(); };
+    resultsBtn.textContent = 'Atualizar ranking';
+    resultsBtn.onclick = () => { view = 'results'; render(); };
     topRight.appendChild(resultsBtn);
   }
 
@@ -1056,6 +1067,7 @@ async function renderResults(stage){
   const rawVoterData = []; // {email, votes} for full backup export
   for(const parsed of allVoters){
     if(!parsed || !parsed.votes) continue;
+    if(isAdminEmail(parsed.email)) continue; // votos de e-mails admin não entram no ranking
     voterCount++;
     rawVoterData.push({email: parsed.email || '(desconhecido)', votes: parsed.votes});
     for(const [talkId, v] of Object.entries(parsed.votes)){
@@ -1092,7 +1104,7 @@ async function renderResults(stage){
     <div class="results-wrap">
       <div class="results-header">
         <h2>Ranking geral</h2>
-        <p>${voterCount} pessoa(s) votando · média da nota (1–5) e do desempate (0–2) · ordenado do maior para o menor</p>
+        <p>${voterCount} pessoa(s) votando · média da nota (1–5) e do desempate (0–2) · ordenado do maior para o menor · votos de e-mails administradores não entram nesta soma</p>
         <div class="backup-actions">
           <button class="link-btn" id="exportCsvBtn">↓ Baixar ranking (CSV)</button>
           <button class="link-btn" id="exportJsonBtn">↓ Baixar backup completo (JSON)</button>
