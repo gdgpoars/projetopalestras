@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Votação · DevFest POA 2026</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap');
+
+:root{
+  --bg:#0C0E14;
+  --bg-elev:#151822;
+  --bg-elev-2:#1C202C;
+  --border:#282D3A;
+  --text:#EDEFF5;
+  --text-dim:#8D93A6;
+  --text-dimmer:#5C6274;
+  --create:#5EEAD4;
+  --protect:#FFB454;
+  --scale:#A78BFA;
+  --danger:#FF6B6B;
+  --radius:14px;
+  --font-display:'Space Grotesk', sans-serif;
+  --font-body:'Inter', sans-serif;
+  --font-mono:'JetBrains Mono', monospace;
+}
+
+*{box-sizing:border-box; margin:0; padding:0;}
+html,body{height:100%;}
+body{
+  background:
+    radial-gradient(ellipse 900px 500px at 15% -10%, rgba(94,234,212,0.08), transparent 60%),
+    radial-gradient(ellipse 900px 500px at 100% 110%, rgba(167,139,250,0.08), transparent 60%),
+    var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  -webkit-font-smoothing:antialiased;
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;}
+}
+
+/* ---------- Top bar ---------- */
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:16px 20px;
+  border-bottom:1px solid var(--border);
+  position:sticky;
+  top:0;
+  background:rgba(12,14,20,0.85);
+  backdrop-filter:blur(10px);
+  z-index:20;
+}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.brand-dots{display:flex; gap:4px;}
+.brand-dots span{width:7px; height:7px; border-radius:50%; display:block;}
+.brand-dots span:nth-child(1){background:var(--create);}
+.brand-dots span:nth-child(2){background:var(--protect);}
+.brand-dots span:nth-child(3){background:var(--scale);}
+.brand-text{
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:15px;
+  letter-spacing:0.01em;
+}
+.brand-sub{
+  font-family:var(--font-mono);
+  font-size:11px;
+  color:var(--text-dimmer);
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+}
+.topbar-right{display:flex; align-items:center; gap:14px;}
+.voter-chip{
+  font-family:var(--font-mono);
+  font-size:12px;
+  color:var(--text-dim);
+  background:var(--bg-elev);
+  border:1px solid var(--border);
+  padding:6px 10px;
+  border-radius:100px;
+}
+.backend-chip.ok{color:var(--create); border-color:rgba(94,234,212,0.35);}
+.backend-chip.warn{color:var(--protect); border-color:rgba(255,180,84,0.35);}
+.link-btn{
+  font-family:var(--font-mono);
+  font-size:12px;
+  color:var(--text-dim);
+  background:none;
+  border:1px solid var(--border);
+  padding:6px 12px;
+  border-radius:100px;
+  cursor:pointer;
+  transition:all .15s ease;
+}
+.link-btn:hover{border-color:var(--text-dim); color:var(--text);}
+
+/* ---------- Progress ---------- */
+.progress-track{
+  height:3px;
+  background:var(--border);
+  position:relative;
+  overflow:hidden;
+}
+.progress-fill{
+  height:100%;
+  background:linear-gradient(90deg, var(--create), var(--scale));
+  width:0%;
+  transition:width .4s cubic-bezier(.4,0,.2,1);
+}
+
+/* ---------- Main ---------- */
+main{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:32px 16px 100px;
+  width:100%;
+}
+.stage{
+  width:100%;
+  max-width:720px;
+}
+
+/* ---------- Landing ---------- */
+.landing{
+  max-width:560px;
+  margin:6vh auto;
+  text-align:center;
+  padding:0 16px;
+}
+.landing .theme-line{
+  font-family:var(--font-mono);
+  font-size:12px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:var(--text-dimmer);
+  margin-bottom:18px;
+}
+.theme-word{padding:0 2px;}
+.theme-word.c{color:var(--create);}
+.theme-word.p{color:var(--protect);}
+.theme-word.s{color:var(--scale);}
+.landing h1{
+  font-family:var(--font-display);
+  font-size:clamp(32px,5vw,44px);
+  line-height:1.15;
+  font-weight:700;
+  margin-bottom:14px;
+}
+.landing p.desc{
+  color:var(--text-dim);
+  font-size:15px;
+  line-height:1.6;
+  margin-bottom:34px;
+}
+.landing-form{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  align-items:center;
+}
+.landing-form input{
+  width:100%;
+  max-width:360px;
+  background:var(--bg-elev);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:14px 16px;
+  color:var(--text);
+  font-family:var(--font-body);
+  font-size:15px;
+  outline:none;
+  transition:border-color .15s ease;
+  text-align:center;
+}
+.landing-form input:focus{border-color:var(--create);}
+.primary-btn{
+  font-family:var(--font-display);
+  font-weight:600;
+  font-size:15px;
+  background:var(--text);
+  color:var(--bg);
+  border:none;
+  padding:14px 28px;
+  border-radius:10px;
+  cursor:pointer;
+  transition:transform .12s ease, opacity .12s ease;
+  margin-top:8px;
+}
+.primary-btn:hover{transform:translateY(-1px);}
+.primary-btn:disabled{opacity:0.35; cursor:not-allowed; transform:none;}
+.landing-meta{
+  margin-top:28px;
+  font-family:var(--font-mono);
+  font-size:12px;
+  color:var(--text-dimmer);
+}
+
+/* ---------- Card ---------- */
+.card{
+  background:var(--bg-elev);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:32px;
+  animation:cardIn .35s cubic-bezier(.16,1,.3,1);
+}
+@keyframes cardIn{
+  from{opacity:0; transform:translateY(10px);}
+  to{opacity:1; transform:translateY(0);}
+}
+.card-meta{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:16px;
+  flex-wrap:wrap;
+}
+.meta-pill{
+  font-family:var(--font-mono);
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:0.06em;
+  color:var(--text-dim);
+  border:1px solid var(--border);
+  padding:4px 10px;
+  border-radius:100px;
+}
+.meta-pill.level{color:var(--bg); background:var(--text-dim); border-color:var(--text-dim);}
+.card-index{
+  margin-left:auto;
+  font-family:var(--font-mono);
+  font-size:12px;
+  color:var(--text-dimmer);
+}
+.card h2{
+  font-family:var(--font-display);
+  font-size:clamp(22px,3.2vw,28px);
+  line-height:1.25;
+  font-weight:700;
+  margin-bottom:16px;
+}
+.tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-bottom:22px;
+}
+.tag{
+  font-family:var(--font-mono);
+  font-size:11px;
+  padding:5px 10px;
+  border-radius:6px;
+  border:1px solid transparent;
+  background:rgba(255,255,255,0.04);
+}
+.section-label{
+  font-family:var(--font-mono);
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+  color:var(--text-dimmer);
+  margin-bottom:6px;
+  margin-top:20px;
+}
+.card p.body-text{
+  font-size:14.5px;
+  line-height:1.65;
+  color:#D3D6E0;
+  white-space:pre-line;
+}
+.card p.conexao{
+  font-size:14px;
+  line-height:1.6;
+  color:var(--text-dim);
+  white-space:pre-line;
+}
+.deck-link{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  margin-top:20px;
+  font-family:var(--font-mono);
+  font-size:12px;
+  color:var(--create);
+  text-decoration:none;
+  border-bottom:1px solid rgba(94,234,212,0.35);
+  padding-bottom:2px;
+}
+.deck-link:hover{border-color:var(--create);}
+.no-deck{
+  margin-top:20px;
+  font-family:var(--font-mono);
+  font-size:12px;
+  color:var(--text-dimmer);
+}
+
+/* ---------- Voting ---------- */
+.vote-block{
+  margin-top:28px;
+  padding-top:24px;
+  border-top:1px solid var(--border);
+}
+.vote-row{margin-bottom:22px;}
+.vote-row:last-child{margin-bottom:0;}
+.vote-title{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  margin-bottom:10px;
+}
+.vote-title .label{
+  font-family:var(--font-display);
+  font-weight:600;
+  font-size:14px;
+}
+.vote-title .hint{
+  font-family:var(--font-mono);
+  font-size:11px;
+  color:var(--text-dimmer);
+}
+.btn-row{display:flex; gap:8px;}
+.score-btn{
+  flex:1;
+  aspect-ratio:1.3;
+  background:var(--bg-elev-2);
+  border:1px solid var(--border);
+  border-radius:10px;
+  color:var(--text);
+  font-family:var(--font-display);
+  font-size:20px;
+  font-weight:700;
+  cursor:pointer;
+  transition:all .12s ease;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.score-btn:hover{border-color:var(--text-dim); transform:translateY(-1px);}
+.score-btn.selected-nota{
+  background:var(--create);
+  border-color:var(--create);
+  color:#04231C;
+}
+.score-btn.selected-desempate{
+  background:var(--scale);
+  border-color:var(--scale);
+  color:#1C1533;
+}
+
+/* ---------- Bottom nav ---------- */
+.bottom-nav{
+  position:fixed;
+  bottom:0; left:0; right:0;
+  background:rgba(12,14,20,0.9);
+  backdrop-filter:blur(10px);
+  border-top:1px solid var(--border);
+  padding:14px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:14px;
+  z-index:20;
+}
+.nav-btn{
+  font-family:var(--font-mono);
+  font-size:13px;
+  background:var(--bg-elev);
+  border:1px solid var(--border);
+  color:var(--text-dim);
+  padding:11px 18px;
+  border-radius:10px;
+  cursor:pointer;
+  transition:all .12s ease;
+}
+.nav-btn:hover:not(:disabled){border-color:var(--text-dim); color:var(--text);}
+.nav-btn:disabled{opacity:0.3; cursor:not-allowed;}
+.nav-btn.primary{
+  background:var(--text);
+  color:var(--bg);
+  border-color:var(--text);
+  font-family:var(--font-display);
+  font-weight:600;
+}
+.nav-btn.primary:disabled{background:var(--bg-elev-2); color:var(--text-dimmer); border-color:var(--border);}
+.nav-status{
+  font-family:var(--font-mono);
+  font-size:11px;
+  color:var(--text-dimmer);
+  min-width:70px;
+  text-align:center;
+}
+
+/* ---------- Done screen ---------- */
+.done{
+  text-align:center;
+  padding:8vh 16px;
+}
+.done .big{
+  font-family:var(--font-display);
+  font-size:clamp(28px,5vw,40px);
+  font-weight:700;
+  margin-bottom:14px;
+}
+.done p{color:var(--text-dim); margin-bottom:28px; font-size:15px;}
+.done-actions{display:flex; gap:12px; justify-content:center; flex-wrap:wrap;}
+
+/* ---------- Jump grid ---------- */
+.jump-panel{
+  margin-top:30px;
+  text-align:left;
+}
+.jump-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(38px,1fr));
+  gap:6px;
+  margin-top:10px;
+}
+.jump-cell{
+  aspect-ratio:1;
+  border-radius:6px;
+  border:1px solid var(--border);
+  background:var(--bg-elev-2);
+  color:var(--text-dimmer);
+  font-family:var(--font-mono);
+  font-size:11px;
+  cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+}
+.jump-cell.answered{background:rgba(94,234,212,0.14); border-color:rgba(94,234,212,0.4); color:var(--create);}
+.jump-cell.current{outline:2px solid var(--text); outline-offset:1px;}
+
+/* ---------- Results ---------- */
+.results-wrap{padding:20px 0;}
+.results-header{margin-bottom:20px;}
+.results-header h2{font-family:var(--font-display); font-size:24px; margin-bottom:6px;}
+.results-header p{color:var(--text-dim); font-size:13px;}
+.backup-actions{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap;}
+.results-table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
+}
+.results-table th{
+  text-align:left;
+  font-family:var(--font-mono);
+  font-size:10.5px;
+  text-transform:uppercase;
+  letter-spacing:0.06em;
+  color:var(--text-dimmer);
+  padding:8px 10px;
+  border-bottom:1px solid var(--border);
+  position:sticky; top:0; background:var(--bg);
+}
+.results-table td{
+  padding:10px;
+  border-bottom:1px solid var(--border);
+  vertical-align:top;
+}
+.results-table tr:hover td{background:rgba(255,255,255,0.02);}
+.rank-num{font-family:var(--font-mono); color:var(--text-dimmer);}
+.results-table .ttitle{font-family:var(--font-display); font-weight:600; font-size:13.5px;}
+.score-num{font-family:var(--font-mono); font-weight:600; color:var(--create);}
+.score-num.tie{color:var(--scale);}
+.small-dim{color:var(--text-dimmer); font-size:11px;}
+.empty-state{
+  text-align:center;
+  padding:60px 20px;
+  color:var(--text-dim);
+  font-family:var(--font-mono);
+  font-size:13px;
+}
+.loading-dots{font-family:var(--font-mono); color:var(--text-dimmer); text-align:center; padding:40px;}
+
+@media (max-width:640px){
+  .card{padding:22px;}
+  .btn-row{gap:6px;}
+  .score-btn{font-size:16px;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-dots"><span></span><span></span><span></span></div>
+    <div>
+      <div class="brand-text">DevFest POA 2026</div>
+      <div class="brand-sub">Votação cega de conteúdo</div>
+    </div>
+  </div>
+  <div class="topbar-right" id="topbarRight"></div>
+</div>
+<div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+<main><div class="stage" id="stage"></div></main>
+
+<div id="bottomNavSlot"></div>
+
+<!-- Firebase (usado como backup em nuvem dos votos; veja config logo no início do <script> abaixo) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+/* =========================================================================
+   CONFIGURAÇÃO DO FIREBASE
+   -------------------------------------------------------------------------
+   Cole aqui o objeto que o Firebase te dá ao registrar o app da Web
+   (Console do Firebase > Configurações do projeto > Seus apps > Config).
+   Enquanto os valores abaixo forem os placeholders "COLE_AQUI...", o app
+   funciona normalmente usando o armazenamento local do artifact como
+   backend — nada quebra. Assim que você colar a config real, os votos
+   passam a ser salvos no Firestore automaticamente.
+   ========================================================================= */
+const firebaseConfig = {
+  apiKey: "AIzaSyAYefJbq3INBoAkMyPz86PPXNmG4zkXlmg",
+  authDomain: "palestrasdevfest26.firebaseapp.com",
+  projectId: "palestrasdevfest26",
+  storageBucket: "palestrasdevfest26.firebasestorage.app",
+  messagingSenderId: "375304518993",
+  appId: "1:375304518993:web:8afea1971a2e8684186770"
+};
+const FIRESTORE_COLLECTION = 'devfest2026_votes';
+
+let firestoreDb = null;
+let firebaseReady = false;
+(function initFirebase(){
+  const looksConfigured = firebaseConfig.apiKey && !firebaseConfig.apiKey.startsWith('COLE_AQUI');
+  if(!looksConfigured) return;
+  try{
+    firebase.initializeApp(firebaseConfig);
+    firestoreDb = firebase.firestore();
+    try{ firestoreDb.enablePersistence({synchronizeTabs:true}).catch(()=>{}); }catch(e){}
+    firebaseReady = true;
+  }catch(e){
+    console.error('Falha ao iniciar Firebase, usando armazenamento local.', e);
+    firebaseReady = false;
+  }
+})();
+
+/* ---------------- backend abstraction: Firestore quando configurado, senão window.storage ---------------- */
+async function backendSaveVoter(voterId, data){
+  if(firebaseReady){
+    for(let attempt=0; attempt<2; attempt++){
+      try{
+        await firestoreDb.collection(FIRESTORE_COLLECTION).doc(voterId).set(
+          {...data, updatedAt: firebase.firestore.FieldValue.serverTimestamp()},
+          {merge:true}
+        );
+        return true;
+      }catch(e){
+        console.error('Firestore save falhou (tentativa '+(attempt+1)+')', e);
+        await new Promise(r=>setTimeout(r,400));
+      }
+    }
+    return sSet('voter:'+voterId, JSON.stringify(data), true);
+  }
+  return sSet('voter:'+voterId, JSON.stringify(data), true);
+}
+async function backendGetVoter(voterId){
+  if(firebaseReady){
+    try{
+      const doc = await firestoreDb.collection(FIRESTORE_COLLECTION).doc(voterId).get();
+      return doc.exists ? doc.data() : null;
+    }catch(e){
+      console.error('Firestore get falhou, tentando storage local', e);
+    }
+  }
+  const raw = await sGet('voter:'+voterId, true);
+  return raw ? JSON.parse(raw) : null;
+}
+async function backendGetAllVoters(){
+  if(firebaseReady){
+    try{
+      const snap = await firestoreDb.collection(FIRESTORE_COLLECTION).get();
+      return snap.docs.map(d => d.data());
+    }catch(e){
+      console.error('Firestore list falhou, tentando storage local', e);
+    }
+  }
+  const keys = await sList('voter:', true);
+  const out = [];
+  for(const k of keys){
+    const raw = await sGet(k, true);
+    if(raw){ try{ out.push(JSON.parse(raw)); }catch(e){} }
+  }
+  return out;
+}
+
+const TALKS = [{"id": "t001", "formato": "Palestra (até 30 minutos)", "titulo": "Utilizando Maestro para Automação de Testes Mobile", "resumo": "Está palestra irá mostrar como o maestro framework facilita e agiliza o trabalho de automação de testes", "nivel": "Iniciante", "conexao": "O maestro é uma ferramenta que agiliza o trabalho, permite automatizar em muito menos tempo oque se encaixa perfeitamente em um mundo com necessidade de dinamismo e celeridade", "deck": "Ainda não tenho :(", "tags": ["Palestra", "Mobile", "Qualidade / Testes"]}, {"id": "t002", "formato": "Palestra (até 30 minutos)", "titulo": "Como migrar de dev para empreededor", "resumo": "1 - Como identificar que tem um perfil empreendedor\n2 - Como identificar que não tem um perfil empreendedor\n3 - Como escolher entre criar um produto ou multi-produto\n4 - Como escolher uma ideia\n5 - Como conseguir investimento\n6 - Como tirar a ideia do papel\n7 - Como conseguir os primeiros usuários\n8 - Principais erros e acertos\n9 - Extra - Build in Public\n10 - Perguntas", "nivel": "Todos os níveis", "conexao": "Muitos devs cogitam se querem ou não ir para a trilha do empreendedorismo, espero com essa talk conseguir dar uma orientação de como escolher. Já que eu era dev e fui para essa trilha.", "deck": "N tenho, mas adoro fazer slide.", "tags": ["Palestra", "Carreira", "Produto"]}, {"id": "t003", "formato": "Palestra (até 30 minutos)", "titulo": "Mudando a Rota: Como Migrei da Área Corporativa para a Tecnologia", "resumo": "A ideia é poder contar um pouco de como foi o meu movimento de inicio de carreira. Como uma profissional da área da Administração, em minhas primeiras experiencias atuei dentro de áreas mais corporativas. Passar como foi a minha transição, que tipos de cursos fiz para migrar de área, e mostrar as possibilidades variadas de oportunidades que podem ser exploradas além de desenvolver no mercado tech. Além disso trazer um pouco que skills precisei desenvolver para migrar de área.", "nivel": "Iniciante", "conexao": "Principalmente focada na parte de carreira e desenvolvimento profissional, pois mostra que dentro do mundo tech temos uma infinidade de possibilidades para nos desenvolvermos ou até mesmo mudar de rota.", "deck": "Ainda não, mas irei preparar.", "tags": ["Palestra", "Carreira"]}, {"id": "t004", "formato": "Workshop", "titulo": "Segundo Cérebro para Managers", "resumo": "Como organizar seus arquivos e notas em um sistema operacional de pastas e arquivos que te permite organizar o seu dia a dia e potencializar o uso de IA para tornar o seu trabalho de gestão mais simples", "nivel": "Intermediário", "conexao": "Aborda conceitos de inteligência artificial, software open source e comunidades de líderes de engenharia", "deck": "Apresentação a ser usada está nesse vídeo https://www.youtube.com/watch?v=5LiA1QAnltY", "tags": ["Workshop", "IA / Agentes", "Liderança / Gestão", "Comunidade"]}, {"id": "t005", "formato": "Palestra (até 30 minutos)", "titulo": "Spec Driven Development com BMAD", "resumo": "Apresentar o framework BMAD para desenvolver software usando a metodologia Spec Driven", "nivel": "Iniciante", "conexao": "Engenharia de Software, desenvolvimento agêntico e IA", "deck": "https://docs.google.com/presentation/d/1_KYiZVKrYnTI-55vzJVxgTV_k2vukxPMJvhZFv0oEpk/edit?slide=id.g39b15972772_0_19#slide=id.g39b15972772_0_19", "tags": ["Palestra", "IA / Agentes"]}, {"id": "t006", "formato": "Palestra (até 30 minutos)", "titulo": "Mulheres na Tecnologia: Construindo uma Trajetória de Impacto na Jornada do Cliente e Liderança de Projetos", "resumo": "Neste workshop dinâmico e prático, vou compartilhar os aprendizados da minha trajetória de mais de 10 anos na área de tecnologia, focando na transformação do relacionamento com clientes e na liderança de projetos de implantação. Vamos explorar como metodologias híbridas e o uso prático de OKRs ajudam a organizar etapas de projeto, superar desafios de gestão e impulsionar resultados sustentáveis. O encontro também trará um espaço dedicado ao fortalecimento do protagonismo feminino no mercado de tecnologia, oferecendo ferramentas para desenvolvimento de carreira, superação de barreiras e construção de redes de apoio.", "nivel": "Iniciante", "conexao": "A apresentação se conecta diretamente aos pilares de inovação, liderança e diversidade da comunidade tech. O DevFest busca impulsionar talentos e compartilhar conhecimentos práticos do mercado. Levar uma vivência real sobre gestão de projetos de impacto, aliada ao incentivo do protagonismo feminino, fortalece a comunidade local, promove a inclusão e inspira novos profissionais a construírem rotas de sucesso na tecnologia.", "deck": "Estou preparando", "tags": ["Palestra", "IA / Agentes", "Carreira", "Liderança / Gestão", "Diversidade", "Comunidade"]}, {"id": "t007", "formato": "Palestra (até 30 minutos)", "titulo": "Design system é sobre infraestrutura e arquitetura", "resumo": "Nunca ficou tão evidente, porém com a aceleração operacional que a inteligência artificial traz atualmente, que padrões, guias, skill e sistemas de projeto precisam ter um eficiência e eficácia são as entregas para garantir a confiança de entregas e qualidade para as pessoas de desenvolvimento, produto e design, criarem projetos focados e alinhados com as expectativas e necessidades de clientes e pessoas.", "nivel": "Todos os níveis", "conexao": "DS é sobre escala de confiança e arquitetura de front", "deck": "Específica para o evento não, um sistema produzido a partir do conhecimento que tenho de DS é o dsschema.advg.com.br, um site que disponibiliza diversos materiais e conteúdos para entender o schema de um DS e seus dominios", "tags": ["Palestra", "IA / Agentes", "Arquitetura", "Qualidade / Testes", "Produto"]}, {"id": "t008", "formato": "Palestra (até 30 minutos)", "titulo": "Grandes mentes pensam igual.", "resumo": "Minha proposta é mostrar como a programação declarativa tomou de assalto o mundo mobile. Pretendo fazer isso mostrando como conceitos chaves, como hosting, stateless e stateful são compartlhados entre as principais plataformas mobile contemporrâneas, notadamente Kolin Nativo, KMP/CMP, Swift UI, Flutter e React Native. Também, objetivo mostrar como essa abordagem unificada facilita nossa vida e, mais ainda, podemos pensar aplicativos aruiteturalmente parecidos, no que tange a construção a absorção de dados nas telas das nossas aplicações.", "nivel": "Intermediário", "conexao": "Mobile é um dos temas do evento.", "deck": "Já tenho, mas vou atualizá-la. https://prezi.com/p/o4_qlzcmsy6s/", "tags": ["Palestra", "Mobile", "Dados"]}, {"id": "t009", "formato": "Palestra (até 30 minutos)", "titulo": "Do MCP ao MVP. Usando AI do início ao fim do seu projeto.", "resumo": "A palestra irá abordar como é possível usar IA generativa do início ao fim do seu projeto, desde Stich para geração das telas, até IDEs agênticas para codificação da solução final. Ao longo da apresentação do conteúdo discuto os prós e contras das abordagens e, os resultados que tive com testes pessoais em projetos que pretendo lançar na loja em breve.", "nivel": "Intermediário", "conexao": "IA generativa é dos temas propostos pelo evento.", "deck": "Ainda não tenho.", "tags": ["Palestra", "IA / Agentes", "Qualidade / Testes", "Produto"]}, {"id": "t010", "formato": "Palestra (até 30 minutos)", "titulo": "Deploy sem barreira: Module Federation na prática", "resumo": "Como uma aplicação consegue importar um componente que não existe em seu próprio bundle? Module Federation torna possível expor, descobrir e executar módulos produzidos por builds independentes durante o runtime.", "nivel": "Intermediário", "conexao": "Se encaixa no tema de escalonar deploy da sua aplicacao mobile, assim nao precisa passar pela loja", "deck": "https://docs.google.com/presentation/d/1MqLf6t5PN66tHiJJErA0EuyTCi947M7rVAsHfYi9Lao/edit?usp=sharing", "tags": ["Palestra", "Mobile", "Arquitetura", "DevOps / SRE"]}, {"id": "t011", "formato": "Palestra (até 30 minutos)", "titulo": "Escalonando o Impacto: Gestão de Engenharia, Maturidade e Produtividade na Era Agêntica", "resumo": "Em um cenário onde a inteligência artificial e novas ferramentas aceleram o desenvolvimento, o principal desafio deixa de ser apenas tecnológico e passa a ser organizacional. Como coordenador de tecnologia e arquiteto de software, tenho vivenciado que escalar soluções (especialmente em ambientes complexos como o financeiro/agro) exige primeiro escalar a maturidade do time.", "nivel": "Intermediário", "conexao": "O tema central propõe \"criar, proteger e escalonar\" desenvolvedores na era agêntica. Esta proposta foca exatamente na base estrutural e humana desse tripé. Para que os desenvolvedores consigam criar novas soluções e escalar arquiteturas de forma ágil, precisamos de uma gestão técnica que saiba medir a maturidade da área, proteger a carga cognitiva dos engenheiros e otimizar processos. A palestra traduz a palavra \"escalonar\" para o universo da gestão e da produtividade de times de tecnologia no cenário atual.", "deck": "O conteúdo base e os frameworks já estão estruturados a partir da minha prática diária como líder técnico, mas os slides finais (focados em diagramas de maturidade organizacional e métricas) estão em fase de montagem para adequação visual ao tempo do evento", "tags": ["Palestra", "IA / Agentes", "Liderança / Gestão", "Arquitetura"]}, {"id": "t012", "formato": "Palestra (até 30 minutos)", "titulo": "Mobile Architecture para a Era da IA", "resumo": "A Inteligência Artificial deixou de ser apenas uma ferramenta de autocomplete e passou a fazer parte do processo de desenvolvimento de software. Mas será que as arquiteturas mobile que utilizamos hoje foram projetadas para serem compreendidas e evoluídas por agentes de IA?\n\nNesta palestra, vamos explorar como a arquitetura de aplicações Android e Compose Multiplatform pode evoluir para uma abordagem AI-Native, onde especificações claras, modularização, injeção de dependências e regras arquiteturais trabalham em conjunto para tornar o código mais previsível, escalável e compreensível tanto para pessoas quanto para agentes de IA.\n\nPartindo dos princípios do Spec-Driven Development (SDD), veremos como transformar requisitos em especificações estruturadas, utilizar o Koin para organizar dependências de forma explícita e garantir a integridade da arquitetura com validações automatizadas durante o desenvolvimento.\n\nAo final, você entenderá por que, na era da IA, uma boa arquitetura não serve apenas para organizar o código — ela também se torna um mecanismo essencial para aumentar a produtividade, reduzir erros e permitir que humanos e agentes de IA colaborem de forma eficiente na construção de software.", "nivel": "Intermediário", "conexao": "inha apresentação está diretamente alinhada ao tema do DevFest Porto Alegre 2026 ao discutir um dos maiores desafios atuais da engenharia de software: como desenvolver aplicações em um cenário onde a Inteligência Artificial deixou de ser apenas uma ferramenta de produtividade e passou a atuar como uma colaboradora no processo de desenvolvimento.", "deck": "Ainda não tenho, tenho apenas artigos escritos sobre a temática: https://medium.com/codandotv/getting-started-with-spec-driven-development-e72302868eb5, https://blog.insert-koin.io/let-koin-shape-your-application-architecture-9cd60b1e02b0", "tags": ["Palestra", "IA / Agentes", "Mobile", "Arquitetura"]}, {"id": "t013", "formato": "Palestra (até 30 minutos)", "titulo": "Quando Engenharia, Produto e Negócio Colidem: O Papel do Líder Técnico", "resumo": "Em muitas organizações, conflitos entre engenharia, produto e negócio são inevitáveis. O líder técnico exerce um papel fundamental como mediador dessas decisões. Nesta palestra, discutiremos como líderes técnicos podem facilitar decisões complexas, equilibrando qualidade técnica, prazos e objetivos de negócio. Serão apresentados frameworks e abordagens práticas para transformar conflitos em decisões estratégicas.", "nivel": "Todos os níveis", "conexao": "Trazer o tema da liderança com exemplos de como isso afeta os indivíduos ajuda a preparar e capacitar os participantes que almejam ou já estão atuando neste cenário.", "deck": "https://www.linkedin.com/in/valeriabaptista/details/volunteer-experiences/edit/forms/630139452/", "tags": ["Palestra", "IA / Agentes", "Liderança / Gestão", "Qualidade / Testes", "Produto"]}, {"id": "t014", "formato": "Palestra (até 30 minutos)", "titulo": "Além do autocomplete: um sistema de IA para o dia a dia de dados", "resumo": "Todo mundo já viu demos de IA gerando SQL ou pipelines em segundos. Mas no dia a dia de um time de dados, com pipelines legados, schemas que mudam e decisões antigas que ninguém documentou, o ganho real de produtividade não vem de prompts melhores: vem de dar contexto e estrutura para a IA trabalhar.\n\nNesta palestra, mostro o sistema que uso diariamente como engenheiro de dados para operar um data lake em produção na AWS (Glue, Spark, Lambda, Airflow) com IA como parceira: bases de conhecimento versionadas que substituem o \"chute\" do modelo, playbooks de ações recorrentes, memória persistente entre sessões, agentes especializados por domínio e um registro de erros que impede a IA de repetir armadilhas já conhecidas.\n\nTudo com exemplos reais, incluindo o que não funcionou: agentes que nunca eram acionados, respostas confiantemente erradas, automações que criei e tive que desfazer. Você sai com um roteiro prático para montar seu próprio sistema começando pequeno: um arquivo de contexto, um playbook e um registro de erros.\n\nPúblico: engenheiros e analistas de dados (e devs em geral) que já usam IA no dia a dia e querem sair do \"chat avulso\" para um fluxo estruturado e confiável. Não é necessário conhecimento prévio de nenhuma ferramenta específica.", "nivel": "Intermediário", "conexao": "Minha palestra está na interseção de duas trilhas centrais do evento, Inteligência Artificial e Dados, e conversa diretamente com o mote \"onde tecnologia, comunidade e futuro se encontram\". O \"futuro\" que apresento não é especulação: é uma mudança já em curso na forma como engenheiros trabalham, saindo do chat avulso com IA para sistemas estruturados de contexto, agentes e memória persistente. Todo o conteúdo nasce de experiência real operando um data lake em produção, incluindo os erros, exatamente o formato de troca prática que o DevFest valoriza em vez de teoria. A conexão com comunidade está no takeaway: o método é agnóstico de fornecedor (funciona com Gemini, Claude ou qualquer LLM) e replicável por qualquer pessoa da plateia, que sai com um roteiro concreto para começar no seu próprio time: um arquivo de contexto, um playbook e um registro de erros", "deck": "Ainda não", "tags": ["Palestra", "IA / Agentes", "Dados", "Comunidade", "Cloud", "Legado"]}, {"id": "t015", "formato": "Palestra (até 30 minutos)", "titulo": "Usos de IA como Ferramenta de Apoio a Desenvolvedores", "resumo": "A palestra aborda como a Inteligência Artificial transformou-se de um mero assistente de codificação em um parceiro estratégico fundamental para desenvolvedores de software. O foco central está na capacidade da IA de analisar grandes volumes de dados técnicos em tempo real, permitindo que os profissionais tomem decisões mais rápidas e fundamentadas. Em vez de apenas automatizar linhas de código, as ferramentas preditivas auxiliam na escolha de arquiteturas de sistemas, na avaliação de impactos de mudanças e na priorização do backlog de desenvolvimento.\nNo segundo momento, o conteúdo explora cenários práticos onde a IA mitiga riscos e otimiza a qualidade do software. São discutidos casos de uso como a análise antecipada de vulnerabilidades de segurança, a previsão de falhas em ambiente de produção (através de testes inteligentes) e a recomendação de refatoração com base em métricas de débito técnico. Dessa forma, a IA atua como um conselheiro consultivo, ajudando o desenvolvedor a ponderar os prós e contras de cada caminho tecnológico antes mesmo da implementação.\nPor fim, a apresentação debate o impacto dessa sinergia na produtividade e no papel do programador moderno. Longe de substituir o julgamento humano, a IA é apresentada como um elemento que potencializa a liderança técnica e o pensamento crítico dos desenvolvedores. A palestra conclui que os profissionais que dominam o uso de dados gerados por IA para guiar suas escolhas de engenharia ganham uma vantagem competitiva crucial, entregando soluções mais robustas, seguras e alinhadas aos objetivos de negócio.", "nivel": "Avançado", "conexao": "IA está diretamente relacionada a realidade no desenvolvimento de soluções, contribuindo para que os desenvolvedores ganhem tempo gerando valor agregado a soluções.", "deck": "Não, estou planejando", "tags": ["Palestra", "IA / Agentes", "Liderança / Gestão", "Arquitetura", "Segurança", "Qualidade / Testes"]}, {"id": "t016", "formato": "Palestra (até 30 minutos)", "titulo": "Toda lacuna vira uma decisão do modelo: como fugir do AI slop", "resumo": "Dê o mesmo briefing pra IA cinco vezes e compare o que volta. Fizemos isso no piloto de um estudo que publicamos em 2026: dez gerações no Figma Make, cinco com o briefing cru e cinco com prompts de designers experientes. As cinco execuções do briefing cru repetiram a mesma hierarquia de informação. Com especificação, a convergência média caiu de 5,0 pra 3,0. O achado é simples e incômodo: decisão que você deixa em aberto, o modelo preenche com o padrão mais provável.\n\nO AI slop é o sintoma. O mecanismo é a convergência acidental. Apresento o modelo de quatro forças que usamos no artigo pra explicar esse empurrão (o viés do modelo, os dados de treino, os templates da ferramenta e a pressa de entregar) e o método pra reagir: Letramento de Especificação, que transforma intenção de produto em decisões explícitas de estrutura, estados, restrições e antipadrões. Não é escrever prompt maior. É reduzir o espaço em que o agente adivinha.\n\nNa demo, o mesmo agente recebe a mesma tarefa duas vezes, lendo o mesmo design system via MCP: primeiro só com o pedido, depois com a especificação. A comparação mostra onde ele cai nos defaults, o que passa a respeitar e o que ainda exige julgamento humano. Na minha prática, o mesmo padrão aparece quando o agente gera código, teste ou config: decisão ausente vira default.\n\nVocê sai com um checklist pra usar antes de delegar uma tela, um componente ou uma implementação a um agente. O objetivo não é fazer tudo diferente: é trocar a convergência acidental do modelo pela consistência intencional do seu produto.\n\nEstrutura planejada pra 27 minutos, com folga pra transições: as dez interfaces do estudo lado a lado e o achado (5 min); o modelo de quatro forças (4); o método de especificação, com exemplos práticos (8); a comparação controlada com o agente (7); checklist e fecho (3). A demo é previamente executada e armazenada localmente, sem dependência da rede do evento; as duas execuções usam o mesmo agente, a mesma tarefa, o mesmo design system e o mesmo ambiente, e a única variável é a especificação. O estudo é um piloto exploratório e é apresentado com esse enquadramento.", "nivel": "Intermediário", "conexao": "O tema pede criar, proteger e escalonar na era agêntica, e a palestra trata exatamente desse ciclo. O agente cria: telas, componentes, código. A especificação protege: impede que as decisões do produto sejam substituídas em silêncio pelos defaults do modelo. E o mesmo contrato de contexto e design system escala: o time inteiro delega pro agente com consistência, em vez de cada pessoa obter um resultado diferente. É pesquisa publicada sobre IA generativa traduzida em método prático pra quem constrói com agentes no dia a dia.", "deck": "O deck desta palestra ainda não está montado; o material base existe e já foi testado em palco (workshop e painel no TDC Florianópolis 2026, e palestra gravada na UX Time 2026: youtu.be/7hqOxDItJ2A?t=6732). Se selecionado, envio o deck com antecedência pra comissão.", "tags": ["Palestra", "IA / Agentes", "Arquitetura", "Qualidade / Testes", "Dados", "Produto"]}, {"id": "t017", "formato": "Palestra (até 30 minutos)", "titulo": "Do prompt ao bug: como garantir qualidade na era agêntica", "resumo": "A IA entrega rápido, mas quem garante o que foi entregue?\n\nSeja usando IA para escrever código, gerar testes e acelerar o desenvolvimento, seja incorporando IA ao próprio produto, uma coisa não muda: alguém precisa validar o resultado. E isso se torna ainda mais desafiador quando lidamos com respostas não determinísticas, agentes que executam tarefas, riscos de segurança, limites e custos que podem não ser evidentes no primeiro momento.\n\nDo prompt ao bug, vamos explorar casos reais e situações do dia a dia para discutir o que significa garantir qualidade na era agêntica: como validar aquilo que foi produzido pela IA, como testar sistemas que utilizam IA e como pensar em qualidade além do clássico “na minha máquina funciona”.\n\nPorque a IA pode acelerar a entrega, mas a responsabilidade pelo que colocamos em produção continua sendo humana, ou deveria ser.", "nivel": "Todos os níveis", "conexao": "Na era agêntica, agentes podem criar, testar e executar tarefas com cada vez mais autonomia. Mas quanto mais delegamos à IA, maior precisa ser nossa responsabilidade sobre o que ela entrega e executa. A palestra propõe essa reflexão: se o seu agente faz tudo, quem garante o que ele faz?", "deck": "n/a", "tags": ["Palestra", "IA / Agentes", "Segurança", "Qualidade / Testes", "Produto"]}, {"id": "t018", "formato": "Palestra (até 30 minutos)", "titulo": "Release Management: Muito Além do Deploy", "resumo": "CI/CD automatiza grande parte do caminho até a produção, mas não elimina os desafios de entregar software com segurança e previsibilidade. A palestra explora o que acontece além da automação: dependências entre equipes, governança, gestão de riscos, comunicação e os custos de uma release mal planejada. A partir de experiências práticas em ambientes corporativos de grande escala, apresento o papel do Release Management na coordenação de entregas complexas, sem transformar velocidade em burocracia.", "nivel": "Intermediário", "conexao": "A palestra se conecta ao tema “Criar, proteger, escalonar” ao abordar um desafio essencial para escalar software: transformar CI/CD e automação em entregas realmente seguras e previsíveis. A partir dos desafios que permanecem além do deploy, apresento como o Release Management orquestra a complexidade, alinhando riscos, dependências e decisões para viabilizar entregas previsíveis em escala.", "deck": "Ainda não tenho a apresentação visual montada. O conteúdo já está estruturado em uma narrativa clara: \n*Problema → por que CI/CD sozinho não resolve todos os desafios da entrega; \n*Consequência → o custo invisível de uma release mal planejada; \n*Resposta → o papel do Release Management em orquestrar essa complexidade em ambientes modernos.", "tags": ["Palestra", "Liderança / Gestão", "Segurança", "DevOps / SRE"]}, {"id": "t019", "formato": "Palestra (até 30 minutos)", "titulo": "Os fundamentos do Desenvolvimento na era da IA", "resumo": "Por que os fundamentos do desenvolvimento/engenharia/arquitetura de software importam mais do que nunca na era da IA: ela pode escrever código mas não tomar decisões de projeto, e como o papel do desenvolvedor está migrando de quem digita pra quem decide.", "nivel": "Todos os níveis", "conexao": "Criar, proteger, escalonar: desenvolvedores e criadores na era agêntica. se conecta totalmente com o meu tema, inclusive foi no Dom Bosco em que um professor me disse a importancia de não ser um mero \"digitador de código\"", "deck": "Ainda em desenvolvimento", "tags": ["Palestra", "IA / Agentes", "Arquitetura"]}, {"id": "t020", "formato": "Palestra (até 30 minutos)", "titulo": "Antes da IA: como transformei um problema em um produto SaaS", "resumo": "Em 2019, comecei como afiliado da Magazine Luiza e percebi um problema simples: minhas ofertas eram visualmente ruins e demoravam muito para serem produzidas. Sem as ferramentas de IA que temos hoje, comecei a estudar por conta própria e a construir uma solução para o meu próprio problema.\nO que começou com a criação manual de banners evoluiu para uma biblioteca de imagens, templates e um sistema desenvolvido com PHP e GD para automatizar a geração das artes. Com o tempo, fui incorporando HTML, CSS, JavaScript, MySQL, APIs, integrações e automações, até transformar o projeto em um produto SaaS.\nO projeto, inicialmente chamado Lojas da Internet, começou a ser utilizado por outros afiliados e posteriormente evoluiu para o Meu Banner. Vou compartilhar essa jornada, desde os primeiros experimentos e primeiros clientes até a construção de APIs e integrações que sustentam a plataforma atualmente.\nTambém vou falar sobre como a pandemia mudou o mercado de afiliados e e-commerce, como o produto evoluiu acompanhando essas mudanças e o que aconteceu quando a inteligência artificial reduziu drasticamente a barreira para construir software.\nA palestra é, acima de tudo, sobre aprender construindo: como uma necessidade real pode levar você a aprender tecnologias que inicialmente nem conhecia e transformar uma solução improvisada em um produto utilizado por outras pessoas.", "nivel": "Todos os níveis", "conexao": "Minha jornada se conecta diretamente ao tema “Criar, proteger, escalar: desenvolvedores e criadores na era da agência” porque o Meu Banner nasceu justamente da necessidade de criar uma solução para um problema real e, ao longo dos anos, transformá-la em um produto escalável.\nComecei sozinho, aprendendo as tecnologias necessárias para construir a primeira versão e, posteriormente, evoluí a aplicação com PHP, HTML, CSS, JavaScript, MySQL, APIs, integrações e automações. O projeto passou de uma solução pessoal para uma plataforma utilizada por outros profissionais.\nA história também permite discutir a mudança de cenário provocada pela inteligência artificial: tecnologias que antes exigiam anos de aprendizado técnico estão se tornando cada vez mais acessíveis. Isso muda a forma como criamos software, mas também aumenta a importância de entender profundamente o problema, o usuário e o produto.\nQuero compartilhar justamente essa perspectiva: o que aprendi construindo e escalando um produto real antes da popularização da IA e como essa experiência influencia minha forma de desenvolver na era atual.", "deck": "Ainda não. A apresentação será desenvolvida caso a proposta seja selecionada.", "tags": ["Palestra", "IA / Agentes", "Frontend", "Produto"]}, {"id": "t021", "formato": "Palestra (até 30 minutos)", "titulo": "Por trás de um emoji", "resumo": "O Zoji é um mensageiro onde não existem mensagens de texto: toda a comunicação acontece exclusivamente através de emojis.\n\nParece simples. E essa é justamente a parte interessante.\n\nNesta palestra, vou contar a história de como uma ideia aparentemente simples evoluiu de um protótipo para um produto real, publicado em iOS e Android, e acabou exigindo muito mais engenharia do que seu conceito inicial fazia parecer.\n\nVamos passar pelas principais decisões e desafios encontrados durante essa evolução: mudanças de arquitetura, React Native e Expo, uma API em PHP puro, MySQL, comunicação em tempo real via WebSocket, autenticação por OTP, notificações, moderação de emojis, privacidade, testes, CI/CD e operação.\n\nMais do que apresentar uma stack, a proposta é mostrar os trade-offs e problemas reais que aparecem quando deixamos de construir apenas uma aplicação e começamos a operar um produto.\n\nNo final, faço uma reflexão sobre o papel do desenvolvedor na era dos agentes de IA: se escrever código está ficando cada vez mais rápido, onde continua estando o verdadeiro trabalho de engenharia?", "nivel": "Intermediário", "conexao": "O Zoji oferece um estudo de caso diferente do habitual: em vez de apresentar uma tecnologia isoladamente, a palestra acompanha a evolução de um produto real e as decisões tomadas ao longo desse processo.\n\nA proposta permite discutir temas técnicos atuais — mobile, backend, tempo real, segurança, privacidade e IA — sempre a partir de problemas concretos. Ao mesmo tempo, a premissa incomum do produto cria uma narrativa fácil de acompanhar mesmo para quem não conhece sua stack.\n\nA palestra também aborda os problemas que ainda existem no projeto, mostrando que engenharia de software não termina quando o aplicativo é publicado.", "deck": "A apresentação ainda está em desenvolvimento, mas pode ser apresentada em breve.", "tags": ["Palestra", "IA / Agentes", "Mobile", "Arquitetura", "Segurança", "Qualidade / Testes"]}, {"id": "t022", "formato": "Palestra (até 30 minutos)", "titulo": "- On-Device vs. Cloud: Quando (e como) rodar modelos localmente para reduzir latência e custos.", "resumo": "Integrar IA em apps mobile tornou-se trivial, mas torná-la sustentável e performática é o verdadeiro desafio de engenharia em 2026. Esta palestra mergulha na matriz de decisão entre processamento em nuvem e execução local (On-Device). Vamos analisar métricas reais de latência, consumo de bateria e o impacto financeiro de \"queimar tokens\" em APIs externas. O foco será em estratégias híbridas de Semantic Routing, onde o app decide dinamicamente o melhor caminho para cada requisição, garantindo a melhor experiência para o usuário e o melhor ROI para o negócio.", "nivel": "Intermediário", "conexao": "Acredito que o tema casa perfeitamente com as trilhas do evento e com o momento atual da tecnologia.", "deck": "https://docs.google.com/presentation/d/1deV4vspmfyN4WPNDFCyG5Sbe9gEEdgBiySKdve3bPUc/edit?usp=drive_link", "tags": ["Palestra", "IA / Agentes", "Mobile", "Bem-estar", "Cloud"]}, {"id": "t023", "formato": "Palestra (até 30 minutos)", "titulo": "O Artificial sem Inteligência: A Dívida técnica na era da IA", "resumo": "Temos inteligência artificial, e estamos caminhando para um ciclo de desenvolvimento de software sem inteligência. O Código funciona, mas ninguém sabe explicar; A Arquitetura proposta pelos Agents parece linda mas ninguém sabe dizer o motivo de estar sendo adotada. \n\nGerar código deixou de ser um problema, e estamos fazendo mais deploys do que conseguimos acompanhar em sistemas que crescem mais rápido do que nunca. \n\nE é exatamente por isso que os fundamentos da computação, as bases da engenharia de software e o conhecimento profundo de todo ecossistema de desenvolvimento são mais importantes do que nunca. \n\nA IA não tornou o básico em obsoleto, pelo contrário: ela ampliou o que deve ser estudado e aumentou a bagagem que todo o time de desenvolvimento precisa carregar.", "nivel": "Todos os níveis", "conexao": "Se conecta profundamente com o escrito do site: \"Criar, proteger, escalonar: desenvolvedores e criadores na era agêntica.\" É exatamente sobre isso que procuro falar - como usar IA da forma correta e integrar ela ao ciclo de desenvolvimento de software mantendo a responsabilidade e entendimento do processo, isso tudo através das bases da computação e engenharia de software.", "deck": "Ainda em desenvolvimento!", "tags": ["Palestra", "IA / Agentes", "Arquitetura", "DevOps / SRE"]}, {"id": "t024", "formato": "Palestra (até 30 minutos)", "titulo": "Azion Webkit A IA construiu 80+ componentes. Um “exit 2” impediu ela de inventar moda.", "resumo": "IA escreve rápido  e inventa junto: prop que ninguém pediu, cor chumbada na mão, import que não existe. A gente parou de confiar em prompt e virou nossas regras de design system em hooks que barram o commit. A IA virou transcritora, não autora, o mesmo guardrail que segura o humano segura a máquina. 80+ componentes, drift zero.", "nivel": "Intermediário", "conexao": "Se conecta devido ser uma área que está crescendo mas ainda muitos não sabem como usar para realmente entregar valor além de fazer coisas mais rápido, que é a famosa AI. Irei mostrar um projeto de produção de real implementação ponta a ponta de um site/aplicações desde figma até a parte de build e teste.", "deck": "Nao, é uma palestra recente para um evento em SP que estamos negociando.", "tags": ["Palestra", "IA / Agentes", "Arquitetura", "Qualidade / Testes"]}, {"id": "t025", "formato": "Palestra (até 30 minutos)", "titulo": "Como conquistei uma oportunidade em uma empresa global em apenas 12 meses", "resumo": "Aos 30 anos, com bagagem consolidada em Administração, contabilidade e marketing, decidi migrar do zero para a área de tecnologia. Menos de um ano após ingressar na faculdade de Análise e Desenvolvimento de Sistemas (ADS), conquistei uma vaga de desenvolvimento em uma multinacional de consultoria e integrei uma imersão técnica e cultural de software em Pune, na Índia. Nesta palestra, apresento a metodologia e o tripé estratégico que viabilizaram essa aceleração de carreira internacional: Intensidade de Estudos (Deep Work): Foco disciplinado em fundamentos de arquitetura backend (Java, POO, Estruturas de Dados e Nuvem/AWS) em vez de focar apenas em modismos.  Posicionamento e Liderança em Comunidade: Como o voluntariado em eventos e a atuação comunitária anteciparam a validação de soft skills e construíram um networking estratégico antes da primeira oportunidade formal. Personal Branding (Learn in Public): A estratégia de documentar a jornada de aprendizado em público, construindo um portfólio vivo que ultrapassou 20 milhões de visualizações e atraiu a atenção direta do mercado. O objetivo é provar com dados práticos e um roadmap real que a maturidade e as experiências prévias não são atrasos, mas sim as maiores vantagens competitivas para se destacar no mercado global de engenharia de software.", "nivel": "Todos os níveis", "conexao": "O DevFest é, em sua essência, um evento feito pela e para a comunidade de tecnologia, focado em impulsionar pessoas e compartilhar conhecimento prático. Minha palestra se conecta diretamente a esse propósito ao desmistificar a evolução técnica e a inserção no mercado internacional. Eu mostro como o engajamento ativo em comunidades tech, a troca de conhecimento aberto e o estudo intencional de fundamentos (como computação em nuvem e arquitetura backend) foram os pilares centrais para que eu migrasse de área e conquistasse uma oportunidade global em apenas 12 meses, inspirando outros desenvolvedores locais a acelerarem suas carreiras.", "deck": "https://canva.link/3bpgzb213vyjmkb", "tags": ["Palestra", "IA / Agentes", "Carreira", "Liderança / Gestão", "Arquitetura", "Dados"]}, {"id": "t026", "formato": "Palestra (até 30 minutos)", "titulo": "A IA sabe programar. Mas ela sabe o que deveria ser construído?", "resumo": "A inteligência artificial está transformando a engenharia de software em uma velocidade sem precedentes. Hoje, ferramentas de IA já conseguem escrever código, criar testes, documentar aplicações, sugerir arquiteturas e até desenvolver funcionalidades completas. Mas, se construir software está ficando cada vez mais fácil, uma pergunta se torna ainda mais importante: estamos construindo a coisa certa?\n\nNesta palestra, vamos explorar por que a mentalidade de produto está se tornando uma competência essencial para engenheiros de software. A partir dos conceitos apresentados no livro O Engenheiro de Software com Mentalidade de Produto, discutiremos como sair da lógica de apenas executar tickets e passar a compreender problemas, usuários, contexto de negócio, impacto e métricas.\n\nTambém vamos discutir como a IA muda o papel do desenvolvedor: de alguém focado principalmente em produzir código para um profissional capaz de questionar, propor, experimentar, tomar decisões e utilizar a tecnologia para gerar impacto real.\n\nPorque, na era da IA, talvez o maior diferencial de um engenheiro não seja mais a capacidade de escrever código rapidamente — mas saber o que vale a pena construir.", "nivel": "Intermediário", "conexao": "A palestra está diretamente ligada ao tema central, a maneira como criamos produtos, maneira como desenvolvedores trabalham mudou drasticamente, o objetivo desta conversa é justamente levar esse olhar , o papel de um desenvolvedor de olhar produto e como as coisas se conectam.\nna era agêntica, criar software será cada vez menos sobre apenas escrever código e cada vez mais sobre saber quais problemas resolver, quais soluções construir e como gerar impacto real.", "deck": "Ainda não tenho a apresentação", "tags": ["Palestra", "IA / Agentes", "Arquitetura", "Qualidade / Testes", "Produto"]}, {"id": "t027", "formato": "Palestra (até 30 minutos)", "titulo": "O Tech Lead que seu time precisa, não o que seu time quer", "resumo": "Muita gente ainda espera que o Tech Lead seja o resolvedor de problemas do dia a dia, seja o \"Herói\" do time. Eu quero trazer outra provocação: o papel do Tech Lead não é agradar o time, e sim criar as condições para o time entregar com mais velocidade, qualidade e menor custo. Vou mostrar como isso passa por ajustar o processo de engenharia, para conduzir o time com mais sinais e menos opinião. E para isso apresentar o método \"Follow the Code\" como base do dia-a-dia do time e da liderança técnica.", "nivel": "Intermediário", "conexao": "Carreira para quem busca ser um tech lead que transforma um time de engenharia. Práticas de engenharia de alta performance.", "deck": "https://docs.google.com/presentation/d/19beSpAmnvoaRTIeszoYUmL2vTIhtIKWG/edit?usp=sharing&ouid=112356481884153511003&rtpof=true&sd=true", "tags": ["Palestra", "IA / Agentes", "Carreira", "Liderança / Gestão", "Qualidade / Testes"]}, {"id": "t028", "formato": "Palestra (até 30 minutos)", "titulo": "Sim, arquitetos serão substituídos por IA. Principalmente se competirem com ela do jeito errado", "resumo": "A IA vai substituir arquitetos? Minha resposta é: sim, alguns. Principalmente os que insistirem em competir com ela no que ela já faz melhor. O que eu quero discutir é outra coisa: o que acontece quando o arquiteto passa a usar IA como inteligência aumentada? Quero mostrar como o meu dia a dia mudou com o uso de IA para manter ADRs (Architecture Decision Records), evoluir documentação arquitetural, investigar problemas com mais profundidade e criar métricas. A tese é simples: IA não diminui a arquitetura. Ela aumenta a exigência sobre ela.", "nivel": "Intermediário", "conexao": "Uso de IA dentro do processo de arquitetura de software, possibilitando que ajudam a conduzir a evolução de carreira da pessoas que já atuam ou desejam atuar no papel.", "deck": "https://docs.google.com/presentation/d/1F-l7Mh9EpexWIbsIDr23pJwwTd7WRphA/edit?usp=sharing&rtpof=true&sd=true", "tags": ["Palestra", "IA / Agentes", "Carreira", "Arquitetura"]}, {"id": "t029", "formato": "Palestra (até 30 minutos)", "titulo": "Pessoas conta histórias. O código conta fatos: como tomar decisões melhores a partir dos sinais da engenharia", "resumo": "A maior parte das decisões de design ainda é conduzida mais por interpretação do que por evidência. Nesta palestra, quero discutir como sinais extraídos do próprio sistema ajudam a melhorar a qualidade da decisão técnica, do design e da arquitetura de software. A partir da abordagem Follow the Code, a ideia é mostrar como código, fluxo, commits, bloqueios, bugs e outros rastros operacionais podem revelar mais sobre a saúde do software do que a percepção isolada das pessoas. O foco será transformar observabilidade em ação, reduzindo ruído e aumentando a consciência situacional.", "nivel": "Intermediário", "conexao": "Na EximiaCo, adotamos essa abordagem dentro da nossa prática de consultoria. Temos usado a abordagem Follow the Code para ajudar clientes a tornar a engenharia e arquitetura mais observável, menos dependente de percepção isolada e mais capaz de sustentar decisões com evidência. Ou seja, essa não é uma discussão teórica para mim. Ela faz parte do trabalho que venho desenvolvendo em campo, em contextos reais de engenharia, arquitetura e evolução de software.\n\nTambém sou responsável pela construção de uma ferramenta que usamos para apoiar essa leitura da operação de engenharia. Isso me colocou numa posição interessante: não apenas defender a tese de que código, fluxo, commits, bloqueios, bugs e outros rastros contam uma história valiosa, mas ajudar a transformar essa tese em instrumento prático de diagnóstico e decisão. É justamente essa combinação entre prática de consultoria, formulação metodológica e construção de ferramenta que eu quero levar para a palestra.\n\nA proposta é mostrar como sinais extraídos do próprio sistema podem melhorar a qualidade da decisão técnica, do design e da arquitetura de software. O foco não é transformar engenharia em culto a métrica, mas usar observabilidade para reduzir ruído, aumentar consciência situacional e dar mais base para decisões que hoje ainda dependem demais de percepção.", "deck": "https://docs.google.com/presentation/d/1VkRFQ3dxjPeiwjmNcSDxLX91F2uQPYXl/edit?usp=sharing&ouid=112356481884153511003&rtpof=true&sd=true", "tags": ["Palestra", "IA / Agentes", "Arquitetura", "Qualidade / Testes"]}, {"id": "t030", "formato": "Palestra (até 30 minutos)", "titulo": "Construindo um backlog de dívida técnica que o negócio consiga priorizar", "resumo": "É fácil dizer que o negócio não valoriza dívida técnica. Mais difícil é admitir que, muitas vezes, nós não sabemos traduzi-la para que Product Owners consigam priorizá-la. Uma das responsabilidades do Tech Lead é justamente transformar dívida técnica em juros: tornar visível o custo de adiar uma decisão, o risco acumulado e o impacto na capacidade de mudar o software. Vou mostrar como construir um backlog de dívida técnica que o negócio consiga entender, comparar e priorizar. O foco será sair da linguagem técnica e transformar dívida em algo legível em termos de risco, impacto e custo da mudança.", "nivel": "Intermediário", "conexao": "Muitas vezes, a dívida técnica não deixa de ser tratada porque o negócio não se importa, mas porque ela continua sendo apresentada em uma linguagem que o negócio não consegue comparar, discutir ou priorizar. É fácil dizer que o Product Owner não valoriza dívida técnica. Mais difícil é admitir que, em muitos casos, nós da engenharia ainda não aprendemos a transformá-la em uma conversa inteligível para decisão.\n\nA proposta é mostrar método e ferramentas para construir um backlog de dívida técnica que faça sentido para o negócio sem perder profundidade técnica. Vou apresentar formas para sair da linguagem técnica dos times e estruturar esse backlog em termos de risco, impacto, custo da mudança e consequência operacional. O conteúdo vem da prática cotidiana com times, da experiência em liderança técnica e do raciocínio que venho amadurecendo no artigo sobre o tema. No fundo, o que quero discutir é como o Tech Lead pode melhorar a qualidade dessa interface entre engenharia e negócio, tornando a dívida técnica menos subjetiva, menos abstrata e muito mais priorizável.", "deck": "https://docs.google.com/presentation/d/1aJbzPiivdSnnZpcZqSpWQZIhMdSOVKU-/edit?usp=sharing&ouid=112356481884153511003&rtpof=true&sd=true", "tags": ["Palestra", "Liderança / Gestão", "Qualidade / Testes", "Produto"]}, {"id": "t031", "formato": "Workshop", "titulo": "Mentoria para Tech Leads: o que realmente sustenta um time de engenharia de alta performance", "resumo": "Se um time não performa, quase sempre alguém sugere mais rito, mais controle ou mais pressão. Quase nunca esse é o melhor caminho. Nesta mentoria, quero discutir com Tech Leads o que realmente sustenta um time de engenharia de alta performance: não heroísmo, não modismo de gestão e nem acúmulo de cerimônia, mas consciência situacional suficiente para reduzir incerteza e melhorar a qualidade da decisão. É aí que Follow the Code entra, como uma forma de tornar a engenharia mais observável e de reduzir atrito, custo e risco da mudança ao longo da evolução do software.", "nivel": "Intermediário", "conexao": "Essa mentoria parte de um método que foi consolidado na prática com times e organizações: quando um time não entrega bem, a resposta mais comum ainda é aumentar rito, controle ou pressão. O problema é que isso quase nunca melhora o sistema de engenharia. Em muitos casos, só aumenta ruído, reduz autonomia e piora a qualidade da decisão. O que tenho defendido, e aplicado no dia a dia, é outra leitura: times de alta performance não se sustentam em heroísmo, pressão ou acúmulo de cerimônia. Eles se sustentam em contexto claro, boa liderança técnica, visibilidade do fluxo e mecanismos que aumentam a consciência situacional do time.\n\nQuero usar essa mentoria para discutir esse problema com Tech Leads de forma prática e estruturada. A partir da experiência da EximiaCo, a proposta é mostrar como uma engenharia mais observável ajuda a reduzir incerteza e melhora a tomada de decisão. É nesse ponto que entram conceitos e práticas como Follow the Code, Fly by Wire, sinais, métricas e uma leitura mais quantitativa da operação. Não como fetiche por dado, mas como forma de reduzir atrito, custo e risco da mudança ao longo da evolução do software.\n\nO conteúdo que pretendo trazer vem da aplicação dessas ideias em empresas nacionais de grande porte, lidando com desafios reais de liderança técnica, estruturação de times e melhoria de capacidade de entrega. Meu interesse por esse tema cresceu justamente ao perceber que muitos Tech Leads são cobrados pela performance do time, mas raramente recebem um modelo claro de como estruturar o sistema de trabalho para sustentar essa performance. A proposta da mentoria é compartilhar esse modelo de forma aplicada, sem cair nem em modismo de gestão nem em discurso abstrato sobre excelência.", "deck": "https://docs.google.com/presentation/d/1NK0b023D3yatQeC03ImphAmyw24xFBY2/edit?usp=sharing&ouid=112356481884153511003&rtpof=true&sd=true", "tags": ["Workshop", "IA / Agentes", "Liderança / Gestão", "Qualidade / Testes"]}, {"id": "t032", "formato": "Workshop", "titulo": "Quem escuta quem precisa ser ouvido? Criando apoio humano na era agêntica", "resumo": "A apresentação mostra como uma experiência de solidão deu origem à Lumi, uma plataforma de apoio humano que conecta pessoas em busca de acolhimento a voluntários preparados para ouvi-las.\n\nA partir desse caso, vamos discutir como criar um produto sensível desde o MVP, proteger usuários e voluntários e usar automação e sistemas de maneira responsável, apoiando triagem, segurança e operação sem substituir o encontro humano.", "nivel": "Iniciante", "conexao": "A Lumi se conecta diretamente aos três pilares do tema. Criar significa transformar uma necessidade humana em um produto viável. Proteger envolve privacidade, moderação, limites claros e supervisão humana. Escalonar exige automação e sistemas agênticos capazes de apoiar a operação sem substituir decisões sensíveis ou relações humanas.", "deck": "https://docs.google.com/presentation/d/1MWFft8mUI_bYPWqUD4ZfBx9Cj7F5N1xs/edit?usp=sharing&ouid=106851113262710157584&rtpof=true&sd=true", "tags": ["Workshop", "IA / Agentes", "Segurança", "Produto"]}, {"id": "t033", "formato": "Palestra (até 30 minutos)", "titulo": "Dark UX em Plataformas de Aposta: Uma Análise Sistêmica dos Padrões de Interação que Influenciam a Tomada de Decisão e a Cognição do Usuário", "resumo": "A palestra explora a relação entre design e comportamento a partir dos jogos de azar e das plataformas de apostas. A proposta é entender por que determinadas experiências digitais conseguem manter as pessoas engajadas e incentivá-las a continuar jogando, mesmo diante de perdas. A partir de exemplos de jogos e plataformas de apostas, serão apresentados mecanismos psicológicos relacionados à recompensa, expectativa, impulsividade e ao sentimento de “quase ganhar”, conectando esses mecanismos às escolhas de design utilizadas nas interfaces. Em seguida, serão explorados os Dark Patterns e estratégias como recompensas intermitentes, contadores, bônus, urgência e elementos que dificultam a saída da plataforma. Por fim, a palestra aborda os impactos dessas estratégias sobre a tomada de decisão, a perda de controle e o comportamento de jogo, buscando apresentar o tema de forma crítica, visual e acessível. A ideia é que o público termine a palestra não apenas reconhecendo alguns Dark Patterns, mas entendendo melhor o que acontece por trás da interface e por que certas experiências são tão difíceis de abandonar.", "nivel": "Todos os níveis", "conexao": "Minha apresentação se conecta ao DevFestPoa26 por trazer um olhar diferente para a tecnologia: não apenas sobre o que somos capazes de construir, mas sobre como as tecnologias que já fazem parte do nosso cotidiano podem influenciar a forma como pensamos, escolhemos e nos comportamos. A partir dos Dark Patterns em jogos de azar, a palestra conecta design e psicologia para mostrar como decisões aparentemente pequenas em uma interface podem ter efeitos muito maiores sobre o comportamento dos usuários. Acredito que essa discussão contribui para a comunidade justamente por ampliar o olhar sobre tecnologia e aproximar uma questão de pesquisa de um problema que já está presente na vida digital de muitas pessoas.", "deck": "A apresentação visual ainda está em andamento.", "tags": ["Palestra", "Segurança", "Comunidade"]}, {"id": "t034", "formato": "Palestra (até 30 minutos)", "titulo": "Ideação e criação de uma startup", "resumo": "Vou explicar de forma clara e objetiva os desafios e oportunidades que enfrentei para criar e fundar minha primeira startup.", "nivel": "Iniciante", "conexao": "Acredito por eu sei ser um desenvolveram de software e fundador de startup acredito que minhas experiências poderiam ajudar a motivar outras pessoas.", "deck": "Ainda não mas posso montar e enviar nos próximos dias.", "tags": ["Palestra"]}, {"id": "t035", "formato": "Workshop", "titulo": "ainda não sei... mas algo como \"Beyond the Code: como se destacar em processos seletivos de tecnologia\"", "resumo": "Um workshop prático para profissionais de tecnologia que querem entender melhor o que acontece do outro lado de um processo seletivo e aprender a comunicar seus conhecimentos, experiências e diferenciais de forma mais estratégica no processo seletivo.", "nivel": "Todos os níveis", "conexao": "Minha apresentação se conecta ao tema do DevFest Porto Alegre 2026 ao trazer uma perspectiva que complementa o universo técnico: o desenvolvimento das pessoas que constroem e impulsionam a tecnologia. Em um cenário de rápidas transformações, inteligência artificial e novas formas de trabalho, não basta desenvolver apenas competências técnicas é fundamental também desenvolver habilidades humanas, colaboração, comunicação, liderança e capacidade de adaptação.\n\nA proposta é conectar tecnologia e desenvolvimento humano, mostrando como práticas de feedback, carreira e desenvolvimento podem contribuir para profissionais mais preparados para os desafios do futuro e para ambientes de tecnologia mais saudáveis, colaborativos e inovadores.", "deck": "Não tenho, mas caso queiram façam contato que posso montar", "tags": ["Workshop", "IA / Agentes", "Carreira", "Liderança / Gestão"]}, {"id": "t036", "formato": "Palestra (até 30 minutos)", "titulo": "Entre escolhas e ameaças: o fator humano na cibersegurança.", "resumo": "Nesta palestra, vamos refletir sobre como nossas próprias escolhas e comportamentos no ambiente digital podem influenciar diretamente nossa segurança. A partir de situações do cotidiano, serão abordados temas como oversharing, engenharia social, OSINT, stalking digital, doxxing, vazamentos de dados e inteligência artificial, mostrando como informações aparentemente inofensivas podem ser combinadas e utilizadas para criar ataques personalizados. A proposta é aproximar a cibersegurança da realidade das pessoas, destacando que proteger-se digitalmente não depende apenas de ferramentas e tecnologias, mas também de decisões conscientes sobre o que compartilhamos, onde compartilhamos e com quem compartilhamos.", "nivel": "Todos os níveis", "conexao": "Minha apresentação se conecta ao tema ao abordar a segurança em um cenário cada vez mais marcado pela inteligência artificial e pela hiperconectividade. Enquanto novas tecnologias ampliam as possibilidades de criação e inovação, também surgem novos desafios relacionados à privacidade, exposição de dados e segurança digital. Ao discutir como informações compartilhadas no ambiente digital podem ser utilizadas para engenharia social, ataques personalizados e manipulação potencializada pela IA.", "deck": "Está inicial, ainda gostaria de implementar algumas coisas: https://canva.link/wladu4lxxpenha9", "tags": ["Palestra", "IA / Agentes", "Segurança", "Dados"]}, {"id": "t037", "formato": "Workshop", "titulo": "SDD - Como especificações direcionam um bom fluxo agentico", "resumo": "Falar sobre uma metodologia muito utilizada no desenvolvimento orientado a IA e como ela pode auxiliar o trabalho do desenvolvedor de software e tornar a entrega mais completa e com menos erros.", "nivel": "Intermediário", "conexao": "Fala sobre o assunto mais falado no momento: IA", "deck": "Vai ser um conjunto de alguns artigos que já escrevi. Mas planejo montar uma para o evento: https://www.devthiagobraga.com.br/artigos", "tags": ["Workshop", "IA / Agentes"]}, {"id": "t038", "formato": "Palestra (até 30 minutos)", "titulo": "O que é e porque algumas pessoas ainda insistem em Flutter", "resumo": "Basicamente um overview do início do flutter bem como a evolução do mesmo e mostrar os motivos que algumas empresas grandes ainda seguem utilizando", "nivel": "Iniciante", "conexao": "Não sei", "deck": "Nao", "tags": ["Palestra", "Mobile"]}, {"id": "t039", "formato": "Palestra (até 30 minutos)", "titulo": "Load Pilot AI", "resumo": "Um orquestrador de Engenharia de Performance com IA que entende serviços de backend e gera automaticamente suítes de testes com Grafana k6, combinando análise do repositório e telemetria do Dynatrace.", "nivel": "Intermediário", "conexao": "Essa talk aborda temas como DevOps, Platform Engineering, SRE e Inteligência Artificial, trazendo exemplos práticos do uso dessas tecnologias no contexto de uma empresa multinacional como a SAP", "deck": "Ainda não", "tags": ["Palestra", "IA / Agentes", "Qualidade / Testes", "DevOps / SRE"]}, {"id": "t040", "formato": "Hands-on", "titulo": "DJ Verbosa - Compilando batidas", "resumo": "Nesta sessão 100% prática e estilo \"siga o mestre\", vamos explorar o Live Coding musical focando na execução. A teoria será reduzida ao mínimo, utilizando javascript para codar as batidas de música.\n\nVou utilizar como base principal o Strudel, uma ferramenta poderosa que roda diretamente no navegador, eliminando qualquer barreira de setup. Vamos construir batidas e texturas sonoras juntos, linha a linha. Para contextualizar o ecossistema do Live Coding e os próximos passos para quem quiser se aprofundar, faremos também uma passagem rápida por ferramentas como FoxDot e TidalCycles e as tendencias de algorave ao redor do mundo.", "nivel": "Iniciante", "conexao": "A sessão 'DJ Verbosa - Compilando batidas' conecta-se ao DevFest Porto Alegre 2026 ao unir tecnologia web acessível, criatividade e cultura maker. Ao utilizar o Strudel, uma ferramenta baseada no navegador que não exige configuração de ambiente, a oficina democratiza o acesso ao Live Coding e à produção musical. O formato 100% prático reflete o espírito de comunidade e inovação do evento: mostrar que a programação vai muito além de sistemas tradicionais, sendo uma ferramenta poderosa para a expressão artística. O objetivo é engajar a comunidade local, introduzindo novas tecnologias de forma inclusiva, imediata e divertida.", "deck": "https://docs.google.com/presentation/d/1aHgGwfXCWv_D8DMBTY_UzYiUP0jTp5T1aDInz6gf-jw/edit?usp=sharing", "tags": ["Hands-on", "Frontend", "Comunidade", "Criativo / Arte"]}, {"id": "t041", "formato": "Palestra (até 30 minutos)", "titulo": "Quanto tempo leva para ficar pronto?", "resumo": "Trago conceitos de mercado para mensurar projetos e topicos do que funciona ou nao e insigths para ajudar os devs a estimar de forma mais natural e assertiva", "nivel": "Todos os níveis", "conexao": "Falo francamente com quem trabalha com desenvolvimento no dia a dia, tenho passagem em grandes projetos e por ultimo liderando o desenvolvimento da platafroma de banco de dados da Globo. Entendo a dor de quem poe a mao na massa e traco tecnicas e caso real de estimativa de entregas e como lidar com o que sempre entre na frente como urgencia.", "deck": "ainda nao tenho mas posso mandar e enviar depois", "tags": ["Palestra", "IA / Agentes", "Dados"]}, {"id": "t042", "formato": "Palestra (até 30 minutos)", "titulo": "O Javascript que você não enxerga", "resumo": "Uma exploração dos mecanismos do Javascript que tornam possíveis as abstrações que usamos todos os dias", "nivel": "Todos os níveis", "conexao": "Na era agêntica, criar código está cada vez mais rápido, mas compreender o comportamento desse código continua sendo responsabilidade do desenvolvedor.\n\nA apresentação se conecta ao tema ao revelar mecanismos do Javascript que sustentam abstrações usadas diariamente. Closures ajudam a entender e evitar bugs sutis, como stale closures, proxies permitem observar, validar e controlar alterações e symbols evitam colisões ao identificar estruturas internas de bibliotecas e frameworks.\n\nCompreender esses fundamentos ajuda a criar soluções melhores, proteger aplicações contra comportamentos inesperados e utilizar abstrações de forma mais consciente à medida que os projetos crescem. Esse conhecimento também permite avaliar com senso crítico o código sugerido por ferramentas de IA, em vez de apenas aceitar soluções que parecem funcionar.", "deck": "https://docs.google.com/presentation/d/1KrHGSAUJVPyg-ITmIjDH-ml0HsjdXo9zrwQBe7o92bs/edit?usp=sharing", "tags": ["Palestra", "IA / Agentes", "Qualidade / Testes", "Frontend"]}, {"id": "t043", "formato": "Palestra (até 30 minutos)", "titulo": "De dias para minutos: automatizando engenharia CAD com Python, APIs e agentes inteligentes", "resumo": "A preparação geométrica é um dos maiores gargalos da engenharia computacional moderna. Em muitos casos, engenheiros gastam mais tempo corrigindo, reconstruindo e adaptando modelos CAD para simulação do que realizando a própria análise.\n\nNesta palestra apresento o desenvolvimento de uma plataforma de automação criada para identificar e reconstruir geometrias complexas de forma automática utilizando Python, APIs CAD e algoritmos de reconhecimento geométrico. O projeto surgiu para resolver problemas reais da indústria, reduzindo atividades que consumiam horas ou dias para poucos minutos.\n\nAlém dos desafios técnicos, abordarei estratégias para trabalhar com APIs pouco documentadas, desenvolvimento orientado a testes em ambientes industriais, engenharia reversa de operações geométricas e a utilização de conceitos inspirados em agentes inteligentes para tomada de decisões automáticas durante a reconstrução dos modelos.\n\nA apresentação demonstra como a nova era da automação e dos agentes de software pode ir além de chatbots e aplicações web, impactando diretamente processos de engenharia, produtividade e inovação industrial.", "nivel": "Todos os níveis", "conexao": "A palestra demonstra como desenvolvedores podem criar soluções inteligentes capazes de ampliar a capacidade humana em tarefas altamente especializadas.\n\nO projeto apresentado aplica conceitos da era agêntica para automatizar decisões tradicionalmente executadas por especialistas de engenharia, transformando conhecimento técnico em processos escaláveis e reproduzíveis.\n\nO conteúdo conecta diretamente os três pilares do tema do evento:\n\nCriar: desenvolvimento de algoritmos e ferramentas inovadoras para automação de engenharia.\nProteger: redução de erros humanos e aumento da confiabilidade dos processos de preparação de modelos.\nEscalonar: transformação de atividades manuais que consumiam horas ou dias em fluxos automatizados capazes de processar grandes volumes de dados e projetos.\n\nA proposta mostra um caso real de aplicação de desenvolvimento de software, IA e automação para gerar impacto concreto na produtividade industrial.", "deck": "Não tenho ainda", "tags": ["Palestra", "IA / Agentes", "Qualidade / Testes", "Dados"]}, {"id": "t044", "formato": "Palestra (até 30 minutos)", "titulo": "IA e Indústria Criativa: Visões de Futuro para Criar, Colaborar e Escalar na Era Agêntica", "resumo": "A Inteligência Artificial está transformando a Indústria Criativa não apenas ao automatizar tarefas, mas ao modificar profundamente a forma como ideias são concebidas, desenvolvidas, produzidas e escaladas. Nesta palestra, vamos explorar cenários de futuro para a relação entre criatividade e IA, analisando como agentes inteligentes, IA generativa e novas interfaces de criação estão redefinindo profissões, modelos de negócio, produtos e experiências.\n\nA partir de exemplos e tendências, a apresentação propõe uma reflexão prática sobre o que acontece quando a tecnologia deixa de ser apenas uma ferramenta de execução e passa a atuar como parceira no processo criativo. O objetivo é discutir quais competências humanas ganham valor, quais novas oportunidades surgem e como profissionais e organizações podem se preparar para uma indústria cada vez mais colaborativa entre pessoas, modelos de IA e agentes autônomos.\n\nMais do que prever o futuro, a proposta é provocar a comunidade a pensar: o que vamos criar quando a tecnologia ampliar radicalmente nossa capacidade de imaginar, experimentar e transformar ideias em realidade?", "nivel": "Todos os níveis", "conexao": "A apresentação se conecta diretamente ao tema “Criar, proteger, escalonar: desenvolvedores e criadores na era agêntica” ao olhar para uma das transformações mais relevantes provocadas pela IA: a aproximação entre tecnologia e criatividade.\n\nO conceito de “criar” é ampliado quando agentes de IA passam a participar de processos de ideação, produção e experimentação; “escalonar” ganha uma nova dimensão quando uma ideia criativa pode ser transformada e distribuída em múltiplos formatos, produtos e experiências com o apoio de sistemas inteligentes; e “proteger” traz a discussão sobre autoria, propriedade intelectual, dados, identidade e uso responsável da IA na economia criativa.\n\nA proposta também amplia a conversa do DevFest para além da engenharia da tecnologia, conectando IA, desenvolvimento, criatividade, negócios e futuro do trabalho. A palestra pretende provocar desenvolvedores e criadores a pensar não apenas nas tecnologias que estamos construindo, mas nas novas possibilidades de criação e nos impactos que essas tecnologias produzirão na sociedade e na economia criativa.", "deck": "https://canva.link/m0jm99tu560c4ah", "tags": ["Palestra", "IA / Agentes", "Dados", "Produto", "Comunidade", "Criativo / Arte"]}, {"id": "t045", "formato": "Hands-on", "titulo": "Seu 1º RAG de Bolso: construindo com Clean Code para Agentes", "resumo": "Todo mundo já usou um chat de IA. Poucas pessoas já escreveram o mecanismo que faz esse chat responder com base nos seus documentos e menos gente ainda escreveu isso de um jeito que um agente de IA consiga continuar mantendo depois. A ideia é quem puder participar, forka um repositório-esqueleto e constrói, do zero e ao vivocomigo, um RAG) de bolso em Node.js e de tabela nos falamos de Clean Code para Agentes, inclusive abrindo práticas de engenharia validadas pela equipe de desenvolvimento da empresa que atuo.", "nivel": "Iniciante", "conexao": "Num momento em que a IA domina a conversa do mercado, a proposta é mostrar à comunidade que as boas práticas de engenharia continuam sendo o que separa uma demo bonita de um projeto que se sustenta. Por isso construímos um RAG ao vivo, do zero: quem quiser codar junto, pode codar e quem preferir acompanhar, entende exatamente como a coisa funciona por \"dentro\".", "deck": "Ainda não, mas eu envio para a organização.", "tags": ["Hands-on", "IA / Agentes", "Comunidade"]}, {"id": "t046", "formato": "Palestra (até 30 minutos)", "titulo": "Além do console.log: Telemetreia de ponta a ponta com Angular e .Net", "resumo": "Apresentação dos princiapis conceitos de telemetria, exemplos práticos de implementação com aplicação frontend Angular e backed .Net utilizando Open Telemetry e integração com ferramentas de monitoramento. Demonstração das principais vantagens e ganhos da sua utilização e boas práticas de utilização.", "nivel": "Intermediário", "conexao": "Telemetria se domentra essencial para criar, proteger e escalonar aplicações na era agêntica", "deck": "Ainda não possuo. Preciso montar :)", "tags": ["Palestra", "IA / Agentes", "Frontend"]}, {"id": "t047", "formato": "Workshop", "titulo": "Discovery de poduto de software", "resumo": "Irei mostrar como funciona o discovery de produto e como ele afeta a qualidade de soafrware", "nivel": "Iniciante", "conexao": "Se encaixa na categoria de produto de software e qualidade", "deck": "Ainda não possuo", "tags": ["Workshop", "Qualidade / Testes", "Produto"]}, {"id": "t048", "formato": "Palestra (até 30 minutos)", "titulo": "Design System + IA: construindo interfaces Flutter com precisão", "resumo": "A palestra mostra como utilizar IA como parte do processo de implementação de um Design System em Flutter, indo além da simples geração de código.\n\nA ideia é demonstrar, na prática, como fornecer à IA especificações de design, tokens, componentes e referências visuais e utilizá-la para construir componentes Flutter cada vez mais próximos do resultado esperado.\n\nAo longo da palestra, serão abordados:\n\n- Como estruturar o contexto do Design System para a IA.\n- Como transformar especificações de design em componentes Flutter.\n- Como utilizar IA para identificar diferenças entre o design e a implementação.\n- Como iterar entre design → código → resultado visual → feedback da IA.\n- Como criar componentes reutilizáveis e consistentes com o Design System.\nLimitações e cuidados ao utilizar IA nesse processo.\n\nEm resumo: uma abordagem prática de como combinar Flutter + Design System + IA para reduzir o gap entre o que foi especificado no design e o que realmente chega à aplicação.", "nivel": "Intermediário", "conexao": "Minha apresentação aborda diretamente o papel da Inteligência Artificial na transformação da forma como desenvolvemos software, conectando-se ao tema “Criar, proteger, escalonar: a era agêntica”.", "deck": "Ainda não, mas tenho materiais, o processo seria só de juntar isso e compilar num power point", "tags": ["Palestra", "IA / Agentes", "Mobile", "Arquitetura", "Dados"]}, {"id": "t049", "formato": "Palestra (até 30 minutos)", "titulo": "IA Generativa no ambiente Oracle Cloud", "resumo": "Iremos demonstrar como funciona a IA Generativa no ambiente da oracle cloud, juntamente com aplicações práticas que conseguimos utilizar no Grupo Thema|Polis", "nivel": "Iniciante", "conexao": "é voltado a IA e introduz o tema para quem tem curiosidade", "deck": "https://canva.link/ol9qzd1w620ntqg    Em caso de não conseguir visualizar, estamos a disposição via email ou whatsapp para ajuste.", "tags": ["Palestra", "IA / Agentes", "Cloud"]}, {"id": "t050", "formato": "Palestra (até 30 minutos)", "titulo": "Antes de escalar agentes: cinco decisões de arquitetura e governança que evitam a automação errada", "resumo": "Agentes de IA tornam possível automatizar processos cada vez mais complexos — mas a capacidade técnica de automatizar não responde à pergunta mais importante: o que realmente deveria ser delegado à máquina?\n\nNesta palestra, apresento um framework prático de cinco decisões que deveriam acontecer antes de escalar uma solução agêntica: qual problema estamos realmente resolvendo; qual é o custo de um erro; que nível de autonomia faz sentido; onde deve permanecer a validação humana; e que evidências precisamos obter antes de colocar a solução em produção.\n\nA partir dessas perguntas, discutiremos consequências concretas para arquitetura e engenharia: limites de autonomia, human-in-the-loop, permissões e acesso a dados, observabilidade, mecanismos de fallback, validação e accountability.\n\nA proposta não é adicionar burocracia à IA, mas mostrar como decisões melhores antes da arquitetura podem produzir sistemas mais simples, seguros e escaláveis.", "nivel": "Intermediário", "conexao": "O tema “Criar, proteger, escalonar” descreve exatamente o desafio que surge com sistemas agênticos: criar agentes ficou relativamente fácil; decidir como protegê-los e quando estão realmente prontos para escalar continua sendo difícil.\n\nA palestra conecta os três verbos. Criar, ao transformar uma necessidade de negócio em decisões arquiteturais claras. Proteger, ao definir limites de autonomia, validação humana, responsabilidade e mecanismos de segurança. Escalonar, ao estabelecer quais evidências um piloto precisa produzir antes de ganhar mais autonomia e chegar à produção.\n\nA ideia é discutir a era agêntica não apenas pela ótica do que os agentes conseguem fazer, mas pelas decisões que permitem utilizá-los com responsabilidade em sistemas reais.", "deck": "Ainda não. A apresentação será desenvolvida especificamente para o DevFest Porto Alegre 2026 a partir da proposta submetida.", "tags": ["Palestra", "IA / Agentes", "Arquitetura", "Segurança", "Dados", "Legado"]}, {"id": "t051", "formato": "Palestra (até 30 minutos)", "titulo": "DORA na Era da IA: Medindo Impacto sem Criar Métricas que Enganam", "resumo": "A adoção de IA está mudando a forma como times de engenharia desenvolvem software, mas fica a dúvida: como diferenciar ganhos reais de produtividade de uma métrica que só parece boa no papel? Nesta palestra, vamos discutir  os conceitos fundamentais de métricas de engenharia, incluindo os riscos de otimizar indicadores isolados e o chamado efeito cobra, quando uma métrica mal desenhada acaba incentivando comportamentos que pioram justamente o que ela deveria melhorar.\n\nA partir disso, vamos explorar as métricas DORA (frequência de deploy, lead time para mudanças, taxa de falha em mudanças e tempo de recuperação) como forma de avaliar fluxo, confiabilidade e capacidade de entrega. Por fim, vamos discutir como usar esses indicadores para entender, com contexto, o ROI real da IA no ciclo de desenvolvimento. Não pela contagem de linhas geradas ou tickets fechados, mas pela redução de gargalos, aumento de qualidade e melhoria sustentável na entrega de valor.", "nivel": "Iniciante", "conexao": "Minha apresentação se conecta aos três verbos do tema deste ano: criar, proteger e escalonar.\nNa era agêntica, agentes de IA já criam código e abrem pull requests dentro do próprio pipeline, o que acelera a entrega mas também multiplica o risco de escalar processos ruins junto com os bons. Sem métricas confiáveis, um time pode achar que está escalando produtividade quando, na prática, está só escalando ruído: mais commits e mais atividade de IA, sem mais valor entregue ou estabilidade.\nTimes pressionados a usar IA podem otimizar métricas superficiais e acabar protegendo menos a qualidade do que entregam. As métricas DORA funcionam como proteção nesse cenário, porque exigem que todo ganho de velocidade venha acompanhado de estabilidade. A talk propõe uma reflexão direta: se a IA cria código de forma autônoma, quem garante que isso gera ROI real e não apenas trabalho extra depois? Medir bem é, em si, uma forma de proteger o time e escalar com responsabilidade na era agêntica.", "deck": "Ainda não", "tags": ["Palestra", "IA / Agentes", "Qualidade / Testes", "Dados", "DevOps / SRE", "Bem-estar"]}, {"id": "t052", "formato": "Laboratório (Lab)", "titulo": "Confia, mas confere — o básico de segurança", "resumo": "Segurança tem fama de ser uma lista infinita de coisas para saber. Não é. Se você olhar o que realmente aparece em produção, quase tudo cai em cinco famílias — e todas respondem à mesma pergunta: em quem esse código confiou sem conferir?\n\nNeste workshop a gente percorre as cinco, uma por uma, com o código errado e o código certo lado a lado: controle de acesso quebrado (o preço que veio do navegador), falhas de criptografia (a senha em texto puro), injeção (o comentário que virou script), configuração e segredos expostos (a chave que foi parar no front) e falhas de autenticação (o crachá que ninguém conferiu). São as cinco categorias mais frequentes do OWASP Top 10, traduzidas para o dia a dia de quem escreve código.\n\nDepois vem a parte prática: um capture the flag. Se você nunca ouviu falar, é um formato de desafio em que cada vulnerabilidade encontrada revela uma flag — um código escondido que prova que você chegou lá. Em vez de ouvir sobre a falha, você explora a falha: muda o preço no carrinho, injeta o script no campo de comentário, encontra a chave que ficou no front. Os desafios seguem as mesmas cinco famílias, na mesma ordem, começando pelos mais simples. Não é competição de hacker: é a mesma aula, só que acontecendo na sua tela.\n\nVocê sai com cinco perguntas que cabem na cabeça e que dá para aplicar já na próxima revisão de código.", "nivel": "Iniciante", "conexao": "O tema tem três eixos, e o nosso workshop mora inteiro no segundo: proteger.\n\nA era agêntica não criou vulnerabilidades novas — ela industrializou as antigas. Quando o código passa a ser gerado em volume, o que sai não erra em coisa exótica: erra no básico, nas mesmas cinco famílias de sempre, só que muito mais rápido e com uma aparência muito mais convincente. A Veracode mediu isso em mais de 150 modelos: acima de 95% de corretude sintática e 55% de aprovação em segurança. Em XSS, 15%.\n\nAo mesmo tempo, o gargalo do desenvolvimento mudou de lugar. Escrever ficou barato; revisar virou o trabalho. E ninguém revisa o que não sabe procurar. Some a isso o fato de que a era agêntica trouxe muita gente nova construindo software — os \"criadores\" do tema — que nunca passou por nenhuma formação em segurança.\n\nÉ por isso que, para nós, um workshop de introdução a segurança é um assunto de era agêntica. O básico deixou de ser conteúdo de iniciante e virou pré-requisito para trabalhar com agentes. E é o tipo de conhecimento que escala num time: cinco perguntas que qualquer pessoa aplica em qualquer PR, tenha ele sido escrito por humano ou não.", "deck": "estamos desenvolvendo os slides e ja temos um piloto do Capture The Flag\n\nCTF: \nhttps://security-app-devfest-2026.vercel.app/\n\nSlide:  \nhttps://docs.google.com/presentation/d/1MmoB0MFr6gDgb5sg39IZ1WGaGc5RAgX3/edit?slide=id.p2#slide=id.p2", "tags": ["Laboratório", "IA / Agentes", "Segurança"]}, {"id": "t053", "formato": "Palestra (até 30 minutos)", "titulo": "Do incidente à engenharia: como IA, testes e regras de negócio podem tornar sistemas legados mais confiáveis", "resumo": "Sistemas legados sustentam processos críticos de muitas organizações, mas frequentemente acumulam regras de negócio distribuídas entre interface, código, banco de dados e configurações construídas ao longo de anos. Nesse cenário, uma alteração aparentemente localizada pode produzir efeitos inesperados em fluxos que já funcionavam.\nEsta palestra apresenta, de forma totalmente anonimizada, a experiência prática de investigação de uma regressão em um sistema corporativo legado baseado em .NET. Uma melhoria em um fluxo de aprovação expôs fragilidades relacionadas à seleção de atividades, permissões, atribuição de responsáveis e regras de workflow distribuídas por diferentes camadas da aplicação.\nEm vez de tratar cada novo sintoma como um bug isolado, o trabalho evoluiu para uma iniciativa de estabilização: reconstrução das regras de negócio junto aos usuários, investigação baseada em evidências, comparação entre ambientes, testes de retrocompatibilidade, identificação de pontos de alto acoplamento e planejamento de uma refatoração incremental.\nA experiência também trouxe uma segunda lição: IA acelera investigação e análise, mas respostas plausíveis não são evidências. Em sistemas críticos, sugestões produzidas por IA precisam ser confrontadas com código, banco, configuração, comportamento observado e conhecimento do negócio.\nA palestra mostra como transformar essa combinação entre conhecimento humano, IA e práticas de engenharia em um processo mais seguro para manter e modernizar sistemas legados.", "nivel": "Todos os níveis", "conexao": "A apresentação se conecta ao tema ao mostrar, a partir de uma experiência real de manutenção de um sistema legado, como IA pode apoiar o trabalho de engenharia sem substituir análise técnica, testes e conhecimento do negócio. A partir de incidentes em um fluxo crítico, foi necessário investigar código legado, entender regras que não estavam documentadas, trabalhar em conjunto com o time de negócio, preservar retrocompatibilidade e criar uma estratégia para tornar o sistema mais testável e sustentável. A proposta é compartilhar tanto os ganhos quanto os riscos do uso de IA nesse processo, principalmente quando uma sugestão parece correta tecnicamente, mas ainda precisa ser comprovada no contexto real do sistema. O foco é mostrar como combinar IA, engenharia de software e conhecimento humano para evoluir sistemas com mais segurança e menos regressões.", "deck": "Ainda não. A proposta nasceu de uma experiência que estou vivendo neste momento com a evolução de um sistema legado. Estou trabalhando na segunda etapa desse trabalho, com entrega prevista para o final de agosto, e os desafios que surgiram ao longo do processo mostraram que havia uma história maior para compartilhar: não apenas sobre corrigir erros, mas sobre entender um sistema legado, recuperar conhecimento sobre suas regras de negócio, trabalhar em conjunto com o time de negócio e evoluir o código com segurança, buscando estabilidade e retrocompatibilidade. Como essa experiência ainda está em andamento, pretendo montar a apresentação visual após concluir essa etapa e consolidar os principais aprendizados, tanto técnicos quanto interpessoais.", "tags": ["Palestra", "IA / Agentes", "Liderança / Gestão", "Segurança", "Qualidade / Testes", "Dados"]}, {"id": "t054", "formato": "Palestra (até 30 minutos)", "titulo": "AI Agentcs: SDD - Spec Driven Development no SLDC - Ciclo de desenvolvimento de software e Graph Engennier", "resumo": "Este relato de experiência apresenta o case real de modernização de APIs legadas para uma arquitetura moderna e segura. O grande diferencial do projeto foi a aplicação prática de Spec-Driven Development (SDD) orquestrada via Cursor e agentes de Inteligência Artificial com Loop engineering, transformando o ciclo de vida de desenvolvimento (SDLC).\nA abordagem utilizou uma estrutura de \"Harness Engineering\", uma camada de fundação que garante a confiabilidade dos artefatos gerados por IA por meio de guardrails rígidos, contratos claros e revisão humana ativa (Human-in-the-Loop). O fluxo cobriu desde a sanitização do legado e engenharia reversa automatizada até a geração de PRDs (Product Requirement Documents), especificações técnicas e tarefas de código testáveis e métricas.\nE de brinde um estudo e POC de graph Engennier para o mesmo case", "nivel": "Intermediário", "conexao": "Construir novas ideias, produtos, experiências e soluções — com IA como parceira de trabalho, não substituta e Escalonar\nLevar soluções para mais pessoas, mais times e mais negócios — sem perder qualidade pelo caminho.", "deck": "https://drive.google.com/file/d/1mIk-uI1ZBwdklI3WNY3c-JTgG9kt633N/view?usp=sharing", "tags": ["Palestra", "IA / Agentes", "Arquitetura", "Qualidade / Testes", "Produto", "Legado"]}, {"id": "t055", "formato": "Palestra (até 30 minutos)", "titulo": "Build. Scale. Breathe. — Performance sustentável para quem vive de tecnologia.", "resumo": "Em tecnologia, estamos acostumados a pensar em performance, escala, velocidade e evolução constante. Mas existe uma pergunta que raramente fazemos: a forma como estamos construindo nossas carreiras hoje é sustentável no longo prazo?\n\nA apresentação propõe uma reflexão prática sobre saúde mental, bem-estar e sustentabilidade na carreira em tecnologia, explorando como alta demanda, necessidade constante de atualização, autonomia, autocobrança e aceleração do trabalho podem impactar nossa relação com a carreira.\n\nA partir de conceitos da Psicologia Positiva e da Psicologia do Trabalho, como equilíbrio entre demandas e recursos e job crafting — o redesenho ativo do próprio trabalho —, vamos discutir caminhos para construir uma relação mais sustentável com performance, desenvolvimento e crescimento profissional.\n\nA palestra começa com uma breve experiência de respiração e uma pergunta reflexiva ao público, criando um momento de pausa antes de discutir justamente um dos grandes desafios do nosso tempo: como continuar crescendo sem transformar nosso bem-estar no custo da nossa performance?", "nivel": "Todos os níveis", "conexao": "Na era agêntica, estamos aprendendo rapidamente a usar inteligência artificial, automação e agentes para aumentar nossa capacidade de criar, produzir e escalar.\n\nMas, enquanto escalamos a tecnologia, também precisamos discutir como tornar sustentável o trabalho de quem constrói essas soluções.\n\nA IA pode reduzir o tempo necessário para determinadas tarefas, ampliar nossa produtividade e transformar a forma como trabalhamos. Ao mesmo tempo, essa aceleração pode trazer novas expectativas de performance, atualização constante e maior carga cognitiva.\n\nA proposta se conecta ao tema do DevFest justamente ao trazer uma perspectiva humana para essa transformação: não basta pensar em como criar e escalar mais; precisamos pensar em como construir carreiras capazes de acompanhar essa evolução de forma saudável e sustentável.", "deck": "A apresentação está em fase de estruturação e será desenvolvida especialmente para o DevFest Porto Alegre 2026, mas tenho um preview visual da apresentação, com a proposta de narrativa, identidade e alguns dos principais slides estruturados.\nhttps://splendorous-sunflower-7b11ad.netlify.app", "tags": ["Palestra", "IA / Agentes", "Carreira", "Bem-estar"]}, {"id": "t056", "formato": "Palestra (até 30 minutos)", "titulo": "O caminho curto que a gente descobriu do jeito longo - IA no desenvolvimento mobile: por onde começar e o que evitar", "resumo": "A ideia é falarmos sobre como está sendo nossa trajetória estando imersas no mundo de ia com o desenvolvimento mobile. Queremos levar nossa experiência, a diferença de como era o desenvolvimento antes/agora com I.A., os gaps que encontramos no meio do caminho, e abordar alguns tópicos como skills, MCPs, o que fazer e não fazer ao utilizar a I.A…", "nivel": "Todos os níveis", "conexao": "O DevFest é feito pela comunidade, e a nossa ideia é exatamente compartilhar conhecimento para ajudar a galera. Queremos mostrar nossos acertos e tropeços usando o Claude, para que outros devs daqui não precisem “bater cabeça” com as mesmas coisas. É uma palestra sem filtro, 100% focada no dia a dia, para ajudar quem quer começar a usar IA no mobile de um jeito que realmente funcione.", "deck": "Ainda não temos a apresentação visual. Mas estamos trabalhando em um roteiro", "tags": ["Palestra", "IA / Agentes", "Mobile", "Carreira", "Comunidade"]}, {"id": "t057", "formato": "Palestra (até 30 minutos)", "titulo": "Jornada na carreira como dev", "resumo": "Trazer pontos que ajudam a alavancar na carreira, desde o ínicio dela até como crescer e se desenvolver. Explicando o dia a dia, formas de estudo e de que forma podemos nos destacar agora que temos a IA em jogo.", "nivel": "Iniciante", "conexao": "Traz pontos além do código, como carreira, desenvolvimento pessoal, soft skills e integra com a IA, formas diferentes de se destacar agora com o uso dela.", "deck": "Tenho uma antiga mas precisarei reestruturar para ficar coerente com as mudanças. Então não tenho ainda :/", "tags": ["Palestra", "IA / Agentes", "Carreira"]}, {"id": "t058", "formato": "Workshop", "titulo": "Frontend e IA: De que forma precisamos trabalhar agora", "resumo": "Conversar sobre que rumo a carreira de frontend tomou com a IA, de que forma devemos trabalhar agora para continuarmos relevantes no mercado. Uso do claude Code para criação de componentes e entendimento de produto", "nivel": "Todos os níveis", "conexao": "Demonstra a transformação na área de frontend com a era da IA, unindo UX, Design de Produto e boas práticas com as ferramentas para cumprir esse propósito.", "deck": "Ainda não tenho", "tags": ["Workshop", "IA / Agentes", "Carreira", "Frontend", "Produto"]}, {"id": "t059", "formato": "Palestra (até 30 minutos)", "titulo": "IA confiável não nasce no prompt: qualidade, testes e guardrails em produtos com LLM", "resumo": "Quando uma IA entra em produção, ela deixa de ser apenas uma feature inteligente e passa a ser uma dependência crítica, capaz de falhar de maneiras novas e difíceis de prever. Nesta palestra,  quero  discutir como aplicar princípios de engenharia de qualidade a produtos com LLM: definir critérios de aceite para respostas, criar avaliações e testes de regressão, implementar guardrails de entrada e saída, tratar falhas e acompanhar o comportamento do sistema com observabilidade. A partir de exemplos práticos, a proposta mostra como sair da lógica de confiar apenas no prompt e construir experiências de IA mais seguras, consistentes e evolutivas.", "nivel": "Iniciante", "conexao": "A palestra conecta criação, proteção e escala na era agêntica ao mostrar que produtos baseados em LLM precisam ser construídos como sistemas confiáveis: com qualidade desde o desenho, guardrails para proteger pessoas e negócio, e testes e observabilidade para evoluir com segurança em produção.", "deck": "Ainda não tenho a apresentação visual montada. Ela está em preparação e será compartilhada caso a proposta seja selecionada.", "tags": ["Palestra", "IA / Agentes", "Segurança", "Qualidade / Testes", "Produto"]}, {"id": "t060", "formato": "Palestra (até 30 minutos)", "titulo": "Code Is Cheap. Clarity Is Not", "resumo": "A IA tornou a implementação de software mais rápida e acessível, mas não eliminou um dos principais desafios da engenharia: transformar problemas de produto em software bem especificado, arquitetado e validável.\n\nNesta palestra, vou apresentar um workflow que venho utilizando no meu próprio processo de engenharia na Curebase e nos meus projetos pessoais, percorrendo discovery, especificação, planejamento técnico, implementação e validação. A partir dessa experiência, vou mostrar como requisitos, critérios de aceitação, contratos, decisões arquiteturais e testes podem criar o contexto necessário para uma execução mais eficiente, inclusive com o apoio de agentes de IA.\n\nMais do que uma técnica de prompting ou uma ferramenta específica, a proposta é conhecer um framework prático para estruturar o processo de engenharia e aproveitar a velocidade da IA sem comprometer clareza, qualidade, entrega de valor e iterações ágeis.", "nivel": "Todos os níveis", "conexao": "A apresentação se conecta ao tema ao explorar agentes de IA e processos aplicados no dia a dia. A partir do framework que venho utilizando, mostro como discovery, especificação, planejamento, execução e validação podem estruturar o trabalho com agentes, aumentando a velocidade de desenvolvimento sem perder clareza, qualidade e foco na entrega de valor.", "deck": "Ainda não, mas em breve compartilho. :)", "tags": ["Palestra", "IA / Agentes", "Arquitetura", "Qualidade / Testes", "Produto"]}]
+;
+
+/* ---------------- storage helpers ---------------- */
+async function sGet(key, shared){
+  try{ const r = await window.storage.get(key, !!shared); return r ? r.value : null; }
+  catch(e){ return null; }
+}
+async function sSet(key, value, shared){
+  try{ await window.storage.set(key, value, !!shared); return true; }
+  catch(e){ console.error('storage set failed', e); return false; }
+}
+async function sList(prefix, shared){
+  try{ const r = await window.storage.list(prefix, !!shared); return r ? r.keys : []; }
+  catch(e){ return []; }
+}
+
+/* ---------------- state ---------------- */
+let voterId = null;      // sanitized id used in shared storage key
+let voterName = null;    // display name
+let order = [];          // array of talk ids in the order this voter sees them
+let votes = {};          // talkId -> {nota, desempate}
+let cursor = 0;           // index into order
+let view = 'loading';     // loading | landing | voting | done | results
+
+const TAG_PALETTE = {
+  'IA / Agentes':      {c:'#5EEAD4', bg:'rgba(94,234,212,0.12)'},
+  'Segurança':         {c:'#FFB454', bg:'rgba(255,180,84,0.12)'},
+  'Arquitetura':       {c:'#A78BFA', bg:'rgba(167,139,250,0.12)'},
+  'Mobile':            {c:'#7DD3FC', bg:'rgba(125,211,252,0.12)'},
+  'Dados':             {c:'#FDE68A', bg:'rgba(253,230,138,0.12)'},
+  'Liderança / Gestão':{c:'#F0ABFC', bg:'rgba(240,171,252,0.12)'},
+  'Carreira':          {c:'#FCA5A5', bg:'rgba(252,165,165,0.12)'},
+  'Qualidade / Testes':{c:'#86EFAC', bg:'rgba(134,239,172,0.12)'},
+  'Produto':           {c:'#93C5FD', bg:'rgba(147,197,253,0.12)'},
+  'DevOps / SRE':      {c:'#FDBA74', bg:'rgba(253,186,116,0.12)'},
+  'Frontend':          {c:'#67E8F9', bg:'rgba(103,232,249,0.12)'},
+  'Cloud':             {c:'#C4B5FD', bg:'rgba(196,181,253,0.12)'},
+  'Bem-estar':         {c:'#F9A8D4', bg:'rgba(249,168,212,0.12)'},
+  'Diversidade':       {c:'#F9A8D4', bg:'rgba(249,168,212,0.12)'},
+  'Comunidade':        {c:'#A5B4FC', bg:'rgba(165,180,252,0.12)'},
+  'Legado':            {c:'#D6D3D1', bg:'rgba(214,211,209,0.10)'},
+  'Criativo / Arte':   {c:'#FDA4AF', bg:'rgba(253,164,175,0.12)'},
+  'Palestra':          {c:'#9AA3B2', bg:'rgba(154,163,178,0.08)'},
+  'Workshop':          {c:'#9AA3B2', bg:'rgba(154,163,178,0.08)'},
+  'Hands-on':          {c:'#9AA3B2', bg:'rgba(154,163,178,0.08)'},
+  'Laboratório':       {c:'#9AA3B2', bg:'rgba(154,163,178,0.08)'},
+};
+function tagStyle(tag){
+  const p = TAG_PALETTE[tag] || {c:'#9AA3B2', bg:'rgba(154,163,178,0.08)'};
+  return `color:${p.c}; background:${p.bg}; border-color:${p.c}22;`;
+}
+
+function slug(s){
+  return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+}
+function shuffle(arr, seed){
+  // simple seeded shuffle so it's stable per voter
+  let a = arr.slice();
+  let s = seed;
+  function rnd(){ s = (s * 9301 + 49297) % 233280; return s / 233280; }
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(rnd()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+function seedFromString(str){
+  let h = 0;
+  for(let i=0;i<str.length;i++){ h = (h*31 + str.charCodeAt(i)) >>> 0; }
+  return h % 100000 + 1;
+}
+
+/* ---------------- init ---------------- */
+async function init(){
+  const savedId = await sGet('device-voter-id', false);
+  if(savedId){
+    voterId = savedId;
+    const parsed = await backendGetVoter(voterId);
+    if(parsed){
+      voterName = parsed.name;
+      order = parsed.order;
+      votes = parsed.votes || {};
+      cursor = firstUnanswered();
+      view = 'voting';
+      render();
+      return;
+    }
+  }
+  view = 'landing';
+  render();
+}
+
+function firstUnanswered(){
+  for(let i=0;i<order.length;i++){
+    if(!votes[order[i]]) return i;
+  }
+  return order.length; // all answered -> done
+}
+
+async function startSession(name){
+  voterName = name.trim();
+  const base = slug(voterName) || 'anon';
+  voterId = base + '-' + Math.random().toString(36).slice(2,7);
+  await sSet('device-voter-id', voterId, false);
+  order = shuffle(TALKS.map(t=>t.id), seedFromString(voterId));
+  votes = {};
+  cursor = 0;
+  await persist();
+  view = 'voting';
+  render();
+}
+
+async function persist(){
+  await backendSaveVoter(voterId, {name:voterName, order, votes});
+}
+
+async function castVote(talkId, nota, desempate){
+  votes[talkId] = {nota, desempate};
+  await persist();
+}
+
+/* ---------------- render ---------------- */
+function render(){
+  const stage = document.getElementById('stage');
+  const topRight = document.getElementById('topbarRight');
+  const navSlot = document.getElementById('bottomNavSlot');
+  const progressFill = document.getElementById('progressFill');
+
+  topRight.innerHTML = '';
+  navSlot.innerHTML = '';
+  progressFill.style.width = '0%';
+
+  if(view === 'loading'){
+    stage.innerHTML = `<div class="loading-dots">Carregando…</div>`;
+    return;
+  }
+
+  if(view === 'landing'){
+    renderLanding(stage);
+    return;
+  }
+
+  // voter chip + results link available in voting/done/results
+  const backendChip = document.createElement('div');
+  backendChip.className = 'voter-chip backend-chip ' + (firebaseReady ? 'ok' : 'warn');
+  backendChip.textContent = firebaseReady ? '● Firebase' : '● local';
+  backendChip.title = firebaseReady
+    ? 'Votos salvos em nuvem (Firestore)'
+    : 'Firebase não configurado — votos salvos só no armazenamento local deste artifact';
+  topRight.appendChild(backendChip);
+
+  const chip = document.createElement('div');
+  chip.className = 'voter-chip';
+  chip.textContent = voterName ? ('Votando como ' + voterName) : '';
+  if(voterName) topRight.appendChild(chip);
+
+  const resultsBtn = document.createElement('button');
+  resultsBtn.className = 'link-btn';
+  resultsBtn.textContent = view === 'results' ? '← Voltar a votar' : 'Ver resultados';
+  resultsBtn.onclick = () => { view = (view === 'results') ? (cursor>=order.length ? 'done':'voting') : 'results'; render(); };
+  topRight.appendChild(resultsBtn);
+
+  if(view === 'voting'){
+    const answered = Object.keys(votes).length;
+    progressFill.style.width = (answered/order.length*100) + '%';
+    renderVoting(stage, navSlot);
+    return;
+  }
+
+  if(view === 'done'){
+    progressFill.style.width = '100%';
+    renderDone(stage);
+    return;
+  }
+
+  if(view === 'results'){
+    renderResults(stage);
+    return;
+  }
+}
+
+function renderLanding(stage){
+  stage.innerHTML = `
+    <div class="landing">
+      <div class="theme-line">
+        <span class="theme-word c">Criar</span>·
+        <span class="theme-word p">proteger</span>·
+        <span class="theme-word s">escalonar</span>
+      </div>
+      <h1>Avalie as propostas sem saber quem palestra.</h1>
+      <p class="desc">${TALKS.length} propostas de conteúdo para o DevFest Porto Alegre 2026. Cada uma recebe uma nota padrão (1–5) e uma nota de desempate (0–2). A ordem é embaralhada e nenhum nome de autor é exibido.</p>
+      <div class="landing-form">
+        <input id="nameInput" type="text" placeholder="Seu nome ou apelido" maxlength="40" autocomplete="off">
+        <button class="primary-btn" id="startBtn">Começar votação</button>
+      </div>
+      <div class="landing-meta">devfestportoalegre.com.br</div>
+    </div>
+  `;
+  const input = document.getElementById('nameInput');
+  const btn = document.getElementById('startBtn');
+  input.addEventListener('keydown', e => { if(e.key === 'Enter') tryStart(); });
+  btn.addEventListener('click', tryStart);
+  function tryStart(){
+    const v = input.value.trim();
+    if(!v){ input.focus(); input.style.borderColor = 'var(--danger)'; return; }
+    startSession(v);
+  }
+  setTimeout(()=>input.focus(), 50);
+}
+
+function renderVoting(stage, navSlot){
+  if(cursor >= order.length){
+    view = 'done';
+    render();
+    return;
+  }
+  const talkId = order[cursor];
+  const talk = TALKS.find(t => t.id === talkId);
+  const existing = votes[talkId] || {nota:null, desempate:null};
+
+  const tagsHtml = talk.tags.map(tag => `<span class="tag" style="${tagStyle(tag)}">${tag}</span>`).join('');
+  const deckHtml = (talk.deck && talk.deck.match(/https?:\/\//))
+    ? `<a class="deck-link" href="${talk.deck.match(/https?:\/\/\S+/)[0]}" target="_blank" rel="noopener">Ver material de apoio ↗</a>`
+    : `<div class="no-deck">Sem material de apoio enviado ainda.</div>`;
+
+  stage.innerHTML = `
+    <div class="card">
+      <div class="card-meta">
+        <span class="meta-pill">${talk.formato}</span>
+        <span class="meta-pill level">${talk.nivel}</span>
+        <span class="card-index">${cursor+1} / ${order.length}</span>
+      </div>
+      <h2>${talk.titulo}</h2>
+      <div class="tags">${tagsHtml}</div>
+
+      <div class="section-label">Resumo</div>
+      <p class="body-text">${talk.resumo}</p>
+
+      <div class="section-label">Conexão com o tema</div>
+      <p class="conexao">${talk.conexao}</p>
+
+      ${deckHtml}
+
+      <div class="vote-block">
+        <div class="vote-row">
+          <div class="vote-title">
+            <span class="label">Nota (obrigatória)</span>
+            <span class="hint">1 = fraco · 5 = excelente</span>
+          </div>
+          <div class="btn-row" id="notaRow">
+            ${[1,2,3,4,5].map(n => `<button class="score-btn ${existing.nota===n?'selected-nota':''}" data-nota="${n}">${n}</button>`).join('')}
+          </div>
+        </div>
+        <div class="vote-row">
+          <div class="vote-title">
+            <span class="label">Critério de desempate</span>
+            <span class="hint">0 a 2</span>
+          </div>
+          <div class="btn-row" id="desempateRow">
+            ${[0,1,2].map(n => `<button class="score-btn ${existing.desempate===n?'selected-desempate':''}" data-desempate="${n}">${n}</button>`).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  let selNota = existing.nota;
+  let selDesempate = existing.desempate;
+
+  const notaBtns = [...document.querySelectorAll('#notaRow .score-btn')];
+  const desBtns = [...document.querySelectorAll('#desempateRow .score-btn')];
+
+  notaBtns.forEach(b => b.addEventListener('click', () => {
+    selNota = parseInt(b.dataset.nota, 10);
+    notaBtns.forEach(x => x.classList.remove('selected-nota'));
+    b.classList.add('selected-nota');
+    maybeAdvance();
+  }));
+  desBtns.forEach(b => b.addEventListener('click', () => {
+    selDesempate = parseInt(b.dataset.desempate, 10);
+    desBtns.forEach(x => x.classList.remove('selected-desempate'));
+    b.classList.add('selected-desempate');
+    maybeAdvance();
+  }));
+
+  let advanceTimer = null;
+  async function maybeAdvance(){
+    if(selNota === null || selDesempate === null) return;
+    await castVote(talkId, selNota, selDesempate);
+    updateNavStatus();
+    updateProgress();
+    clearTimeout(advanceTimer);
+    advanceTimer = setTimeout(() => {
+      if(cursor < order.length - 1){ cursor++; render(); }
+      else { view = 'done'; render(); }
+    }, 380);
+  }
+
+  function updateProgress(){
+    const answered = Object.keys(votes).length;
+    document.getElementById('progressFill').style.width = (answered/order.length*100) + '%';
+  }
+
+  renderVotingNav(navSlot);
+
+  // keyboard: 1-5 for nota
+  const keyHandler = (e) => {
+    if(document.activeElement && document.activeElement.tagName === 'INPUT') return;
+    if(['1','2','3','4','5'].includes(e.key)){
+      const n = parseInt(e.key,10);
+      selNota = n;
+      notaBtns.forEach(x => x.classList.remove('selected-nota'));
+      const target = notaBtns.find(b => parseInt(b.dataset.nota,10) === n);
+      if(target) target.classList.add('selected-nota');
+      maybeAdvance();
+    } else if(e.key === 'ArrowRight'){ goNext(); }
+    else if(e.key === 'ArrowLeft'){ goPrev(); }
+  };
+  document.addEventListener('keydown', keyHandler, {once:false});
+  // clean up on next render to avoid stacking listeners
+  stage._cleanup && stage._cleanup();
+  stage._cleanup = () => document.removeEventListener('keydown', keyHandler);
+}
+
+function renderVotingNav(navSlot){
+  navSlot.innerHTML = `
+    <div class="bottom-nav">
+      <button class="nav-btn" id="prevBtn">← Anterior</button>
+      <span class="nav-status" id="navStatus"></span>
+      <button class="nav-btn primary" id="nextBtn">Próxima →</button>
+    </div>
+  `;
+  document.getElementById('prevBtn').onclick = goPrev;
+  document.getElementById('nextBtn').onclick = goNext;
+  document.getElementById('prevBtn').disabled = cursor === 0;
+  updateNavStatus();
+}
+function updateNavStatus(){
+  const el = document.getElementById('navStatus');
+  if(!el) return;
+  const answered = Object.keys(votes).length;
+  el.textContent = answered + ' / ' + order.length + ' votadas';
+}
+function goPrev(){ if(cursor>0){ cursor--; render(); } }
+function goNext(){
+  const talkId = order[cursor];
+  if(cursor < order.length - 1){ cursor++; render(); }
+  else if(votes[talkId]){ view = 'done'; render(); }
+}
+
+function renderDone(stage){
+  const answered = Object.keys(votes).length;
+  const pending = order.filter(id => !votes[id]);
+  stage.innerHTML = `
+    <div class="done">
+      <div class="theme-line">
+        <span class="theme-word c">Criar</span>·
+        <span class="theme-word p">proteger</span>·
+        <span class="theme-word s">escalonar</span>
+      </div>
+      <div class="big">${pending.length===0 ? 'Você votou em todas as propostas 🎉' : 'Quase lá'}</div>
+      <p>${pending.length===0
+        ? (answered + ' propostas avaliadas por ' + voterName + '. Obrigado pela votação.')
+        : (pending.length + ' proposta(s) ainda sem nota.')}</p>
+      <div class="done-actions">
+        ${pending.length>0 ? `<button class="primary-btn" id="continueBtn">Continuar votando</button>` : ''}
+        <button class="nav-btn" id="reviewBtn">Revisar minhas notas</button>
+      </div>
+      <div class="jump-panel">
+        <div class="section-label">Todas as propostas</div>
+        <div class="jump-grid" id="jumpGrid"></div>
+      </div>
+    </div>
+  `;
+  const grid = document.getElementById('jumpGrid');
+  order.forEach((id, i) => {
+    const cell = document.createElement('div');
+    cell.className = 'jump-cell' + (votes[id] ? ' answered' : '');
+    cell.textContent = i+1;
+    cell.title = TALKS.find(t=>t.id===id).titulo;
+    cell.onclick = () => { cursor = i; view = 'voting'; render(); };
+    grid.appendChild(cell);
+  });
+  const cBtn = document.getElementById('continueBtn');
+  if(cBtn) cBtn.onclick = () => { cursor = firstUnanswered(); view='voting'; render(); };
+  document.getElementById('reviewBtn').onclick = () => { cursor = 0; view='voting'; render(); };
+}
+
+/* ---------------- results (aggregated across all voters) ---------------- */
+async function renderResults(stage){
+  stage.innerHTML = `<div class="loading-dots">Somando votos de todo mundo…</div>`;
+  const allVoters = await backendGetAllVoters();
+  const totals = {}; // talkId -> {sumNota, sumDesempate, count}
+  TALKS.forEach(t => totals[t.id] = {sumNota:0, sumDesempate:0, count:0});
+
+  let voterCount = 0;
+  const rawVoterData = []; // {name, votes} for full backup export
+  for(const parsed of allVoters){
+    if(!parsed || !parsed.votes) continue;
+    voterCount++;
+    rawVoterData.push({name: parsed.name || '(sem nome)', votes: parsed.votes});
+    for(const [talkId, v] of Object.entries(parsed.votes)){
+      if(!totals[talkId]) continue;
+      totals[talkId].sumNota += v.nota;
+      totals[talkId].sumDesempate += v.desempate;
+      totals[talkId].count += 1;
+    }
+  }
+
+  const rows = TALKS.map(t => {
+    const tt = totals[t.id];
+    const avgNota = tt.count ? tt.sumNota / tt.count : null;
+    const avgDes = tt.count ? tt.sumDesempate / tt.count : null;
+    return {talk:t, avgNota, avgDes, count:tt.count};
+  }).sort((a,b) => {
+    if(a.avgNota === null && b.avgNota === null) return 0;
+    if(a.avgNota === null) return 1;
+    if(b.avgNota === null) return -1;
+    if(b.avgNota !== a.avgNota) return b.avgNota - a.avgNota;
+    return (b.avgDes||0) - (a.avgDes||0);
+  });
+
+  if(voterCount === 0){
+    stage.innerHTML = `<div class="empty-state">Ainda não há votos registrados por ninguém neste dispositivo compartilhado.<br>Assim que a equipe começar a votar, o ranking aparece aqui.</div>`;
+    return;
+  }
+
+  window._lastResultsRows = rows;
+  window._lastVoterCount = voterCount;
+  window._lastRawVoterData = rawVoterData;
+
+  stage.innerHTML = `
+    <div class="results-wrap">
+      <div class="results-header">
+        <h2>Ranking geral</h2>
+        <p>${voterCount} pessoa(s) votando · média da nota (1–5) e do desempate (0–2) · ordenado do maior para o menor</p>
+        <div class="backup-actions">
+          <button class="link-btn" id="exportCsvBtn">↓ Baixar ranking (CSV)</button>
+          <button class="link-btn" id="exportJsonBtn">↓ Baixar backup completo (JSON)</button>
+        </div>
+      </div>
+      <table class="results-table">
+        <thead>
+          <tr><th>#</th><th>Proposta</th><th>Formato</th><th>Nota média</th><th>Desempate médio</th><th>Votos</th></tr>
+        </thead>
+        <tbody>
+          ${rows.map((r,i) => `
+            <tr>
+              <td class="rank-num">${i+1}</td>
+              <td>
+                <div class="ttitle">${r.talk.titulo}</div>
+                <div class="small-dim">${r.talk.tags.slice(0,3).join(' · ')}</div>
+              </td>
+              <td class="small-dim">${r.talk.formato}</td>
+              <td class="score-num">${r.avgNota!==null ? r.avgNota.toFixed(2) : '—'}</td>
+              <td class="score-num tie">${r.avgDes!==null ? r.avgDes.toFixed(2) : '—'}</td>
+              <td class="small-dim">${r.count}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  document.getElementById('exportCsvBtn').onclick = () => exportRankingCsv(rows, voterCount);
+  document.getElementById('exportJsonBtn').onclick = () => exportFullBackupJson(rows, rawVoterData, voterCount);
+}
+
+function csvEscape(v){
+  const s = String(v == null ? '' : v);
+  if(/[",\n;]/.test(s)) return '"' + s.replace(/"/g,'""') + '"';
+  return s;
+}
+function triggerDownload(filename, mime, content){
+  const blob = new Blob([content], {type: mime});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+function timestamp(){
+  const d = new Date();
+  const p = n => String(n).padStart(2,'0');
+  return `${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}`;
+}
+function exportRankingCsv(rows, voterCount){
+  const header = ['posicao','titulo','formato','nivel','tags','nota_media','desempate_media','qtd_votos'];
+  const lines = [header.join(';')];
+  rows.forEach((r, i) => {
+    lines.push([
+      i+1,
+      csvEscape(r.talk.titulo),
+      csvEscape(r.talk.formato),
+      csvEscape(r.talk.nivel),
+      csvEscape(r.talk.tags.join(', ')),
+      r.avgNota!==null ? r.avgNota.toFixed(2) : '',
+      r.avgDes!==null ? r.avgDes.toFixed(2) : '',
+      r.count
+    ].join(';'));
+  });
+  const csv = '\ufeff' + lines.join('\n'); // BOM for Excel accents
+  triggerDownload(`devfest-poa-2026-ranking-${timestamp()}.csv`, 'text/csv;charset=utf-8', csv);
+}
+function exportFullBackupJson(rows, rawVoterData, voterCount){
+  const payload = {
+    exportado_em: new Date().toISOString(),
+    evento: 'DevFest Porto Alegre 2026',
+    total_propostas: TALKS.length,
+    total_votantes: voterCount,
+    ranking: rows.map((r,i) => ({
+      posicao: i+1,
+      id: r.talk.id,
+      titulo: r.talk.titulo,
+      formato: r.talk.formato,
+      nivel: r.talk.nivel,
+      tags: r.talk.tags,
+      nota_media: r.avgNota,
+      desempate_media: r.avgDes,
+      qtd_votos: r.count
+    })),
+    votos_brutos_por_pessoa: rawVoterData,
+    propostas: TALKS
+  };
+  triggerDownload(`devfest-poa-2026-backup-${timestamp()}.json`, 'application/json;charset=utf-8', JSON.stringify(payload, null, 2));
+}
+
+init();
+</script>
+</body>
+</html>
