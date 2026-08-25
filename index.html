@@ -452,7 +452,51 @@ main{
 .results-header{margin-bottom:20px;}
 .results-header h2{font-family:var(--font-display); font-size:24px; margin-bottom:6px;}
 .results-header p{color:var(--text-dim); font-size:13px;}
-.backup-actions{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap;}
+.backup-actions{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; margin-bottom:16px;}
+
+.admin-tabs{display:flex; gap:8px; margin-top:18px;}
+.tab-btn{
+  font-family:var(--font-mono);
+  font-size:12px;
+  background:none;
+  border:1px solid var(--border);
+  color:var(--text-dim);
+  padding:8px 14px;
+  border-radius:100px;
+  cursor:pointer;
+  transition:all .12s ease;
+}
+.tab-btn:hover{border-color:var(--text-dim); color:var(--text);}
+.tab-btn.active{background:var(--text); color:var(--bg); border-color:var(--text);}
+
+.status-complete{
+  font-family:var(--font-mono);
+  font-size:11px;
+  color:var(--create);
+  background:rgba(94,234,212,0.12);
+  padding:3px 9px;
+  border-radius:100px;
+}
+.status-pending{
+  font-family:var(--font-mono);
+  font-size:11px;
+  color:var(--protect);
+  background:rgba(255,180,84,0.12);
+  padding:3px 9px;
+  border-radius:100px;
+}
+.progress-mini-track{
+  width:120px;
+  height:6px;
+  border-radius:100px;
+  background:var(--border);
+  overflow:hidden;
+}
+.progress-mini-fill{
+  height:100%;
+  border-radius:100px;
+  transition:width .3s ease;
+}
 .results-table{
   width:100%;
   border-collapse:collapse;
@@ -1052,6 +1096,8 @@ function renderLocked(stage){
 }
 
 /* ---------------- results (aggregated across all voters) ---------------- */
+let adminTab = 'ranking'; // ranking | progress
+
 async function renderResults(stage){
   if(!isAdminEmail(voterEmail)){
     view = (order.length && cursor < order.length) ? 'voting' : 'locked';
@@ -1065,9 +1111,15 @@ async function renderResults(stage){
 
   let voterCount = 0;
   const rawVoterData = []; // {email, votes} for full backup export
+  const progressList = []; // {email, answered, total, complete}
   for(const parsed of allVoters){
-    if(!parsed || !parsed.votes) continue;
-    if(isAdminEmail(parsed.email)) continue; // votos de e-mails admin não entram no ranking
+    if(!parsed) continue;
+    if(isAdminEmail(parsed.email)) continue; // e-mails admin não entram no ranking nem na lista de votantes
+    const total = (parsed.order && parsed.order.length) ? parsed.order.length : TALKS.length;
+    const answered = parsed.votes ? Object.keys(parsed.votes).length : 0;
+    progressList.push({email: parsed.email || '(desconhecido)', answered, total, complete: answered >= total});
+
+    if(!parsed.votes) continue;
     voterCount++;
     rawVoterData.push({email: parsed.email || '(desconhecido)', votes: parsed.votes});
     for(const [talkId, v] of Object.entries(parsed.votes)){
@@ -1077,6 +1129,7 @@ async function renderResults(stage){
       totals[talkId].count += 1;
     }
   }
+  progressList.sort((a,b) => b.answered - a.answered || a.email.localeCompare(b.email));
 
   const rows = TALKS.map(t => {
     const tt = totals[t.id];
@@ -1091,50 +1144,90 @@ async function renderResults(stage){
     return (b.avgDes||0) - (a.avgDes||0);
   });
 
-  if(voterCount === 0){
-    stage.innerHTML = `<div class="empty-state">Ainda não há votos registrados por ninguém neste dispositivo compartilhado.<br>Assim que a equipe começar a votar, o ranking aparece aqui.</div>`;
+  if(progressList.length === 0){
+    stage.innerHTML = `<div class="empty-state">Ainda não há votos registrados por ninguém neste dispositivo compartilhado.<br>Assim que a equipe começar a votar, o ranking e a lista de votantes aparecem aqui.</div>`;
     return;
   }
 
   window._lastResultsRows = rows;
   window._lastVoterCount = voterCount;
   window._lastRawVoterData = rawVoterData;
+  window._lastProgressList = progressList;
+
+  const completeCount = progressList.filter(p => p.complete).length;
 
   stage.innerHTML = `
     <div class="results-wrap">
       <div class="results-header">
-        <h2>Ranking geral</h2>
-        <p>${voterCount} pessoa(s) votando · média da nota (1–5) e do desempate (0–2) · ordenado do maior para o menor · votos de e-mails administradores não entram nesta soma</p>
+        <h2>Painel de votação</h2>
+        <p>${progressList.length} pessoa(s) já iniciaram · ${completeCount} concluíram todas as ${TALKS.length} propostas · votos de e-mails administradores não entram nesta contagem</p>
+        <div class="admin-tabs">
+          <button class="tab-btn ${adminTab==='ranking' ? 'active' : ''}" id="tabRanking">Ranking</button>
+          <button class="tab-btn ${adminTab==='progress' ? 'active' : ''}" id="tabProgress">Progresso dos votantes (${progressList.length})</button>
+        </div>
+      </div>
+
+      ${adminTab === 'ranking' ? `
         <div class="backup-actions">
           <button class="link-btn" id="exportCsvBtn">↓ Baixar ranking (CSV)</button>
           <button class="link-btn" id="exportJsonBtn">↓ Baixar backup completo (JSON)</button>
         </div>
-      </div>
-      <table class="results-table">
-        <thead>
-          <tr><th>#</th><th>Proposta</th><th>Formato</th><th>Nota média</th><th>Desempate médio</th><th>Votos</th></tr>
-        </thead>
-        <tbody>
-          ${rows.map((r,i) => `
-            <tr>
-              <td class="rank-num">${i+1}</td>
-              <td>
-                <div class="ttitle">${r.talk.titulo}</div>
-                <div class="small-dim">${r.talk.tags.slice(0,3).join(' · ')}</div>
-              </td>
-              <td class="small-dim">${r.talk.formato}</td>
-              <td class="score-num">${r.avgNota!==null ? r.avgNota.toFixed(2) : '—'}</td>
-              <td class="score-num tie">${r.avgDes!==null ? r.avgDes.toFixed(2) : '—'}</td>
-              <td class="small-dim">${r.count}</td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
+        <table class="results-table">
+          <thead>
+            <tr><th>#</th><th>Proposta</th><th>Formato</th><th>Nota média</th><th>Desempate médio</th><th>Votos</th></tr>
+          </thead>
+          <tbody>
+            ${rows.map((r,i) => `
+              <tr>
+                <td class="rank-num">${i+1}</td>
+                <td>
+                  <div class="ttitle">${r.talk.titulo}</div>
+                  <div class="small-dim">${r.talk.tags.slice(0,3).join(' · ')}</div>
+                </td>
+                <td class="small-dim">${r.talk.formato}</td>
+                <td class="score-num">${r.avgNota!==null ? r.avgNota.toFixed(2) : '—'}</td>
+                <td class="score-num tie">${r.avgDes!==null ? r.avgDes.toFixed(2) : '—'}</td>
+                <td class="small-dim">${r.count}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      ` : `
+        <div class="backup-actions">
+          <button class="link-btn" id="exportProgressCsvBtn">↓ Baixar progresso (CSV)</button>
+        </div>
+        <table class="results-table">
+          <thead>
+            <tr><th>E-mail</th><th>Status</th><th>Progresso</th><th>Votos</th></tr>
+          </thead>
+          <tbody>
+            ${progressList.map(p => `
+              <tr>
+                <td class="ttitle">${p.email}</td>
+                <td>${p.complete ? '<span class="status-complete">Concluído</span>' : '<span class="status-pending">Em andamento</span>'}</td>
+                <td>
+                  <div class="progress-mini-track"><div class="progress-mini-fill" style="width:${Math.round(p.answered/p.total*100)}%; background:${p.complete ? 'var(--create)' : 'var(--protect)'}"></div></div>
+                </td>
+                <td class="small-dim">${p.answered} / ${p.total}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `}
     </div>
   `;
 
-  document.getElementById('exportCsvBtn').onclick = () => exportRankingCsv(rows, voterCount);
-  document.getElementById('exportJsonBtn').onclick = () => exportFullBackupJson(rows, rawVoterData, voterCount);
+  const tabRanking = document.getElementById('tabRanking');
+  const tabProgress = document.getElementById('tabProgress');
+  if(tabRanking) tabRanking.onclick = () => { adminTab = 'ranking'; render(); };
+  if(tabProgress) tabProgress.onclick = () => { adminTab = 'progress'; render(); };
+
+  const csvBtn = document.getElementById('exportCsvBtn');
+  if(csvBtn) csvBtn.onclick = () => exportRankingCsv(rows, voterCount);
+  const jsonBtn = document.getElementById('exportJsonBtn');
+  if(jsonBtn) jsonBtn.onclick = () => exportFullBackupJson(rows, rawVoterData, voterCount);
+  const progCsvBtn = document.getElementById('exportProgressCsvBtn');
+  if(progCsvBtn) progCsvBtn.onclick = () => exportProgressCsv(progressList);
 }
 
 function csvEscape(v){
@@ -1175,6 +1268,21 @@ function exportRankingCsv(rows, voterCount){
   });
   const csv = '\ufeff' + lines.join('\n'); // BOM for Excel accents
   triggerDownload(`devfest-poa-2026-ranking-${timestamp()}.csv`, 'text/csv;charset=utf-8', csv);
+}
+function exportProgressCsv(progressList){
+  const header = ['email','status','votos_respondidos','total_propostas','percentual'];
+  const lines = [header.join(';')];
+  progressList.forEach(p => {
+    lines.push([
+      csvEscape(p.email),
+      p.complete ? 'Concluído' : 'Em andamento',
+      p.answered,
+      p.total,
+      Math.round(p.answered/p.total*100) + '%'
+    ].join(';'));
+  });
+  const csv = '\ufeff' + lines.join('\n');
+  triggerDownload(`devfest-poa-2026-progresso-votantes-${timestamp()}.csv`, 'text/csv;charset=utf-8', csv);
 }
 function exportFullBackupJson(rows, rawVoterData, voterCount){
   const payload = {
