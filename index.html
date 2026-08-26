@@ -756,6 +756,93 @@ main{
 .contact-link.wa:hover{border-color:#25D366; color:#25D366;}
 .contact-link.li:hover{border-color:#0A66C2; color:#0A66C2;}
 
+.modal-evidence-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  align-items:center;
+  padding-right:36px;
+  margin-bottom:6px;
+}
+.format-badge{
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:14px;
+  padding:8px 16px;
+  border-radius:10px;
+  border:1px solid;
+}
+.nivel-badge{
+  font-family:var(--font-mono);
+  font-weight:600;
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:0.04em;
+  padding:8px 14px;
+  border-radius:10px;
+  border:1px solid;
+}
+.modal-timestamp{
+  font-family:var(--font-mono);
+  font-size:11px;
+  color:var(--text-dimmer);
+  margin-bottom:16px;
+}
+
+.conflict-banner{
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+  background:rgba(255,107,107,0.1);
+  border:1px solid rgba(255,107,107,0.35);
+  border-radius:12px;
+  padding:14px 16px;
+  margin:16px 0;
+}
+.conflict-x{
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:18px;
+  color:var(--danger);
+  background:rgba(255,107,107,0.18);
+  width:28px; height:28px;
+  min-width:28px;
+  border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+}
+.conflict-title{
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:13.5px;
+  color:var(--danger);
+  margin-bottom:4px;
+}
+.conflict-desc{
+  font-size:12.5px;
+  line-height:1.5;
+  color:#D3D6E0;
+}
+.conflict-inline{
+  color:var(--danger);
+  font-weight:600;
+  font-family:var(--font-mono);
+  font-size:10.5px;
+}
+.conflict-dot{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:18px; height:18px;
+  border-radius:50%;
+  background:rgba(255,107,107,0.18);
+  color:var(--danger);
+  font-size:11px;
+  font-weight:700;
+  vertical-align:middle;
+  margin-left:4px;
+}
+
+
 @media (max-width:640px){
   .modal-card{padding:22px;}
 }
@@ -963,33 +1050,44 @@ function isValidEmail(email){
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-const TAG_PALETTE = {
-  'IA / Agentes':      {c:'#5EEAD4', bg:'rgba(94,234,212,0.12)'},
-  'Segurança':         {c:'#FFB454', bg:'rgba(255,180,84,0.12)'},
-  'Arquitetura':       {c:'#A78BFA', bg:'rgba(167,139,250,0.12)'},
-  'Mobile':            {c:'#7DD3FC', bg:'rgba(125,211,252,0.12)'},
-  'Dados':             {c:'#FDE68A', bg:'rgba(253,230,138,0.12)'},
-  'Liderança / Gestão':{c:'#F0ABFC', bg:'rgba(240,171,252,0.12)'},
-  'Carreira':          {c:'#FCA5A5', bg:'rgba(252,165,165,0.12)'},
-  'Qualidade / Testes':{c:'#86EFAC', bg:'rgba(134,239,172,0.12)'},
-  'Produto':           {c:'#93C5FD', bg:'rgba(147,197,253,0.12)'},
-  'DevOps / SRE':      {c:'#FDBA74', bg:'rgba(253,186,116,0.12)'},
-  'Frontend':          {c:'#67E8F9', bg:'rgba(103,232,249,0.12)'},
-  'Cloud':             {c:'#C4B5FD', bg:'rgba(196,181,253,0.12)'},
-  'Bem-estar':         {c:'#F9A8D4', bg:'rgba(249,168,212,0.12)'},
-  'Diversidade':       {c:'#F9A8D4', bg:'rgba(249,168,212,0.12)'},
-  'Comunidade':        {c:'#A5B4FC', bg:'rgba(165,180,252,0.12)'},
-  'Legado':            {c:'#D6D3D1', bg:'rgba(214,211,209,0.10)'},
-  'Criativo / Arte':   {c:'#FDA4AF', bg:'rgba(253,164,175,0.12)'},
-  'Palestra':          {c:'#9AA3B2', bg:'rgba(154,163,178,0.08)'},
-  'Workshop':          {c:'#9AA3B2', bg:'rgba(154,163,178,0.08)'},
-  'Hands-on':          {c:'#9AA3B2', bg:'rgba(154,163,178,0.08)'},
-  'Laboratório':       {c:'#9AA3B2', bg:'rgba(154,163,178,0.08)'},
-};
+// Cada tag recebe um matiz (hue) único e fixo, distribuído no círculo cromático,
+// garantindo que nenhuma cor se repita entre as tags.
+const TAG_COLOR_ORDER = [
+  'IA / Agentes', 'Segurança', 'Arquitetura', 'Mobile', 'Dados',
+  'Liderança / Gestão', 'Carreira', 'Qualidade / Testes', 'Produto', 'DevOps / SRE',
+  'Frontend', 'Cloud', 'Bem-estar', 'Diversidade', 'Comunidade',
+  'Legado', 'Criativo / Arte', 'Palestra', 'Workshop', 'Hands-on', 'Laboratório',
+];
 function tagStyle(tag){
-  const p = TAG_PALETTE[tag] || {c:'#9AA3B2', bg:'rgba(154,163,178,0.08)'};
-  return `color:${p.c}; background:${p.bg}; border-color:${p.c}22;`;
+  const idx = TAG_COLOR_ORDER.indexOf(tag);
+  const hue = idx >= 0 ? Math.round((idx * 360) / TAG_COLOR_ORDER.length) : 220;
+  return `color:hsl(${hue} 75% 68%); background:hsla(${hue},75%,68%,0.14); border-color:hsla(${hue},75%,68%,0.35);`;
 }
+
+// Cores fixas para o nível de conhecimento (coluna K), independentes da paleta de tags acima.
+const NIVEL_COLORS = {
+  'Iniciante':        {hue: 152},
+  'Intermediário':    {hue: 40},
+  'Avançado':         {hue: 355},
+  'Todos os níveis':  {hue: 205},
+};
+function nivelStyle(nivel){
+  const hue = (NIVEL_COLORS[nivel] || {hue: 220}).hue;
+  return `color:hsl(${hue} 80% 70%); background:hsla(${hue},80%,70%,0.16); border-color:hsla(${hue},80%,70%,0.4);`;
+}
+
+// Detecta inconsistência entre a coluna H (formato) e a coluna M (duração ideal):
+// quem marcou "Palestra" no formato deveria ter respondido "Outra" em duração
+// (a pergunta de duração só se aplica a workshop/hands-on/laboratório).
+function hasDurationConflict(talk){
+  const c = talk.contato;
+  if(!c || !c.duracao) return false;
+  const isPalestra = talk.formato && talk.formato.trim().toLowerCase().startsWith('palestra');
+  if(!isPalestra) return false;
+  const dur = c.duracao.trim().toLowerCase();
+  return dur !== 'outra' && dur !== 'outro' && dur !== 'outros';
+}
+
 
 function slug(s){
   return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
@@ -1118,17 +1216,29 @@ function renderTalkDetailModal(){
   const c = talk.contato || {};
   const deckUrl = (talk.deck && talk.deck.match(/https?:\/\/\S+/)) ? talk.deck.match(/https?:\/\/\S+/)[0] : null;
   const waLink = c.whatsapp ? `https://wa.me/${c.whatsapp}` : null;
+  const formatoBase = talk.formato.split('(')[0].trim();
+  const conflict = hasDurationConflict(talk);
 
   root.innerHTML = `
     <div class="modal-overlay" id="modalOverlay">
       <div class="modal-card">
         <button class="modal-close" id="modalCloseBtn" aria-label="Fechar">✕</button>
 
-        <div class="modal-meta-row">
-          <span class="meta-pill">${talk.formato}</span>
-          <span class="meta-pill level">${talk.nivel}</span>
-          ${c.carimbo ? `<span class="meta-pill">Enviado em ${c.carimbo}</span>` : ''}
+        <div class="modal-evidence-row">
+          <span class="format-badge" style="${tagStyle(formatoBase)}">${talk.formato}</span>
+          <span class="nivel-badge" style="${nivelStyle(talk.nivel)}">${talk.nivel}</span>
         </div>
+        ${c.carimbo ? `<div class="modal-timestamp">Enviado em ${c.carimbo}</div>` : ''}
+
+        ${conflict ? `
+          <div class="conflict-banner">
+            <span class="conflict-x">✕</span>
+            <div>
+              <div class="conflict-title">Respostas conflitantes</div>
+              <div class="conflict-desc">Marcou <strong>${talk.formato}</strong> no formato (coluna H), mas respondeu <strong>"${c.duracao}"</strong> em duração ideal (coluna M) — quem envia como Palestra deveria ter respondido "Outra" nesse campo, já que a duração não se aplica.</div>
+            </div>
+          </div>
+        ` : ''}
 
         <h2 class="modal-title">${talk.titulo}</h2>
         <div class="tags">${talk.tags.map(tag => `<span class="tag" style="${tagStyle(tag)}">${tag}</span>`).join('')}</div>
@@ -1151,7 +1261,7 @@ function renderTalkDetailModal(){
 
         ${c.motivacao ? `<div class="section-label">Motivação da pessoa palestrante</div><p class="conexao">${c.motivacao}</p>` : ''}
 
-        ${c.duracao ? `<div class="section-label">Duração ideal</div><p class="conexao">${c.duracao}</p>` : ''}
+        ${c.duracao ? `<div class="section-label">Duração ideal (coluna M)${conflict ? ' <span class="conflict-inline">✕ conflito</span>' : ''}</div><p class="conexao">${c.duracao}</p>` : ''}
 
         ${deckUrl
           ? `<a class="deck-link" href="${deckUrl}" target="_blank" rel="noopener">Ver material de apoio ↗</a>`
@@ -1537,7 +1647,7 @@ async function renderResults(stage){
               <tr class="clickable-row" data-talk-id="${r.talk.id}">
                 <td class="rank-num">${i+1}</td>
                 <td>
-                  <div class="ttitle">${r.talk.titulo}</div>
+                  <div class="ttitle">${r.talk.titulo} ${hasDurationConflict(r.talk) ? '<span class="conflict-dot" title="Respostas conflitantes (formato x duração)">✕</span>' : ''}</div>
                   <div class="small-dim">${r.talk.tags.slice(0,3).join(' · ')}</div>
                 </td>
                 <td class="small-dim">${r.talk.formato}</td>
@@ -1571,6 +1681,7 @@ async function renderResults(stage){
                   <div class="track-card-top">
                     <span class="rank-badge">#${i+1}</span>
                     <span class="meta-pill">${r.talk.formato.split('(')[0].trim()}</span>
+                    ${hasDurationConflict(r.talk) ? '<span class="conflict-dot" title="Respostas conflitantes (formato x duração)">✕</span>' : ''}
                   </div>
                   <div class="track-card-title">${r.talk.titulo}</div>
                   <div class="tags">${r.talk.tags.slice(0,3).map(tag => `<span class="tag" style="${tagStyle(tag)}">${tag}</span>`).join('')}</div>
