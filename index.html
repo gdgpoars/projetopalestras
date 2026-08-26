@@ -843,6 +843,17 @@ main{
   border-radius:10px;
   border:1px solid;
 }
+.nivel-badge-sm{
+  font-family:var(--font-mono);
+  font-weight:600;
+  font-size:10.5px;
+  text-transform:uppercase;
+  letter-spacing:0.03em;
+  padding:4px 9px;
+  border-radius:100px;
+  border:1px solid;
+  white-space:nowrap;
+}
 .modal-timestamp{
   font-family:var(--font-mono);
   font-size:11px;
@@ -1737,7 +1748,7 @@ async function renderResults(stage){
         </div>
         <table class="results-table">
           <thead>
-            <tr><th>#</th><th>Proposta</th><th>Formato</th><th>Nota média</th><th>Desempate médio</th><th>Votos</th><th>Alocado</th></tr>
+            <tr><th>#</th><th>Proposta</th><th>Formato</th><th>Complexidade</th><th>Nota média</th><th>Desempate médio</th><th>Votos</th><th>Alocado</th></tr>
           </thead>
           <tbody>
             ${rows.map((r,i) => `
@@ -1748,6 +1759,7 @@ async function renderResults(stage){
                   <div class="small-dim">${r.talk.tags.slice(0,3).join(' · ')}</div>
                 </td>
                 <td class="small-dim">${r.talk.formato}</td>
+                <td><span class="nivel-badge-sm" style="${nivelStyle(r.talk.nivel)}">${r.talk.nivel}</span></td>
                 <td class="score-num">${r.avgNota!==null ? r.avgNota.toFixed(2) : '—'}</td>
                 <td class="score-num tie">${r.avgDes!==null ? r.avgDes.toFixed(2) : '—'}</td>
                 <td class="small-dim">${r.count}</td>
