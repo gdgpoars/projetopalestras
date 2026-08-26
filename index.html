@@ -1016,8 +1016,10 @@ async function backendGetAllocations(){
 async function backendSetAllocation(talkId, checked){
   if(firebaseReady){
     try{
+      // Objeto aninhado de verdade (não uma chave com ponto) — com merge:true,
+      // o Firestore mescla dentro do mapa "talks" sem apagar as outras chaves já salvas.
       await firestoreDb.collection(ALLOCATIONS_COLLECTION).doc('state').set(
-        {['talks.' + talkId]: checked, updatedAt: firebase.firestore.FieldValue.serverTimestamp()},
+        {talks: {[talkId]: checked}, updatedAt: firebase.firestore.FieldValue.serverTimestamp()},
         {merge:true}
       );
       return true;
