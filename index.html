@@ -575,11 +575,26 @@ main{
   display:flex;
   flex-direction:column;
   gap:10px;
+  position:relative;
+}
+.track-card.allocated{
+  background:rgba(74,222,128,0.10);
+  border-color:rgba(74,222,128,0.35);
+}
+.track-allocate-label{
+  position:absolute;
+  top:12px;
+  right:12px;
+  display:flex;
+  cursor:pointer;
+  z-index:2;
 }
 .track-card-top{
   display:flex;
   align-items:center;
-  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:6px;
+  padding-right:26px;
 }
 .rank-badge{
   font-family:var(--font-mono);
@@ -587,6 +602,15 @@ main{
   font-weight:600;
   color:var(--create);
   background:rgba(94,234,212,0.12);
+  padding:3px 9px;
+  border-radius:100px;
+}
+.overall-rank-badge{
+  font-family:var(--font-mono);
+  font-size:11px;
+  font-weight:600;
+  color:var(--protect);
+  background:rgba(255,180,84,0.12);
   padding:3px 9px;
   border-radius:100px;
 }
@@ -1674,6 +1698,8 @@ async function renderResults(stage){
     if(b.avgNota !== a.avgNota) return b.avgNota - a.avgNota;
     return (b.avgDes||0) - (a.avgDes||0);
   });
+  const overallRankMap = {};
+  rows.forEach((r, i) => { overallRankMap[r.talk.id] = i + 1; });
 
   if(progressList.length === 0){
     stage.innerHTML = `<div class="empty-state">Ainda não há votos registrados por ninguém neste dispositivo compartilhado.<br>Assim que a equipe começar a votar, o ranking e a lista de votantes aparecem aqui.</div>`;
@@ -1753,9 +1779,13 @@ async function renderResults(stage){
           return `
             <div class="track-cards-grid">
               ${trackRows.map((r,i) => `
-                <div class="track-card clickable-card" data-talk-id="${r.talk.id}">
+                <div class="track-card clickable-card ${allocations[r.talk.id] ? 'allocated' : ''}" data-talk-id="${r.talk.id}">
+                  <label class="track-allocate-label" title="Marcar como alocado na grade">
+                    <input type="checkbox" class="allocate-checkbox" data-talk-id="${r.talk.id}" ${allocations[r.talk.id] ? 'checked' : ''}>
+                  </label>
                   <div class="track-card-top">
-                    <span class="rank-badge">#${i+1}</span>
+                    <span class="rank-badge">#${i+1} na trilha</span>
+                    <span class="overall-rank-badge" title="Posição no ranking geral">🏆 #${overallRankMap[r.talk.id]}</span>
                     <span class="meta-pill">${r.talk.formato.split('(')[0].trim()}</span>
                     ${hasDurationConflict(r.talk) ? '<span class="conflict-dot" title="Respostas conflitantes (formato x duração)">✕</span>' : ''}
                   </div>
@@ -1826,14 +1856,17 @@ async function renderResults(stage){
   document.querySelectorAll('.clickable-row, .clickable-card').forEach(el => {
     el.onclick = () => openTalkDetail(el.dataset.talkId);
   });
+  document.querySelectorAll('.allocate-label, .track-allocate-label').forEach(lbl => {
+    lbl.onclick = (e) => e.stopPropagation();
+  });
   document.querySelectorAll('.allocate-checkbox').forEach(cb => {
     cb.onclick = (e) => e.stopPropagation();
     cb.onchange = async (e) => {
       e.stopPropagation();
       const talkId = cb.dataset.talkId;
       const checked = cb.checked;
-      const row = cb.closest('tr');
-      if(row) row.classList.toggle('allocated', checked); // feedback imediato
+      const container = cb.closest('tr') || cb.closest('.track-card');
+      if(container) container.classList.toggle('allocated', checked); // feedback imediato
       await backendSetAllocation(talkId, checked);
     };
   });
