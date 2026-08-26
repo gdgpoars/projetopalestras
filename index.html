@@ -683,23 +683,27 @@ const TRACK_DEFS = [
   {id:'t3', name:'Carreira e Desenvolvimento de Soft Skills'},
   {id:'sugerida', name:'Produto & Empreendedorismo (trilha sugerida)'},
 ];
-const TRACK_TAG_MAP = {
-  'Frontend': 't1', 'Mobile': 't1',
-  'IA / Agentes': 't2', 'Dados': 't2', 'Arquitetura': 't2', 'DevOps / SRE': 't2',
-  'Cloud': 't2', 'Segurança': 't2', 'Legado': 't2',
-  'Carreira': 't3', 'Liderança / Gestão': 't3', 'Bem-estar': 't3',
-  'Diversidade': 't3', 'Comunidade': 't3',
+
+// Classificação lida manualmente a partir do título e resumo de cada proposta
+// (não é derivada das tags automáticas — cada palestra foi avaliada pelo assunto real).
+const TRACK_ASSIGN = {
+  t001:'t1', t002:'t3', t003:'t3', t004:'t3', t005:'t2', t006:'t3',
+  t007:'t1', t008:'t1', t009:'t2', t010:'t1', t011:'t3', t012:'t1',
+  t013:'t3', t014:'t2', t015:'t2', t016:'t1', t017:'t2', t018:'t3',
+  t019:'t2', t020:'sugerida', t021:'t1', t022:'t1', t023:'t2', t024:'t1',
+  t025:'t3', t026:'sugerida', t027:'t3', t028:'t2', t029:'t2', t030:'t3',
+  t031:'t3', t032:'sugerida', t033:'t1', t034:'sugerida', t035:'t3', t036:'t2',
+  t037:'t2', t038:'t1', t039:'t2', t040:'t1', t041:'t3', t042:'t1',
+  t043:'t2', t044:'t2', t045:'t2', t046:'t2', t047:'sugerida', t048:'t1',
+  t049:'t2', t050:'t2', t051:'t2', t052:'t2', t053:'t2', t054:'t2',
+  t055:'t3', t056:'t1', t057:'t3', t058:'t1', t059:'t2', t060:'t2',
 };
-const TRACK_FORMAT_TAGS = new Set(['Palestra','Workshop','Hands-on','Laboratório']);
 
 function assignTrack(talk){
-  for(const tag of talk.tags){
-    if(TRACK_FORMAT_TAGS.has(tag)) continue;
-    if(TRACK_TAG_MAP[tag]) return TRACK_TAG_MAP[tag];
-  }
-  return 'sugerida';
+  return TRACK_ASSIGN[talk.id] || 'sugerida';
 }
 TALKS.forEach(t => { t._trackId = assignTrack(t); });
+
 
 ;
 
