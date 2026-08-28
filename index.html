@@ -1032,44 +1032,48 @@ main{
 
 /* ---- dia completo (timeline) ---- */
 .grade-day-scroll{overflow-x:auto; padding-bottom:8px;}
-.grade-day-header{display:flex; min-width:1500px;}
-.grade-time-gutter-header{width:74px; flex-shrink:0;}
+.grade-table{
+  border-collapse:collapse;
+  min-width:1500px;
+  width:100%;
+  table-layout:fixed;
+}
+.grade-time-cell-header{width:70px;}
 .grade-venue-header{
-  flex:1;
-  min-width:230px;
+  width:230px;
   border-top:3px solid var(--border);
+  border-bottom:1px solid var(--border);
   padding:12px 12px 14px;
   text-align:center;
+  vertical-align:bottom;
+  position:sticky;
+  top:0;
+  background:var(--bg);
+  z-index:10;
 }
 .grade-venue-emoji{font-size:24px;}
 .grade-venue-name{font-family:var(--font-display); font-weight:700; font-size:14px; margin-top:3px;}
 .grade-venue-sub{font-family:var(--font-mono); font-size:10.5px; color:var(--text-dimmer); margin-top:2px;}
-.grade-day-body{display:flex; min-width:1500px; position:relative;}
-.grade-time-gutter{width:74px; flex-shrink:0; position:relative;}
-.grade-hour-mark{
-  position:absolute;
-  left:0; right:10px;
-  transform:translateY(-50%);
+.grade-time-cell{
+  width:70px;
+  vertical-align:top;
+  padding:6px 10px 0 0;
   font-family:var(--font-mono);
-  font-size:12px;
+  font-size:11px;
   color:var(--text-dimmer);
   text-align:right;
+  white-space:nowrap;
+  border-top:1px solid var(--border);
 }
-.grade-venue-col{
-  flex:1;
-  min-width:230px;
-  position:relative;
+.grade-time-cell-hour{color:var(--text); font-weight:600;}
+.grade-td{
+  vertical-align:top;
+  padding:4px;
+  border-top:1px solid var(--border);
   border-left:1px solid var(--border);
 }
-.grade-hour-line{
-  position:absolute;
-  left:0; right:0;
-  border-top:1px solid var(--border);
-  opacity:0.5;
-}
+.grade-td-empty{background:rgba(255,255,255,0.015);}
 .grade-item{
-  position:absolute;
-  left:5px; right:5px;
   border-radius:10px;
   border-left:4px solid var(--text-dimmer);
   background:var(--bg-elev-2);
@@ -1077,8 +1081,10 @@ main{
   overflow-wrap:anywhere;
   font-size:12.5px;
   box-shadow:0 1px 3px rgba(0,0,0,0.25);
+  height:100%;
+  box-sizing:border-box;
 }
-.grade-item.clickable-card:hover{border-left-width:5px; z-index:50 !important; transform:scale(1.02); box-shadow:0 6px 20px rgba(0,0,0,0.45);}
+.grade-item.clickable-card:hover{border-left-width:5px; box-shadow:0 6px 20px rgba(0,0,0,0.45); background:var(--bg-elev);}
 .grade-item-pausa{
   background:rgba(255,255,255,0.03);
   border-left-color:var(--border);
@@ -2137,43 +2143,73 @@ function gradeItemInnerCompact(it){
 }
 
 function renderGradeDia(body){
-  const totalMin = GRADE_DAY_END - GRADE_DAY_START;
-  const totalHeight = totalMin * GRADE_PX_PER_MIN;
-  const hourMarks = [];
-  for(let m = Math.ceil(GRADE_DAY_START/60)*60; m <= GRADE_DAY_END; m += 60){
-    hourMarks.push(m);
+  // Linhas = todos os instantes (início ou fim de qualquer item, em qualquer sala)
+  // dentro do dia. Cada item ocupa exatamente o número de linhas do seu horário
+  // real via rowspan — nunca menos, nunca mais, e nunca sobrepõe outro item,
+  // porque isso é estruturalmente impossível numa tabela HTML.
+  const breakSet = new Set([GRADE_DAY_START, GRADE_DAY_END]);
+  VENUE_ORDER.forEach(v => (SCHEDULE[v]||[]).forEach(it => {
+    breakSet.add(it.startMin);
+    breakSet.add(it.endMin);
+  }));
+  const breaks = [...breakSet].sort((a,b) => a-b);
+  const rowCount = breaks.length - 1;
+
+  // Para cada sala, mapeia cada linha (índice de intervalo) -> {item, isStart, rowspan} | null
+  const occupancy = {};
+  VENUE_ORDER.forEach(v => {
+    const rows = new Array(rowCount).fill(null);
+    (SCHEDULE[v]||[]).forEach(it => {
+      const rowStart = breaks.indexOf(it.startMin);
+      const rowEnd = breaks.indexOf(it.endMin);
+      if(rowStart === -1 || rowEnd === -1 || rowEnd <= rowStart) return;
+      for(let r = rowStart; r < rowEnd; r++){
+        rows[r] = {item: it, isStart: r === rowStart, rowspan: rowEnd - rowStart};
+      }
+    });
+    occupancy[v] = rows;
+  });
+
+  let tableRows = '';
+  for(let r = 0; r < rowCount; r++){
+    const isHourMark = breaks[r] % 60 === 0;
+    tableRows += `<tr>`;
+    tableRows += `<td class="grade-time-cell ${isHourMark ? 'grade-time-cell-hour' : ''}">${fmtMin(breaks[r])}</td>`;
+    VENUE_ORDER.forEach(v => {
+      const cell = occupancy[v][r];
+      if(cell === null){
+        tableRows += `<td class="grade-td grade-td-empty"></td>`;
+      } else if(cell.isStart){
+        const it = cell.item;
+        const cls = PAUSA_TYPES.has(it.type) ? 'grade-item grade-item-pausa' : 'grade-item';
+        tableRows += `<td class="grade-td" rowspan="${cell.rowspan}">
+          <div class="${cls} ${it.talk_id ? 'clickable-card' : ''}" data-talk-id="${it.talk_id||''}" style="${typeStyle(it.type)}">${gradeItemInnerCompact(it)}</div>
+        </td>`;
+      }
+      // se não for isStart, a célula já está coberta pelo rowspan da linha de cima — não emite <td>.
+    });
+    tableRows += `</tr>`;
   }
 
   body.innerHTML = `
     <div class="grade-day-scroll">
-      <div class="grade-day-header">
-        <div class="grade-time-gutter-header"></div>
-        ${VENUE_ORDER.map(v => {
-          const label = VENUE_LABELS[v];
-          const t = TRACK_NAMES[v];
-          return `<div class="grade-venue-header" ${t ? `style="border-top-color:hsl(${t.hue} 70% 60%)"` : ''}>
-            <div class="grade-venue-emoji">${label.emoji}</div>
-            <div class="grade-venue-name">${label.nome}</div>
-            ${t ? `<div class="grade-venue-sub">${t.subtitulo}</div>` : ''}
-          </div>`;
-        }).join('')}
-      </div>
-      <div class="grade-day-body" style="height:${totalHeight}px">
-        <div class="grade-time-gutter" style="height:${totalHeight}px">
-          ${hourMarks.map(m => `<div class="grade-hour-mark" style="top:${(m-GRADE_DAY_START)*GRADE_PX_PER_MIN}px">${fmtMin(m)}</div>`).join('')}
-        </div>
-        ${VENUE_ORDER.map(v => `
-          <div class="grade-venue-col" style="height:${totalHeight}px">
-            ${hourMarks.map(m => `<div class="grade-hour-line" style="top:${(m-GRADE_DAY_START)*GRADE_PX_PER_MIN}px"></div>`).join('')}
-            ${(SCHEDULE[v]||[]).map((it, idx) => {
-              const top = (it.startMin - GRADE_DAY_START) * GRADE_PX_PER_MIN;
-              const slotHeight = Math.max((it.endMin - it.startMin) * GRADE_PX_PER_MIN - 3, 16);
-              const cls = PAUSA_TYPES.has(it.type) ? 'grade-item grade-item-pausa' : 'grade-item';
-              return `<div class="${cls} ${it.talk_id ? 'clickable-card' : ''}" data-talk-id="${it.talk_id||''}" title="${(it.title||it.raw).replace(/"/g,'&quot;')}" style="top:${top}px; min-height:${slotHeight}px; z-index:${idx+1}; ${typeStyle(it.type)}">${gradeItemInnerCompact(it)}</div>`;
+      <table class="grade-table">
+        <thead>
+          <tr>
+            <th class="grade-time-cell-header"></th>
+            ${VENUE_ORDER.map(v => {
+              const label = VENUE_LABELS[v];
+              const t = TRACK_NAMES[v];
+              return `<th class="grade-venue-header" ${t ? `style="border-top-color:hsl(${t.hue} 70% 60%)"` : ''}>
+                <div class="grade-venue-emoji">${label.emoji}</div>
+                <div class="grade-venue-name">${label.nome}</div>
+                ${t ? `<div class="grade-venue-sub">${t.subtitulo}</div>` : ''}
+              </th>`;
             }).join('')}
-          </div>
-        `).join('')}
-      </div>
+          </tr>
+        </thead>
+        <tbody>${tableRows}</tbody>
+      </table>
     </div>
   `;
   wireGradeClickables(body);
