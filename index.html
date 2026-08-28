@@ -131,6 +131,10 @@ main{
 .stage{
   width:100%;
   max-width:720px;
+  transition:max-width .15s ease;
+}
+.stage.stage-wide{
+  max-width:1400px;
 }
 
 /* ---------- Landing ---------- */
@@ -1028,32 +1032,32 @@ main{
 
 /* ---- dia completo (timeline) ---- */
 .grade-day-scroll{overflow-x:auto; padding-bottom:8px;}
-.grade-day-header{display:flex; min-width:1100px;}
-.grade-time-gutter-header{width:64px; flex-shrink:0;}
+.grade-day-header{display:flex; min-width:1500px;}
+.grade-time-gutter-header{width:74px; flex-shrink:0;}
 .grade-venue-header{
   flex:1;
-  min-width:170px;
+  min-width:230px;
   border-top:3px solid var(--border);
-  padding:10px 10px 12px;
+  padding:12px 12px 14px;
   text-align:center;
 }
-.grade-venue-emoji{font-size:20px;}
-.grade-venue-name{font-family:var(--font-display); font-weight:700; font-size:12.5px; margin-top:2px;}
-.grade-venue-sub{font-family:var(--font-mono); font-size:9.5px; color:var(--text-dimmer); margin-top:2px;}
-.grade-day-body{display:flex; min-width:1100px; position:relative;}
-.grade-time-gutter{width:64px; flex-shrink:0; position:relative;}
+.grade-venue-emoji{font-size:24px;}
+.grade-venue-name{font-family:var(--font-display); font-weight:700; font-size:14px; margin-top:3px;}
+.grade-venue-sub{font-family:var(--font-mono); font-size:10.5px; color:var(--text-dimmer); margin-top:2px;}
+.grade-day-body{display:flex; min-width:1500px; position:relative;}
+.grade-time-gutter{width:74px; flex-shrink:0; position:relative;}
 .grade-hour-mark{
   position:absolute;
-  left:0; right:8px;
+  left:0; right:10px;
   transform:translateY(-50%);
   font-family:var(--font-mono);
-  font-size:11px;
+  font-size:12px;
   color:var(--text-dimmer);
   text-align:right;
 }
 .grade-venue-col{
   flex:1;
-  min-width:170px;
+  min-width:230px;
   position:relative;
   border-left:1px solid var(--border);
 }
@@ -1065,15 +1069,15 @@ main{
 }
 .grade-item{
   position:absolute;
-  left:4px; right:4px;
-  border-radius:8px;
-  border-left:3px solid var(--text-dimmer);
+  left:5px; right:5px;
+  border-radius:10px;
+  border-left:4px solid var(--text-dimmer);
   background:var(--bg-elev-2);
-  padding:6px 8px;
+  padding:10px 12px;
   overflow:hidden;
-  font-size:11px;
+  font-size:12.5px;
 }
-.grade-item.clickable-card:hover{border-left-width:4px; z-index:5;}
+.grade-item.clickable-card:hover{border-left-width:5px; z-index:5; transform:scale(1.02); box-shadow:0 4px 16px rgba(0,0,0,0.35);}
 .grade-item-pausa{
   background:rgba(255,255,255,0.03);
   border-left-color:var(--border);
@@ -1084,94 +1088,96 @@ main{
 }
 .grade-pausa-inner{
   font-family:var(--font-mono);
-  font-size:10.5px;
+  font-size:11.5px;
   color:var(--text-dimmer);
   display:flex;
   flex-direction:column;
   gap:2px;
 }
-.grade-pausa-raw{font-size:9.5px; opacity:0.8;}
-.grade-item-time{font-family:var(--font-mono); font-size:9.5px; color:var(--text-dimmer); margin-bottom:3px;}
+.grade-pausa-raw{font-size:10.5px; opacity:0.8;}
+.grade-item-time{font-family:var(--font-mono); font-size:10.5px; color:var(--text-dimmer); margin-bottom:5px;}
 .grade-item-badge{
   font-family:var(--font-mono);
-  font-size:8.5px;
+  font-size:9.5px;
   text-transform:uppercase;
-  padding:2px 6px;
+  padding:3px 8px;
   border-radius:100px;
   display:inline-block;
-  margin-bottom:4px;
+  margin-bottom:6px;
 }
 .grade-pending{
   font-family:var(--font-mono);
-  font-size:8.5px;
+  font-size:9.5px;
   color:var(--protect);
   margin-left:4px;
 }
 .grade-item-title{
   font-family:var(--font-display);
-  font-weight:600;
-  font-size:11.5px;
-  line-height:1.3;
+  font-weight:700;
+  font-size:13.5px;
+  line-height:1.35;
   color:var(--text);
 }
 .grade-item-linkable{color:var(--create);}
 .grade-item-speaker{
   font-family:var(--font-mono);
-  font-size:9.5px;
+  font-size:10.5px;
   color:var(--text-dimmer);
-  margin-top:3px;
+  margin-top:5px;
 }
 
 /* ---- por trilha (agenda) ---- */
 .grade-venue-pills{margin-bottom:18px;}
-.grade-agenda-list{display:flex; flex-direction:column; gap:10px;}
+.grade-agenda-list{display:flex; flex-direction:column; gap:12px;}
 .grade-agenda-item{
-  border-radius:12px;
-  border-left:3px solid var(--text-dimmer);
+  border-radius:14px;
+  border-left:4px solid var(--text-dimmer);
   background:var(--bg-elev-2);
-  padding:14px 16px;
+  padding:20px 22px;
 }
-.grade-agenda-item .grade-item-time{font-size:11px; margin-bottom:6px;}
-.grade-agenda-item .grade-item-badge{font-size:10px;}
-.grade-agenda-item .grade-item-title{font-size:14.5px;}
-.grade-agenda-item .grade-item-speaker{font-size:12px; margin-top:5px;}
+.grade-agenda-item .grade-item-time{font-size:12.5px; margin-bottom:8px;}
+.grade-agenda-item .grade-item-badge{font-size:11px;}
+.grade-agenda-item .grade-item-title{font-size:18px;}
+.grade-agenda-item .grade-item-speaker{font-size:13.5px; margin-top:7px;}
 .grade-agenda-item.grade-item-pausa{text-align:left; display:block;}
-.grade-agenda-item.grade-item-pausa .grade-pausa-inner{flex-direction:row; gap:8px; font-size:12.5px;}
+.grade-agenda-item.grade-item-pausa .grade-pausa-inner{flex-direction:row; gap:8px; font-size:13.5px;}
+.grade-agenda-item.clickable-card:hover{border-left-width:5px; background:var(--bg-elev); transform:translateY(-1px);}
 
 /* ---- por horário ---- */
-.grade-horario-list{display:flex; flex-direction:column; gap:22px;}
-.grade-horario-block{display:flex; gap:16px;}
+.grade-horario-list{display:flex; flex-direction:column; gap:26px;}
+.grade-horario-block{display:flex; gap:18px;}
 .grade-horario-time{
-  width:60px;
+  width:68px;
   flex-shrink:0;
   font-family:var(--font-mono);
   font-weight:700;
-  font-size:14px;
+  font-size:16px;
   color:var(--create);
-  padding-top:4px;
+  padding-top:6px;
 }
 .grade-horario-row{
   flex:1;
   display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(200px, 1fr));
-  gap:10px;
+  grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
+  gap:12px;
 }
 .grade-horario-card{
-  border-radius:12px;
-  border-left:3px solid var(--text-dimmer);
+  border-radius:14px;
+  border-left:4px solid var(--text-dimmer);
   background:var(--bg-elev-2);
-  padding:12px 14px;
+  padding:16px 18px;
 }
+.grade-horario-card.clickable-card:hover{border-left-width:5px; background:var(--bg-elev); transform:translateY(-1px);}
 .grade-horario-venue{
   font-family:var(--font-mono);
-  font-size:10px;
+  font-size:11px;
   color:var(--text-dimmer);
-  margin-bottom:6px;
+  margin-bottom:8px;
   text-transform:uppercase;
   letter-spacing:0.03em;
 }
-.grade-horario-card .grade-item-title{font-size:13px;}
-.grade-horario-card.grade-item-pausa .grade-pausa-inner{flex-direction:row; gap:6px; font-size:11.5px;}
+.grade-horario-card .grade-item-title{font-size:15.5px;}
+.grade-horario-card.grade-item-pausa .grade-pausa-inner{flex-direction:row; gap:6px; font-size:12.5px;}
 
 @media (max-width:640px){
   .grade-title{font-size:21px;}
@@ -1739,6 +1745,8 @@ function render(){
 
   renderTalkDetailModal();
 
+  stage.classList.toggle('stage-wide', view === 'grade' || view === 'results');
+
   topRight.innerHTML = '';
   navSlot.innerHTML = '';
   progressFill.style.width = '0%';
@@ -2031,7 +2039,7 @@ let gradeTab = 'dia'; // dia | trilha | horario
 let gradeSelectedVenue = 'auditorio';
 const GRADE_DAY_START = 9 * 60;   // 09:00
 const GRADE_DAY_END = 17 * 60 + 40; // 17:40
-const GRADE_PX_PER_MIN = 1.7;
+const GRADE_PX_PER_MIN = 2.3;
 
 const PAUSA_TYPES = new Set(['Almoço', 'Coffee break', 'Dinâmica', 'Info', 'Encerramento', 'Abertura']);
 const TYPE_HUE = {
