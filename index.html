@@ -1074,10 +1074,11 @@ main{
   border-left:4px solid var(--text-dimmer);
   background:var(--bg-elev-2);
   padding:10px 12px;
-  overflow:hidden;
+  overflow-wrap:anywhere;
   font-size:12.5px;
+  box-shadow:0 1px 3px rgba(0,0,0,0.25);
 }
-.grade-item.clickable-card:hover{border-left-width:5px; z-index:5; transform:scale(1.02); box-shadow:0 4px 16px rgba(0,0,0,0.35);}
+.grade-item.clickable-card:hover{border-left-width:5px; z-index:50 !important; transform:scale(1.02); box-shadow:0 6px 20px rgba(0,0,0,0.45);}
 .grade-item-pausa{
   background:rgba(255,255,255,0.03);
   border-left-color:var(--border);
@@ -2121,6 +2122,20 @@ function gradeItemInner(it){
   `;
 }
 
+// Versão compacta usada só na timeline "Dia completo": prioriza mostrar o
+// título inteiro (sem cortar) e omite badge/speaker, que já aparecem
+// nas outras duas visões (Por trilha / Por horário) e no modal ao clicar.
+function gradeItemInnerCompact(it){
+  const clickable = !!it.talk_id;
+  if(PAUSA_TYPES.has(it.type)){
+    return `<div class="grade-pausa-inner">${it.type}</div>`;
+  }
+  return `
+    <div class="grade-item-time">${it.start}–${it.end}</div>
+    <div class="grade-item-title ${clickable ? 'grade-item-linkable' : ''}">${it.title || it.raw}</div>
+  `;
+}
+
 function renderGradeDia(body){
   const totalMin = GRADE_DAY_END - GRADE_DAY_START;
   const totalHeight = totalMin * GRADE_PX_PER_MIN;
@@ -2150,11 +2165,11 @@ function renderGradeDia(body){
         ${VENUE_ORDER.map(v => `
           <div class="grade-venue-col" style="height:${totalHeight}px">
             ${hourMarks.map(m => `<div class="grade-hour-line" style="top:${(m-GRADE_DAY_START)*GRADE_PX_PER_MIN}px"></div>`).join('')}
-            ${(SCHEDULE[v]||[]).map(it => {
+            ${(SCHEDULE[v]||[]).map((it, idx) => {
               const top = (it.startMin - GRADE_DAY_START) * GRADE_PX_PER_MIN;
-              const height = Math.max((it.endMin - it.startMin) * GRADE_PX_PER_MIN - 3, 16);
+              const slotHeight = Math.max((it.endMin - it.startMin) * GRADE_PX_PER_MIN - 3, 16);
               const cls = PAUSA_TYPES.has(it.type) ? 'grade-item grade-item-pausa' : 'grade-item';
-              return `<div class="${cls} ${it.talk_id ? 'clickable-card' : ''}" data-talk-id="${it.talk_id||''}" style="top:${top}px; height:${height}px; ${typeStyle(it.type)}">${gradeItemInner(it)}</div>`;
+              return `<div class="${cls} ${it.talk_id ? 'clickable-card' : ''}" data-talk-id="${it.talk_id||''}" title="${(it.title||it.raw).replace(/"/g,'&quot;')}" style="top:${top}px; min-height:${slotHeight}px; z-index:${idx+1}; ${typeStyle(it.type)}">${gradeItemInnerCompact(it)}</div>`;
             }).join('')}
           </div>
         `).join('')}
