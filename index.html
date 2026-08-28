@@ -990,6 +990,194 @@ main{
   .btn-row{gap:6px;}
   .score-btn{font-size:16px;}
 }
+
+/* ================= GRADE OFICIAL ================= */
+.grade-wrap{max-width:100%;}
+.grade-header{margin-bottom:20px;}
+.grade-title{
+  font-family:var(--font-display);
+  font-size:26px;
+  font-weight:700;
+  color:#FFFFFF;
+  margin:14px 0 4px;
+}
+.grade-subtitle{
+  color:var(--text-dim);
+  font-size:13.5px;
+  margin-bottom:18px;
+}
+.grade-track-legend{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+  gap:10px;
+  margin-bottom:20px;
+}
+.grade-legend-chip{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:10px 14px;
+}
+.grade-legend-emoji{font-size:22px;}
+.grade-legend-name{font-family:var(--font-display); font-weight:700; font-size:13.5px;}
+.grade-legend-pilar{font-family:var(--font-mono); font-weight:500; font-size:10.5px; opacity:0.8;}
+.grade-legend-sub{font-family:var(--font-mono); font-size:10.5px; color:var(--text-dimmer); margin-top:2px;}
+.grade-tabs{margin-top:4px;}
+
+/* ---- dia completo (timeline) ---- */
+.grade-day-scroll{overflow-x:auto; padding-bottom:8px;}
+.grade-day-header{display:flex; min-width:1100px;}
+.grade-time-gutter-header{width:64px; flex-shrink:0;}
+.grade-venue-header{
+  flex:1;
+  min-width:170px;
+  border-top:3px solid var(--border);
+  padding:10px 10px 12px;
+  text-align:center;
+}
+.grade-venue-emoji{font-size:20px;}
+.grade-venue-name{font-family:var(--font-display); font-weight:700; font-size:12.5px; margin-top:2px;}
+.grade-venue-sub{font-family:var(--font-mono); font-size:9.5px; color:var(--text-dimmer); margin-top:2px;}
+.grade-day-body{display:flex; min-width:1100px; position:relative;}
+.grade-time-gutter{width:64px; flex-shrink:0; position:relative;}
+.grade-hour-mark{
+  position:absolute;
+  left:0; right:8px;
+  transform:translateY(-50%);
+  font-family:var(--font-mono);
+  font-size:11px;
+  color:var(--text-dimmer);
+  text-align:right;
+}
+.grade-venue-col{
+  flex:1;
+  min-width:170px;
+  position:relative;
+  border-left:1px solid var(--border);
+}
+.grade-hour-line{
+  position:absolute;
+  left:0; right:0;
+  border-top:1px solid var(--border);
+  opacity:0.5;
+}
+.grade-item{
+  position:absolute;
+  left:4px; right:4px;
+  border-radius:8px;
+  border-left:3px solid var(--text-dimmer);
+  background:var(--bg-elev-2);
+  padding:6px 8px;
+  overflow:hidden;
+  font-size:11px;
+}
+.grade-item.clickable-card:hover{border-left-width:4px; z-index:5;}
+.grade-item-pausa{
+  background:rgba(255,255,255,0.03);
+  border-left-color:var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+.grade-pausa-inner{
+  font-family:var(--font-mono);
+  font-size:10.5px;
+  color:var(--text-dimmer);
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+.grade-pausa-raw{font-size:9.5px; opacity:0.8;}
+.grade-item-time{font-family:var(--font-mono); font-size:9.5px; color:var(--text-dimmer); margin-bottom:3px;}
+.grade-item-badge{
+  font-family:var(--font-mono);
+  font-size:8.5px;
+  text-transform:uppercase;
+  padding:2px 6px;
+  border-radius:100px;
+  display:inline-block;
+  margin-bottom:4px;
+}
+.grade-pending{
+  font-family:var(--font-mono);
+  font-size:8.5px;
+  color:var(--protect);
+  margin-left:4px;
+}
+.grade-item-title{
+  font-family:var(--font-display);
+  font-weight:600;
+  font-size:11.5px;
+  line-height:1.3;
+  color:var(--text);
+}
+.grade-item-linkable{color:var(--create);}
+.grade-item-speaker{
+  font-family:var(--font-mono);
+  font-size:9.5px;
+  color:var(--text-dimmer);
+  margin-top:3px;
+}
+
+/* ---- por trilha (agenda) ---- */
+.grade-venue-pills{margin-bottom:18px;}
+.grade-agenda-list{display:flex; flex-direction:column; gap:10px;}
+.grade-agenda-item{
+  border-radius:12px;
+  border-left:3px solid var(--text-dimmer);
+  background:var(--bg-elev-2);
+  padding:14px 16px;
+}
+.grade-agenda-item .grade-item-time{font-size:11px; margin-bottom:6px;}
+.grade-agenda-item .grade-item-badge{font-size:10px;}
+.grade-agenda-item .grade-item-title{font-size:14.5px;}
+.grade-agenda-item .grade-item-speaker{font-size:12px; margin-top:5px;}
+.grade-agenda-item.grade-item-pausa{text-align:left; display:block;}
+.grade-agenda-item.grade-item-pausa .grade-pausa-inner{flex-direction:row; gap:8px; font-size:12.5px;}
+
+/* ---- por horário ---- */
+.grade-horario-list{display:flex; flex-direction:column; gap:22px;}
+.grade-horario-block{display:flex; gap:16px;}
+.grade-horario-time{
+  width:60px;
+  flex-shrink:0;
+  font-family:var(--font-mono);
+  font-weight:700;
+  font-size:14px;
+  color:var(--create);
+  padding-top:4px;
+}
+.grade-horario-row{
+  flex:1;
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(200px, 1fr));
+  gap:10px;
+}
+.grade-horario-card{
+  border-radius:12px;
+  border-left:3px solid var(--text-dimmer);
+  background:var(--bg-elev-2);
+  padding:12px 14px;
+}
+.grade-horario-venue{
+  font-family:var(--font-mono);
+  font-size:10px;
+  color:var(--text-dimmer);
+  margin-bottom:6px;
+  text-transform:uppercase;
+  letter-spacing:0.03em;
+}
+.grade-horario-card .grade-item-title{font-size:13px;}
+.grade-horario-card.grade-item-pausa .grade-pausa-inner{flex-direction:row; gap:6px; font-size:11.5px;}
+
+@media (max-width:640px){
+  .grade-title{font-size:21px;}
+  .grade-horario-block{flex-direction:column; gap:8px;}
+  .grade-horario-time{width:auto;}
+}
 </style>
 </head>
 <body>
@@ -1169,6 +1357,54 @@ const TALKS = [{"id": "t001", "formato": "Palestra (até 30 minutos)", "titulo":
 const CONTACTS = {"t001": {"nome": "Aline Zanin", "email": "alinnezanin@gmail.com", "whatsapp": "5551998886990", "linkedin": "https://www.linkedin.com/in/alinnezanin?utm_source=share_via&utm_content=profile&utm_medium=member_android", "github": null, "motivacao": "Eu sou amante de comunidades, gosto de compartilhar conhecimentos e simpatizo com o evento", "duracao": "90 minutos", "carimbo": "05/08/2026 09:43"}, "t002": {"nome": "Anderton Rodrigues", "email": "andertonmayk@gmail.com", "whatsapp": "5594993033499", "linkedin": "https://www.linkedin.com/in/anderton2022/", "github": "https://nortjobs.com", "motivacao": "Participei em 2025 e foi bem legal, me diverti mt", "duracao": "Outra", "carimbo": "05/08/2026 09:43"}, "t003": {"nome": "Natalie Dorneles de Souza", "email": "natalie.dorneles15@gmail.com", "whatsapp": "5551994279113", "linkedin": "https://www.linkedin.com/in/natalie-dorneles-de-souza-14b04674/", "github": null, "motivacao": "Contar minha trajetória dentro do mercado de tecnologia, e como é possível migrar e se inserir dentro de diversas áreas na TI.", "duracao": "45 minutos", "carimbo": "05/08/2026 09:54"}, "t004": {"nome": "Marlon Vidal Ferreira", "email": "marlonvidalferreira@gmail.com", "whatsapp": "5531985423225", "linkedin": "https://linkedin.com/in/marlonvidal", "github": "https://github.com/marlonvidal", "motivacao": "Falar sobre formas de melhorar o trabalho de um Engineering Manager com uso de IA", "duracao": "45 minutos", "carimbo": "05/08/2026 09:59"}, "t005": {"nome": "Marlon Vidal Ferreira", "email": "marlonvidalferreira@gmail.com", "whatsapp": "5531985423225", "linkedin": "https://linkedin.com/in/marlonvidal", "github": "https://github.com/marlonvidal", "motivacao": "Trazer o tema de Spec Driven Development com BMAD", "duracao": "Outra", "carimbo": "05/08/2026 10:02"}, "t006": {"nome": "Michele dos Santos Scheffel", "email": "msscheffel@gmail.com", "whatsapp": "5551991422286", "linkedin": "https://www.linkedin.com/in/ michele-scheffel", "github": null, "motivacao": "A minha principal motivação para estar no DevFestPOA26 é compartilhar a minha trajetória de transformação e impacto na área de tecnologia, mostrando que é possível construir um caminho consistente, liderar com propósito e ocupar espaços de destaque.\n\nAo longo de mais de uma década lidando diretamente com a jornada do cliente e a entrega de projetos complexos, aprendi que a tecnologia é, antes de tudo, sobre pessoas e conexões reais. Quero trazer essa vivência prática para inspirar profissionais que buscam evoluir e fazer a diferença no mercado.\n\nAlém disso, tenho como propósito pessoal apoiar e motivar outras mulheres a conquistarem e consolidarem seu espaço na área de tecnologia. Sei quanto a representatividade importa e o quanto ver trajetórias reais fortalece a confiança de quem está começando ou buscando novos desafios. Quero que a minha história sirva como um ponto de apoio, mostrando que o protagonismo feminino no setor não é apenas necessário, mas transformador.", "duracao": "45 minutos", "carimbo": "05/08/2026 10:12"}, "t007": {"nome": "Arno Roldao de Oliveira", "email": "arno@advg.com.br", "whatsapp": "5551983237784", "linkedin": "https://arnoroldao", "github": null, "motivacao": "Compartilhar é a melhor forma de aprender", "duracao": "60 minutos", "carimbo": "05/08/2026 10:29"}, "t008": {"nome": "Ricardo da Silva Ogliari", "email": "rogliariping@gmail.com", "whatsapp": "5554981212042", "linkedin": "https://www.linkedin.com/in/ricardoogliari/", "github": "https://github.com/ricardoogliari", "motivacao": "Faz um tempo que não palestro em eventos do DevFest. Estou com saudade de compartilhar conhecimento com a comunidade. Gostaria de contribuir de alguma forma.", "duracao": "45 minutos", "carimbo": "05/08/2026 11:36"}, "t009": {"nome": "Ricardo da Silva Ogliari", "email": "rogliariping@gmail.com", "whatsapp": "5554981212042", "linkedin": "https://www.linkedin.com/in/ricardoogliari/", "github": "https://github.com/ricardoogliari", "motivacao": "Gostaria de palestrar novamente neste evento, o qual estou ausente há um bom tempo. To sentindo falta de compartilhar conhecimento e estar no meio da comunidade.", "duracao": "60 minutos", "carimbo": "05/08/2026 11:40"}, "t010": {"nome": "Luiz Rebelatto", "email": "lbrebelatto@gmail.com", "whatsapp": "5551993808123", "linkedin": "https://www.linkedin.com/in/luizgabrielrebelatto/?locale=pt", "github": "https://github.com/Luizrebelatto", "motivacao": "Compartilhar mais sobre o mundo de deploy na area de desenvolvimento mobile, isso possui etapas alem de apenas submeter para a loja", "duracao": "Outra", "carimbo": "05/08/2026 22:42"}, "t011": {"nome": "GUILHERME SOARES", "email": "guilhermesoares134@gmail.com", "whatsapp": "5551993795138", "linkedin": "https://www.linkedin.com/in/guilherme-soares-se/", "github": null, "motivacao": "Colaborar com a Comunidade", "duracao": "45 minutos", "carimbo": "06/08/2026 01:23"}, "t012": {"nome": "Gabriel Bronzatti Moro", "email": "gabrielbronzattimoro.es@gmail.com", "whatsapp": "5551999329273", "linkedin": "https://www.linkedin.com/in/gabrielbronzattimoro15031994/", "github": "https://github.com/gabrielbmoro", "motivacao": "Acredito que o DevFest é uma ótima oportunidade pra trocar conhecimento e aprender. Ano passado eu fui como ouvinte, aprendi muito e também se possível nessa edição gostaria de colobarar um pouco com meu conhecimento.", "duracao": "45 minutos", "carimbo": "06/08/2026 11:57"}, "t013": {"nome": "Valéria Baptista", "email": "valeriafariasn1@gmail.com", "whatsapp": "5551991244388", "linkedin": "https://www.linkedin.com/in/valeriabaptista/", "github": null, "motivacao": "Percebo que o evento é uma forma de preparar e capacitar profissionais de tecnologia com o que o mercado busca e criar um network de valor com os participantes.", "duracao": "Outra", "carimbo": "06/08/2026 13:45"}, "t014": {"nome": "Denis Mendes Pires", "email": "deenismp@gmail.com", "whatsapp": "5551992328365", "linkedin": "https://www.linkedin.com/in/denismp/", "github": "https://github.com/deenismp", "motivacao": "Vontade de compartilhar conhecimento e mostrar mais um pouco sobre esse mundo de dados que é gigantesco", "duracao": "Outra", "carimbo": "06/08/2026 23:32"}, "t015": {"nome": "Marcia Flores da Silva", "email": "floressilvasenac@gmail.com", "whatsapp": "5551992287648", "linkedin": "https://www.linkedin.com/in/márcia-flores-da-silva-3a516074", "github": null, "motivacao": "Já fui docente e gosto muito de falar sobre tecnologia, além de utilizar meus cases para solucionar problemas encontrados no dia a dia de um desenvolvedor(a).", "duracao": "45 minutos", "carimbo": "07/08/2026 00:29"}, "t016": {"nome": "Thiago Xikota", "email": "thiagoxikota@gmail.com", "whatsapp": "5548998301238", "linkedin": "https://www.linkedin.com/in/thiagoxikota", "github": "https://thiagoxikota.com", "motivacao": "Palestrei este ano no TDC Florianópolis, num workshop e num painel sobre IA, e saí com a sensação de que a comunidade dev quer conversa honesta sobre o assunto, sem hype. Pesquiso exatamente o tema do evento: publiquei um estudo sobre por que a IA entrega resultado genérico e trabalho todo dia com agentes entre design e código. Quero traduzir essa pesquisa em prática pra comunidade de Porto Alegre, onde ainda não apresentei.", "duracao": "Outra", "carimbo": "07/08/2026 04:30"}, "t017": {"nome": "Carol Paier", "email": "carolpaier.tech@gmail.com", "whatsapp": "5551995921468", "linkedin": "https://www.linkedin.com/in/carolpaier", "github": "https://www.carolpaier.com.br/", "motivacao": "A IA revolucionou o desenvolvimento, mudou a forma de testar também, mas ainda precisamos falar de qualidade. Então como determinar a qualidade daquilo que está em constante evolução e tem um resultado não determinístico? \nO espaço do DevFest é o palco perfeito pra discutir isso com a comunidade, trazer uma reflexão m, mas também informação com base em certificações internacionais.", "duracao": "Outra", "carimbo": "08/08/2026 23:37"}, "t018": {"nome": "Nathalia Karnas", "email": "nathaliakarnas@gmail.com", "whatsapp": "5551998895276", "linkedin": "https://www.linkedin.com/in/nathalia-karnas/", "github": null, "motivacao": "Depois de 15 anos trabalhando com tecnologia, finalmente tenho a oportunidade de parar, olhar para tudo que aprendi ao longo dessa trajetória e transformar parte dessa experiência em algo que possa ser compartilhado. Sempre tive muito interesse em trocar experiências, provocar reflexões e aprender com outras pessoas, e quero aproveitar esse momento para contribuir mais ativamente com a comunidade de TI.", "duracao": "Outra", "carimbo": "10/08/2026 12:11"}, "t019": {"nome": "Victor Castro", "email": "victor.admc@gmail.com", "whatsapp": "5551989331694", "linkedin": "https://www.linkedin.com/in/victor-castro-384256103/", "github": null, "motivacao": "Lucas Levandoski, meu colega de trabalho, conversou comigo e me motivou a participar! Ele faz parte da organização do evento.", "duracao": "Outra", "carimbo": "10/08/2026 13:28"}, "t020": {"nome": "William Meneghetti", "email": "williammeneghetti@gmail.com", "whatsapp": "5551992054751", "linkedin": "https://br.linkedin.com/in/william-meneghetti-293b05192", "github": "https://meubanner.com.br", "motivacao": "Em 2019, comecei como afiliado da Magazine Luiza e me deparei com um problema que parecia simples: eu queria criar ofertas mais bonitas e profissionais, mas não tinha uma ferramenta que fizesse isso da maneira que eu precisava. Em vez de apenas procurar uma solução, comecei a estudar e construir a minha própria.\nNa época, não existiam as ferramentas de IA que temos hoje para acelerar esse processo. Aprendi na prática diversas tecnologias para transformar aquela necessidade em um produto: PHP, HTML, CSS, JavaScript, MySQL, manipulação de imagens com GD, consumo e criação de APIs e integrações com diferentes serviços.\nO que começou como uma necessidade pessoal acabou se transformando no Lojas da Internet e, posteriormente, no Meu Banner, uma plataforma que hoje possui diversas integrações e APIs próprias.\nQuero levar essa história ao DevFest porque acredito que ela mostra algo que vai além da tecnologia utilizada: como um problema real pode ser o ponto de partida para aprender novas tecnologias, criar um produto e evoluí-lo durante anos.\nTambém quero compartilhar uma perspectiva de quem começou a desenvolver antes da popularização da IA e acompanhou essa transformação de perto. Hoje, ferramentas de IA tornam muito mais acessível construir software, mas acredito que entender o problema, experimentar, errar, pesquisar e construir soluções continua sendo tão importante quanto a tecnologia utilizada.\nQuero mostrar que você não precisa começar sabendo tudo para construir algo. Às vezes, você começa apenas tentando resolver um problema que é seu — e o conhecimento adquirido no caminho pode acabar criando algo muito maior.", "duracao": "Outra", "carimbo": "10/08/2026 21:20"}, "t021": {"nome": "Mário de Araújo Jr", "email": "oiram.araujo@gmail.com", "whatsapp": "5551989192856", "linkedin": "https://www.linkedin.com/in/m4riodev/", "github": "https://dearaujo.dev.br", "motivacao": "Compartilhar conhecimento com a comunidade!", "duracao": "Outra", "carimbo": "11/08/2026 10:50"}, "t022": {"nome": "Olivar Tamele", "email": "mocolivarbaloi@gmail.com", "whatsapp": "5562982075715", "linkedin": "https://www.linkedin.com/in/olivar-neemias/", "github": null, "motivacao": "É um evento que tenho vontade de participar ja faz um tempo e achei o momento oportuno para compartilhar um pouco de ocnhecimento.", "duracao": "Outra", "carimbo": "11/08/2026 11:22"}, "t023": {"nome": "Victor Castro", "email": "victor.admc@gmail.com", "whatsapp": "5551989331694", "linkedin": "https://www.linkedin.com/in/victor-castro-384256103/", "github": null, "motivacao": "Fui incentivado por um colega que faz parte da organização, Lucas Levandoski", "duracao": "Outra", "carimbo": "11/08/2026 15:43"}, "t024": {"nome": "Robson Júnior", "email": "robson.ga.junior@gmail.com", "whatsapp": "5551993525498", "linkedin": "https://www.linkedin.com/in/robsongajunior/", "github": "https://robsonjunior.dev", "motivacao": "Já palestrei em diversos eventos como Front-In-Poa, RSJS, EATI, TDC e gosto muito de contar sobre meu trabalho nas empresas que atuo.", "duracao": "90 minutos", "carimbo": "11/08/2026 16:31"}, "t025": {"nome": "Renata R Silva", "email": "renata.rodriguesdasilva@outlook.com", "whatsapp": "5511982709249", "linkedin": "https://www.linkedin.com/in/renatarsilvax/", "github": "https://linktr.ee/devmaki?utm_source=qr_code", "motivacao": "Minha maior motivação é mostrar que a maturidade e uma trajetória não linear são superpoderes na tecnologia. Depois de migrar de área aos 30 anos e, em menos de 12 meses, sair do 'Hello World' para uma imersão técnica e internacional em software na Índia, entendi o impacto transformador do ecossistema de comunidades tech. Quero levar ao DevFest POA uma visão prática e estratégica de como aliar fundamentos técnicos, trabalho focado e posicionamento de carreira, inspirando profissionais em diferentes momentos de vida a acelerarem seus resultados no mercado global.", "duracao": "Outra", "carimbo": "12/08/2026 00:11"}, "t026": {"nome": "Gabriella Selbach Staniecki", "email": "gabriellaselbach@gmail.com", "whatsapp": "5553984753016", "linkedin": "https://www.linkedin.com/in/gabriella-selbach/", "github": null, "motivacao": "O evento em si tem sido muito legal, com conteúdos ricos e muito networking. O que me motiva a trazer o conteúdo é poder contribuir com a comunidade, partilhar um pouco dos desafios, do que funcionou e até mesmo como poder evoluir ainda mais.", "duracao": "Outra", "carimbo": "12/08/2026 19:05"}, "t027": {"nome": "Gabriel Schmitt Kohlrausch", "email": "gabriel@elemarjr.com", "whatsapp": "5551999935455", "linkedin": "https://www.linkedin.com/in/gabrielsk/", "github": "https://eximia.co/", "motivacao": "Durante toda minha carreira tenho como objetivo participar de eventos, seja como ouvinte ou como palestrante. Pois acredito que posso ajudar a mudar a vida de pessoas através da troca de conhecimento.", "duracao": "45 minutos", "carimbo": "13/08/2026 17:03"}, "t028": {"nome": "Gabriel Schmitt Kohlrausch", "email": "gabriel@elemarjr.com", "whatsapp": "5551999935455", "linkedin": "https://www.linkedin.com/in/gabrielsk/", "github": "https://eximia.co/", "motivacao": "Durante toda minha carreira tenho como objetivo participar de eventos, seja como ouvinte ou como palestrante. Pois acredito que posso ajudar a mudar a vida das pessoas através da troca de conhecimento.", "duracao": "45 minutos", "carimbo": "13/08/2026 17:42"}, "t029": {"nome": "Gabriel Schmitt Kohlrausch", "email": "gabriel@elemarjr.com", "whatsapp": "5551999935455", "linkedin": "https://www.linkedin.com/in/gabrielsk/", "github": "https://eximia.co/", "motivacao": "Durante toda minha carreira tenho como objetivo participar de eventos, seja como ouvinte ou como palestrante. Pois acredito que posso ajudar a mudar a vida das pessoas através da troca de conhecimento.", "duracao": "45 minutos", "carimbo": "13/08/2026 17:45"}, "t030": {"nome": "Gabriel Schmitt Kohlrausch", "email": "gabriel@elemarjr.com", "whatsapp": "5551999935455", "linkedin": "https://www.linkedin.com/in/gabrielsk/", "github": "https://eximia.co/", "motivacao": "Durante toda minha carreira tenho como objetivo participar de eventos, seja como ouvinte ou como palestrante. Pois acredito que posso ajudar a mudar a vida das pessoas através da troca de conhecimento.", "duracao": "45 minutos", "carimbo": "13/08/2026 17:53"}, "t031": {"nome": "Gabriel Schmitt Kohlrausch", "email": "gabriel@elemarjr.com", "whatsapp": "5551999935455", "linkedin": "https://www.linkedin.com/in/gabrielsk/", "github": "https://eximia.co/", "motivacao": "Durante toda minha carreira tenho como objetivo participar de eventos, seja como ouvinte ou como palestrante. Pois acredito que posso ajudar a mudar a vida das pessoas através da troca de conhecimento.", "duracao": "60 minutos", "carimbo": "13/08/2026 17:57"}, "t032": {"nome": "Pedro Severgnini Bittencourt", "email": "pedrobitten80@gmail.com", "whatsapp": "5551995609987", "linkedin": "https://www.linkedin.com/in/pedro-biittencourt/", "github": null, "motivacao": "Há cerca de quatro anos, passei por um período de solidão e encontrei acolhimento ao conversar com alguém que também enfrentava algo parecido. Essa experiência deu origem à Lumi, uma plataforma que busca criar uma ponte segura entre pessoas que precisam ser ouvidas e voluntários preparados para oferecer presença.\n\nQuero compartilhar como uma experiência pessoal começou a se transformar em um produto real, incluindo as decisões de tecnologia, segurança e responsabilidade necessárias para construir uma solução humana que possa crescer sem perder seu propósito.", "duracao": "45 minutos", "carimbo": "14/08/2026 14:24"}, "t033": {"nome": "Júlia Hackmann Keller", "email": "juliahackmannk@gmail.com", "whatsapp": "5551983095056", "linkedin": "https://www.linkedin.com/in/j%C3%BAlia-keller-298482298/", "github": null, "motivacao": "Durante a minha iniciação científica, comecei a investigar os Dark Patterns presentes nos jogos de azar e entender como determinadas escolhas de design podem influenciar o comportamento de quem está jogando. Quero levar esse tema para o DevFestPoa26 porque acho que é uma discussão que vai além de simplesmente identificar padrões de design. É sobre entender a psicologia por trás dessas experiências e como o design e comportamento acabam se encontrando de maneiras que nem sempre percebemos. Quero compartilhar um pouco do que venho descobrindo na pesquisa e principalmente provocar essa curiosidade em outras pessoas da comunidade.", "duracao": "Outra", "carimbo": "15/08/2026 17:26"}, "t034": {"nome": "Renato machado", "email": "reid0875@gmail.com", "whatsapp": "5551994004829", "linkedin": "https://www.linkedin.com/in/renatomachado8792", "github": "https://github.com/Renato666Jk", "motivacao": "Eu criei uma startup do zero apenas com um caderno e transformei num negócio de entrega com Drones no estado do Paraná na cidade de Toledo onde ganhei a incubação do Biopark o projeto não foi pra frente mas me motivou a estudar programação a fundo e fazer a faculdade de engenharia de software pois na época eu tinha apenas a formação em gestão de processos gerenciais e claro no final da incubação indiciou a era da IA com chat GPT onde eu comecei a usar a IA como uma ferramenta de aprendizado para criação de softwares e aplicativos e eu gostaria de trazer essas vivências e experiência para o evento.", "duracao": "Outra", "carimbo": "16/08/2026 21:17"}, "t035": {"nome": "Eva Freire", "email": "eva.freire@dentsu.com", "whatsapp": "5551998082752", "linkedin": "https://linkedin.com/in/evafreire", "github": "https://não há", "motivacao": "Compartilhar conhecimento, eu gosto de participar e trocas com a comunidade de tecnologia e estarei participando do evento, então seria legal poder ter espaço para levar um pouco do que sei também.", "duracao": "45 minutos", "carimbo": "17/08/2026 17:52"}, "t036": {"nome": "Janine Veigas Farias", "email": "janinefarias2005@gmail.com", "whatsapp": "5553984042964", "linkedin": "https://www.linkedin.com/in/janine-veigas-farias-b73a232ba/", "github": null, "motivacao": "O que me motiva a levar esse conteúdo para o DevFestPoa26 é a minha paixão por cibersegurança e, principalmente, o interesse em explorar uma perspectiva que muitas vezes recebe menos atenção a relação entre nossas escolhas, nossa exposição no ambiente digital e os ataques cibernéticos. Estou quase concluindo minha graduação em Análise e Desenvolvimento de Sistemas e também curso Direito, e venho buscando unir essas duas áreas por meio da participação em um grupo de estudos sobre Cibernética, Cibersegurança e Direito Digital, pesquisas e palestras. Ao estudar cibersegurança, percebi que muitas discussões se concentram em tecnologias, ferramentas e vulnerabilidades técnicas, enquanto pouco se fala sobre como informações que nós mesmos escolhemos compartilhar podem ser utilizadas para construir ataques cada vez mais personalizados. Quero levar essa reflexão ao DevFestPoa26 porque acredito que entender cibersegurança também significa compreender o impacto das nossas próprias decisões, hábitos e comportamentos no ambiente digital. Minha intenção é aproximar esse tema do cotidiano das pessoas e mostrar que segurança digital não começa apenas com uma ferramenta de proteção, mas também com as escolhas que fazemos todos os dias.", "duracao": "Outra", "carimbo": "17/08/2026 19:51"}, "t037": {"nome": "Thiago Pinto Braga", "email": "devthiagobraga@gmail.com", "whatsapp": "5551985784369", "linkedin": "https://www.linkedin.com/in/thiago-p-braga/", "github": "https://github.com/thiagopbraga", "motivacao": "Conversas com outras pessoas sobre IA, sobre como esta meu workflow, coisas que tenho aprendido diariamente sobre o assunto e pequenas talks que tenho feito dentro da empresa que trabalho.", "duracao": "45 minutos", "carimbo": "18/08/2026 15:30"}, "t038": {"nome": "Vilson Blanco Dauinheimer", "email": "bwolfnoob@gmail.com", "whatsapp": "5554999690166", "linkedin": "https://LinkedIn.com/bwolf.dev", "github": "https://Bwolfs2", "motivacao": "Compartilhar com a comunidade", "duracao": "Outra", "carimbo": "18/08/2026 17:17"}, "t039": {"nome": "Luccas Specht", "email": "luccas.specht.dev@gmail.com", "whatsapp": "5551997538450", "linkedin": "https://www.linkedin.com/in/luccas-specht/", "github": null, "motivacao": "Faço parte do GDG a quase 3 anos? 🤔 Gosto do pessoal e das talks, venho trabalhando bastante com AI e DevOps na SAP. Acho que pode ser um conteúdo massa de compartilhar", "duracao": "Outra", "carimbo": "19/08/2026 11:31"}, "t040": {"nome": "Francielli Pinheiro Dias", "email": "franciellipdias@gmail.com", "whatsapp": "5551993723158", "linkedin": "https://www.linkedin.com/in/francielli-pinheiro-dias-32b516187/", "github": "https://franias.github.io/djcremosa.exe/dj-verbosa/", "motivacao": "Olá, me chamo Francielli, estou na área de tecnologia há 10 anos e venho a 7 trabalhando como QA. Em paralelo, nessa trajetória, eu me encontrei na discotecagem e trabalho como DJ há 10 anos, mas somente esse ano de 2026 que resolvi juntar as duas iniciativas e criar música com programação.\nEstudo Strucel.cc, Tidal Cycles e FoxDot, tudo com o SuperCollider que permite a manipulação e criação de sons por meio de linguagem de programação.\nCom isso criei uma performance de livecoding 30 minutos e gostaria de contribuir com a comunidade trazendo músicas aos intervalos, introduzindo quem gosta de música ou toca algum instrumento, as novas tecnologias de produção musical.\nAos curiosos de programação é um jeito de usar as ferramentas de computação para ser criativo, ótimo para renovar os ares talvez mais rígidos e convencionais existentes na indústria.", "duracao": "45 minutos", "carimbo": "19/08/2026 12:23"}, "t041": {"nome": "Mariel Cordeiro", "email": "vianacordeiro@gmail.com", "whatsapp": "5551995737373", "linkedin": "https://www.linkedin.com/in/mariel-cordeiro/", "github": null, "motivacao": "Acho a proposta do evento legal e estou numa fase da carreira que me questiono como contribuir mais com o mercado", "duracao": "Outra", "carimbo": "19/08/2026 15:34"}, "t042": {"nome": "Alessander Franca Queiroz da Costa", "email": "alexfqc.dev@gmail.com", "whatsapp": "5551996922992", "linkedin": "https://www.linkedin.com/in/alexfqc/", "github": null, "motivacao": "O que me motivou é a oportunidade de contribuir com a comunidade e trocar experiências com pessoas de diferentes níveis e trajetórias. Acredito que o conteúdo que quero apresentar pode aproximar conceitos técnicos do javascript de situações reais do desenvolvimento, de forma acessível e relevante. Também vejo o DevFest Porto Alegre como uma ótima oportunidade para fortalecer a comunidade local, criar conexões e aprender com outros profissionais.", "duracao": "45 minutos", "carimbo": "19/08/2026 16:52"}, "t043": {"nome": "Douglas Gomes", "email": "douglas.lentz87@gmail.com", "whatsapp": "5554996745135", "linkedin": "https://www.linkedin.com/in/douglas-gomes-155348263", "github": "https://github.com/dglentz", "motivacao": "Convite de um colega para expor meu trabalho de automação", "duracao": "45 minutos", "carimbo": "19/08/2026 16:54"}, "t044": {"nome": "Tracy Freitas", "email": "prof.tracyfreitas@gmail.com", "whatsapp": "5551999057517", "linkedin": "https://www.linkedin.com/in/tracy-freitas/", "github": null, "motivacao": "Quero contribuir com o DevFest Porto Alegre 2026 porque acredito que estamos vivendo uma mudança profunda na forma como criamos, trabalhamos e inovamos com tecnologia. Minha trajetória transita entre educação, inovação, gestão, empreendedorismo e inteligência artificial, e tenho acompanhado de perto o desafio de transformar as possibilidades da IA em aplicações concretas, acessíveis e relevantes para pessoas, organizações e comunidades.\n\nO tema “Criar, proteger, escalonar” me interessa especialmente porque a era agêntica não é apenas uma evolução técnica: ela exige uma nova forma de pensar produtos, processos, competências e o próprio papel dos profissionais. Quero compartilhar aprendizados práticos sobre como navegar essa transformação, conectando tecnologia, criatividade e desenvolvimento humano.\n\nVejo o DevFest como um espaço fundamental para aproximar diferentes perspectivas e provocar conversas que não terminem apenas na tecnologia que podemos construir, mas avancem para a pergunta mais importante: o que vale a pena construir e como fazemos isso de forma responsável, escalável e com impacto real?\n\nMinha motivação é contribuir para essa conversa trazendo uma perspectiva que conecta IA, criatividade, educação e inovação e, principalmente, provocar a comunidade a experimentar, questionar e construir junto essa nova era.", "duracao": "45 minutos", "carimbo": "19/08/2026 19:03"}, "t045": {"nome": "Ulises Bravo", "email": "ulises.bravo@iilex.com.br", "whatsapp": "5551982329460", "linkedin": "https://www.linkedin.com/in/ulisesbravo/", "github": "https://github.com/ulises-bravo", "motivacao": "Minha principal motivação é dar continuidade à conversa profunda e necessária que iniciamos no DevFest POA no ano passado, mas agora sob a ótica de uma transição histórica sem precedentes na engenharia de software. Em 2025, discutimos o hype, a frustração do desenvolvedor iniciante e o impacto inicial da IA no mercado. Agora, em 2026, o cenário mudou drasticamente: deixamos de usar a IA apenas como um chat de perguntas e respostas para entrar de cabeça na era do desenvolvimento orientado por agentes. A minha forma de retribuir a esta comunidade incrível do GDG Porto Alegre, que sempre me acolheu tão bem, trazer um conteúdo que desmistifica esse novo paradigma.\nPara este ano, minha proposta vai além dos slides teóricos: quero realizar um Lab prático com a comunidade.", "duracao": "60 minutos", "carimbo": "19/08/2026 20:35"}, "t046": {"nome": "Esmael Winter", "email": "esmael_cb@hotmail.com", "whatsapp": "5551997597213", "linkedin": "https://linkedin.com/in/esmael-winter", "github": null, "motivacao": "Convite do Gabriel Coimbra", "duracao": "Outra", "carimbo": "19/08/2026 20:42"}, "t047": {"nome": "Amanda Teles", "email": "amanda.teles457@gmail.com", "whatsapp": "5551992417212", "linkedin": "https://www.linkedin.com/in/amanda-teles04?utm_source=share_via&utm_content=profile&utm_medium=member_ios", "github": null, "motivacao": "Há muito tempo venho querendo compartilhar minhas experiências com outras pessoas, mas em especial mulheres da área de tecnologia. Enxergo a DevFest como uma boa oportunidade para isso.", "duracao": "45 minutos", "carimbo": "19/08/2026 20:53"}, "t048": {"nome": "Gabriel Bronzatti Moro", "email": "gabrielbronzattimoro.es@gmail.com", "whatsapp": "5551999329273", "linkedin": "https://www.linkedin.com/in/gabrielbronzattimoro15031994/", "github": "https://github.com/gabrielbmoro", "motivacao": "Pra colaborar pois acredito que posso mostrar um pouco do que tenho feito utilizando AI no meu dia-a-dia como Desenvolvedor Mobile Sênior", "duracao": "Outra", "carimbo": "20/08/2026 10:14"}, "t049": {"nome": "Nathã Portigliotti e Leonardo Machado", "email": "nportigliotti@gmail.com", "whatsapp": "5551982388738", "linkedin": "https://www.linkedin.com/in/nath%C3%A3-portigliotti-639723112/", "github": null, "motivacao": "A oportunidade de troca de conhecimento, networking e de demonstras o que aprendemos na prática.", "duracao": "Outra", "carimbo": "20/08/2026 10:49"}, "t050": {"nome": "Youssef Bougerra", "email": "youssef@newstart.digital", "whatsapp": "5551997853800", "linkedin": "https://www.linkedin.com/in/ybouguerra/", "github": "https://www.newstart.digital/", "motivacao": "Tenho trabalhado há muitos anos na interseção entre estratégia, arquitetura e transformação tecnológica, e vejo a adoção de IA e agentes criando um desafio interessante: estamos ganhando capacidade de automatizar muito mais rápido do que estamos aprendendo a decidir o que realmente deveria ser automatizado.\n\nQuero levar ao DevFest uma perspectiva prática sobre esse problema, conectando decisões de arquitetura, governança, risco e responsabilidade humana. A ideia é compartilhar um framework que ajude times técnicos a pensar, antes de escalar agentes, sobre autonomia, validação, limites, evidências e accountability.\n\nGosto especialmente da proposta do DevFest POA deste ano porque ela trata a era agêntica não apenas como uma evolução de ferramentas, mas como uma mudança na forma de criar, proteger e escalar sistemas. É justamente nessa fronteira que acredito poder contribuir com experiências reais e uma discussão útil para desenvolvedores, arquitetos e líderes técnicos.", "duracao": "Outra", "carimbo": "20/08/2026 12:02"}, "t051": {"nome": "Darci Neto", "email": "darcineto23@gmail.com", "whatsapp": "5551998919834", "linkedin": "https://www.linkedin.com/in/darcineto/", "github": "https://github.com/darci", "motivacao": "Ter a oportunidade de participar em evento do GDG", "duracao": "Outra", "carimbo": "20/08/2026 15:05"}, "t052": {"nome": "Gabriel Dias - MIKHAEL GROSCHITZ", "email": "contatogbd@gmail.com", "whatsapp": "5551994718989", "linkedin": "https://www.linkedin.com/in/gabrieldias102 e https://linkedin.com/in/mikhael-groschitz", "github": "https://beacons.ai/gabrieldias102 e https://beacons.ai/mgroschitz", "motivacao": "Comunidade, principalmente — nós dois amamos eventos e aprendemos muito com eles, e uma hora dá vontade de devolver. Participar de alguns eventos recentemente foi o empurrão final para compartilhar a nossa experiência. Segurança é carinho antigo, e é onde a gente mais vê dúvida sobre o básico: onde validar, o que nunca confiar. Não é falta de capacidade, é que ninguém ensina. Com IA gerando código nessa velocidade, o básico ficou mais decisivo do que nunca — e é isso que queremos levar para o DevFest.", "duracao": "45 minutos", "carimbo": "20/08/2026 15:09"}, "t053": {"nome": "Vânia Gomes", "email": "vaniagomes.if@gmail.com", "whatsapp": "5519998233015", "linkedin": "https://www.linkedin.com/in/vaniagomes-tech/", "github": "https://github.com/van-gomes", "motivacao": "O que me motivou foi perceber que uma situação real do dia a dia de desenvolvimento poderia se transformar em um aprendizado que vale a pena compartilhar. Trabalho com um sistema legado que possui regras de negócio complexas e, a partir de alguns problemas em um fluxo que já existia há bastante tempo, comecei um trabalho junto com o time de negócio para entender melhor essas regras, estabilizar o sistema e tornar as próximas mudanças mais seguras.\n\nEsse processo tem me ensinado muito sobre investigação, qualidade, testes, retrocompatibilidade e, principalmente, sobre a importância de entender o negócio antes de simplesmente alterar código. Quero compartilhar essa experiência porque acredito que muitas pessoas trabalham com sistemas legados e enfrentam desafios parecidos: corrigir e evoluir algo que precisa continuar funcionando todos os dias, sem ter a liberdade de começar tudo do zero.\n\nTambém vejo o DevFest como uma oportunidade de sair um pouco da minha rotina, trocar experiências com outras pessoas da comunidade e compartilhar não só o que deu certo, mas os aprendizados que vieram dos problemas que encontramos pelo caminho.", "duracao": "Outra", "carimbo": "20/08/2026 16:51"}, "t054": {"nome": "SABRINA SANTOS DA SILVA", "email": "sabrinassantos.silva@gmail.com", "whatsapp": "5551984387534", "linkedin": "https://www.linkedin.com/in/sabrina-santos-architect/", "github": null, "motivacao": "Compartilhar conhecimenbto e ter trocas de experiencias em cases reais e estudos", "duracao": "45 minutos", "carimbo": "20/08/2026 18:51"}, "t055": {"nome": "Morgana Basso", "email": "morgana1basso@gmail.com", "whatsapp": "5554996145903", "linkedin": "https://www.linkedin.com/in/morgana-basso-245b36a0", "github": null, "motivacao": "Vejo o DevFest como um espaço muito rico de troca com a comunidade de tecnologia. Depois de tantos anos atuando na área, tenho cada vez mais vontade de compartilhar experiências, aprender com outras pessoas e contribuir com discussões que vão além do dia a dia técnico.\nTambém vejo essa oportunidade como uma forma de me desafiar, ampliar conexões e participar mais ativamente da comunidade, levando uma perspectiva construída a partir da minha própria trajetória profissional e, ao mesmo tempo, saindo do evento com novos aprendizados e provocações.", "duracao": "Outra", "carimbo": "20/08/2026 20:34"}, "t056": {"nome": "Júlia Martins e Laís Silva", "email": "julia.jmartins18@gmail.com", "whatsapp": "5551989770979", "linkedin": "https://www.linkedin.com/in/j%C3%BAlia-martins-9a1830248?utm_source=share_via&utm_content=profile&utm_medium=member_ios", "github": null, "motivacao": "Acreditamos que temos um assunto muito interessante pra abordar e que podemos ajudar muitas pessoas com isso. Atualmente trabalhamos em um formato bem forte com IA no desenvolvimento mobile e vemos poucas pessoas falando sobre isso, ainda mais sendo duas mulheres.", "duracao": "Outra", "carimbo": "20/08/2026 20:54"}, "t057": {"nome": "Andressa Gaspar", "email": "andressa.mgaspar@gmail.com", "whatsapp": "5551989572044", "linkedin": "https://www.linkedin.com/in/andressa-gaspar/", "github": "https://@dessa.gaspar", "motivacao": "A oportunidade de poder compartilhar um pouco sobre a área para uma comunidade tão massa! Já palestrei no evento e saí feliz sabendo que pelo menos uma sementinha foi plantada, seja para quem está começando na área e com muito receio de continuar ou para quem pensa em desistir no meio. Quero poder contribuir e incentivar de alguma forma (principalmente mulheres) a entrar na carreira e crescer junto.", "duracao": "45 minutos", "carimbo": "20/08/2026 21:25"}, "t058": {"nome": "Andressa Gaspar", "email": "andressa.mgaspar@gmail.com", "whatsapp": "5551989572044", "linkedin": "https://www.linkedin.com/in/andressa-gaspar/", "github": "https://@dessa.gaspar", "motivacao": "Já participei outras vezes e palestrei, então quero muito poder compartilhar novamente um pouco do que sei com a comunidade e incentivar mais mulheres a entrar na área e não desistir da carreira.", "duracao": "45 minutos", "carimbo": "20/08/2026 21:48"}, "t059": {"nome": "Eduardo Neves de Souza", "email": "eduardonevesdesouza1@gmail.com", "whatsapp": "5551998493183", "linkedin": "https://www.linkedin.com/in/eduardo-neves-de-souza", "github": "https://github.com/eduardo-souza-1", "motivacao": "Participei da edição passada do DevFest Porto Alegre e atribuo grande parte do meu crescimento aos profissionais que conheci no evento. Quero retornar agora como palestrante para retribuir à comunidade, compartilhando aprendizados práticos sobre como tornar produtos com LLM mais confiáveis, com qualidade, testes, guardrails e observabilidade.", "duracao": "Outra", "carimbo": "20/08/2026 23:51"}, "t060": {"nome": "Daniel Castro", "email": "danielcastro.rs@gmail.com", "whatsapp": "5551984098522", "linkedin": "https://www.linkedin.com/in/odanieldcs/", "github": null, "motivacao": "O que me motiva é a oportunidade de contribuir com a comunidade compartilhando experiências que venho acumulando na prática. Ao longo da minha carreira, eventos de tecnologia tiveram um papel importante na minha evolução, tanto pelo conhecimento que adquiri quanto pelas trocas com outras pessoas. Quero levar um pouco dessa experiência ao DevFest POA, especialmente em um momento em que a IA está mudando nosso mercado e não apenas como escrevemos código, mas também como pensamos e conduzimos o processo de engenharia de software.", "duracao": "60 minutos", "carimbo": "20/08/2026 23:55"}}
 ;
 TALKS.forEach(t => { t.contato = CONTACTS[t.id] || null; });
+
+/* ---------------- grade oficial do evento ---------------- */
+const SCHEDULE = {"auditorio": [{"start": "09h", "end": "09h15", "type": "Abertura", "title": "", "speaker": "", "raw": "Abertura no palco principal com transmissão para o pátio", "talk_id": null, "startMin": 540, "endMin": 555}, {"start": "09h15", "end": "10h10", "type": "Palestra", "title": "Elemar", "speaker": "", "raw": "Palestra - Elemar", "talk_id": null, "startMin": 555, "endMin": 610}, {"start": "10h10", "end": "10h50", "type": "Palestra", "title": "Build. Scale. Breathe. — Performance sustentável para quem vive de tecnologia", "speaker": "Morgana Basso", "raw": "Palestra - Build. Scale. Breathe. — Performance sustentável para quem vive de tecnologia - Morgana Basso", "talk_id": "t055", "startMin": 610, "endMin": 650}, {"start": "10h50", "end": "11h30", "type": "Palestra patrocinada", "title": "O NOVO JOGO DAS CONTRATAÇÕES EM TI: Como as empresas vão escolher os profissionais do futuro.", "speaker": "André Streppel", "raw": "Palestra patrocinada - O NOVO JOGO DAS CONTRATAÇÕES EM TI: Como as empresas vão escolher os profissionais do futuro. - André Streppel", "talk_id": null, "startMin": 650, "endMin": 690}, {"start": "11h30", "end": "12h15", "type": "Palestra", "title": "On-Device vs. Cloud: Quando (e como) rodar modelos localmente para reduzir latência e custos", "speaker": "Olivar Tamele", "raw": "Palestra - On-Device vs. Cloud: Quando (e como) rodar modelos localmente para reduzir latência e custos - Olivar Tamele", "talk_id": "t022", "startMin": 690, "endMin": 735}, {"start": "12h15", "end": "13h30", "type": "Almoço", "title": "", "speaker": "", "raw": "Almoço", "talk_id": null, "startMin": 735, "endMin": 810}, {"start": "13h30", "end": "13h40", "type": "Info", "title": "", "speaker": "", "raw": "Retomada avisos paroquiais", "talk_id": null, "startMin": 810, "endMin": 820}, {"start": "13h40", "end": "14h20", "type": "Palestra patrocinada", "title": "Design System não é uma biblioteca: é o contrato entre design e código", "speaker": "Rafael Nunes", "raw": "Palestra patrocinada - Design System não é uma biblioteca: é o contrato entre design e código - Rafael Nunes", "talk_id": null, "startMin": 820, "endMin": 860}, {"start": "14h20", "end": "15h10", "type": "Palestra", "title": "Pessoas conta histórias. O código conta fatos: como tomar decisões melhores a partir dos sinais da engenharia", "speaker": "Gabriel Schmitt Kohlrausch", "raw": "Palestra - Pessoas conta histórias. O código conta fatos: como tomar decisões melhores a partir dos sinais da engenharia - Gabriel Schmitt Kohlrausch", "talk_id": "t029", "startMin": 860, "endMin": 910}, {"start": "15h10", "end": "15h20", "type": "Info", "title": "", "speaker": "", "raw": "Espaço dinâmicas", "talk_id": null, "startMin": 910, "endMin": 920}, {"start": "15h30", "end": "16h15", "type": "Coffee break", "title": "", "speaker": "", "raw": "Coffee break", "talk_id": null, "startMin": 930, "endMin": 975}, {"start": "16h15", "end": "16h55", "type": "Palestra patrocinada", "title": "Design to Code: IA e Acessibilidade", "speaker": "Gustavo Diefenbach e Schar Queiroz", "raw": "Palestra patrocinada - Design to Code: IA e Acessibilidade - Gustavo Diefenbach e Schar Queiroz", "talk_id": null, "startMin": 975, "endMin": 1015}, {"start": "17h", "end": "17h", "type": "Encerramento", "title": "", "speaker": "", "raw": "Encaminhar para o encerramento", "talk_id": null, "startMin": 1020, "endMin": 1030}, {"start": "17h", "end": "17h40", "type": "Encerramento", "title": "", "speaker": "", "raw": "Encerramento no palco principal com transmissão para o pátio", "talk_id": null, "startMin": 1020, "endMin": 1060}], "trilha1": [{"start": "09h15", "end": "10h", "type": "Palestra", "title": "Grandes mentes pensam igual", "speaker": "Ricardo da Silva Ogliari", "raw": "Palestra - Grandes mentes pensam igual - Ricardo da Silva Ogliari", "talk_id": "t008", "startMin": 555, "endMin": 600}, {"start": "10h", "end": "10h45", "type": "Palestra", "title": "Design System + IA: construindo interfaces Flutter com precisão", "speaker": "Gabriel Bronzatti Moro", "raw": "Palestra - Design System + IA: construindo interfaces Flutter com precisão - Gabriel Bronzatti Moro", "talk_id": "t048", "startMin": 600, "endMin": 645}, {"start": "10h45", "end": "11h30", "type": "Palestra", "title": "O caminho curto que a gente descobriu do jeito longo - IA no desenvolvimento mobile: por onde começar e o que evitar", "speaker": "Júlia Martins e Laís Silva", "raw": "Palestra - O caminho curto que a gente descobriu do jeito longo - IA no desenvolvimento mobile: por onde começar e o que evitar - Júlia Martins e Laís Silva", "talk_id": "t056", "startMin": 645, "endMin": 690}, {"start": "11h30", "end": "12h15", "type": "Palestra", "title": "Além do console.log: Telemetreia de ponta a ponta com Angular e .Net", "speaker": "Esmael Winter", "raw": "Além do console.log: Telemetreia de ponta a ponta com Angular e .Net - Esmael Winter", "talk_id": "t046", "startMin": 690, "endMin": 735}, {"start": "12h15", "end": "13h30", "type": "Almoço", "title": "", "speaker": "", "raw": "Almoço", "talk_id": null, "startMin": 735, "endMin": 810}, {"start": "13h30", "end": "13h45", "type": "Dinâmica", "title": "", "speaker": "", "raw": "Dinâmica", "talk_id": null, "startMin": 810, "endMin": 825}, {"start": "13h45", "end": "14h30", "type": "Palestra", "title": "Utilizando Maestro para Automação de Testes Mobile", "speaker": "Aline Zanin", "raw": "Palestra - Utilizando Maestro para Automação de Testes Mobile - Aline Zanin", "talk_id": "t001", "startMin": 825, "endMin": 870}, {"start": "14h30", "end": "15h10", "type": "Palestra", "title": "O que é e porque algumas pessoas ainda insistem em Flutter", "speaker": "Bwolf", "raw": "Palestra - O que é e porque algumas pessoas ainda insistem em Flutter - Bwolf", "talk_id": "t038", "startMin": 870, "endMin": 910}, {"start": "15h30", "end": "16h15", "type": "Coffee break", "title": "", "speaker": "", "raw": "Coffee break", "talk_id": null, "startMin": 930, "endMin": 975}, {"start": "16h15", "end": "16h55", "type": "Palestra", "title": "Mobile Architecture para a Era da IA", "speaker": "Gabriel Moro", "raw": "Palestra - Mobile Architecture para a Era da IA\n- Gabriel Moro", "talk_id": "t012", "startMin": 975, "endMin": 1015}, {"start": "17h", "end": "17h", "type": "Encerramento", "title": "", "speaker": "", "raw": "Encaminhar para o encerramento", "talk_id": null, "startMin": 1020, "endMin": 1030}, {"start": "17h", "end": "17h40", "type": "Encerramento", "title": "", "speaker": "", "raw": "Encerramento no palco principal com transmissão para o pátio", "talk_id": null, "startMin": 1020, "endMin": 1060}], "trilha2": [{"start": "09h15", "end": "10h", "type": "Palestra", "title": "Mulheres na Tecnologia: Construindo uma Trajetória de Impacto na Jornada do Cliente e Liderança de Projetos", "speaker": "Michele dos Santos Scheffel", "raw": "Palestra - Mulheres na Tecnologia: Construindo uma Trajetória de Impacto na Jornada do Cliente e Liderança de Projetos - Michele dos Santos Scheffel", "talk_id": "t006", "startMin": 555, "endMin": 600}, {"start": "10h", "end": "10h45", "type": "Palestra", "title": "Deploy sem barreira: Module Federation na prática", "speaker": "Luiz Rebelatto", "raw": "Deploy sem barreira: Module Federation na prática - Luiz Rebelatto", "talk_id": "t010", "startMin": 600, "endMin": 645}, {"start": "10h45", "end": "11h30", "type": "Palestra", "title": "Release Management: Muito Além do Deploy", "speaker": "Nathalia Karnas", "raw": "Palestra - Release Management: Muito Além do Deploy - Nathalia Karnas", "talk_id": "t018", "startMin": 645, "endMin": 690}, {"start": "11h30", "end": "12h15", "type": "Palestra", "title": "Escalonando o Impacto: Gestão de Engenharia, Maturidade e Produtividade na Era Agêntica", "speaker": "GUILHERME SOARES", "raw": "Palestra - Escalonando o Impacto: Gestão de Engenharia, Maturidade e Produtividade na Era Agêntica - GUILHERME SOARES", "talk_id": "t011", "startMin": 690, "endMin": 735}, {"start": "12h15", "end": "13h30", "type": "Almoço", "title": "", "speaker": "", "raw": "Almoço", "talk_id": null, "startMin": 735, "endMin": 810}, {"start": "13h30", "end": "13h45", "type": "Dinâmica", "title": "", "speaker": "", "raw": "Dinâmica", "talk_id": null, "startMin": 810, "endMin": 825}, {"start": "13h45", "end": "14h20", "type": "Palestra", "title": "Quando Engenharia, Produto e Negócio Colidem: O Papel do Líder Técnico", "speaker": "Valeria Baptista", "raw": "Palestra - Quando Engenharia, Produto e Negócio Colidem: O Papel do Líder Técnico - Valeria Baptista", "talk_id": "t013", "startMin": 825, "endMin": 860}, {"start": "14h20", "end": "15h", "type": "Palestra", "title": "A IA sabe programar. Mas ela sabe o que deveria ser construído?", "speaker": "Gabriella Selbach Staniecki", "raw": "Palestra - A IA sabe programar. Mas ela sabe o que deveria ser construído? - Gabriella Selbach Staniecki", "talk_id": "t026", "startMin": 860, "endMin": 900}, {"start": "15h", "end": "15h30", "type": "Palestra", "title": "Toda lacuna vira uma decisão do modelo: como fugir do AI slop", "speaker": "Thiago Xikota", "raw": "Palestra - Toda lacuna vira uma decisão do modelo: como fugir do AI slop - Thiago Xikota", "talk_id": "t016", "startMin": 900, "endMin": 930}, {"start": "15h30", "end": "16h15", "type": "Coffee break", "title": "", "speaker": "", "raw": "Coffee break", "talk_id": null, "startMin": 930, "endMin": 975}, {"start": "16h15", "end": "16h55", "type": "Palestra", "title": "Por trás de um emoji", "speaker": "Mario Mário de Araújo Jr", "raw": "Palestra - Por trás de um emoji - Mario Mário de Araújo Jr", "talk_id": "t021", "startMin": 975, "endMin": 1015}, {"start": "17h", "end": "17h", "type": "Encerramento", "title": "", "speaker": "", "raw": "Encaminhar para o encerramento", "talk_id": null, "startMin": 1020, "endMin": 1030}, {"start": "17h", "end": "17h40", "type": "Encerramento", "title": "", "speaker": "", "raw": "Encerramento no palco principal com transmissão para o pátio", "talk_id": null, "startMin": 1020, "endMin": 1060}], "trilha3": [{"start": "09h15", "end": "09h55", "type": "Palestra", "title": "Entre escolhas e ameaças: o fator humano na cibersegurança", "speaker": "Janine Veigas Farias", "raw": "Palestra - Entre escolhas e ameaças: o fator humano na cibersegurança - Janine Veigas Farias", "talk_id": "t036", "startMin": 555, "endMin": 595}, {"start": "09h55", "end": "10h40", "type": "Lab", "title": "Confia, mas confere — o básico de segurança - Gabriel Dias", "speaker": "MIKHAEL GROSCHITZ", "raw": "Lab - Confia, mas confere — o básico de segurança - Gabriel Dias - MIKHAEL GROSCHITZ", "talk_id": "t052", "startMin": 595, "endMin": 640}, {"start": "10h40", "end": "12h15", "type": "Workshop", "title": "Quem é a máquina? Construa em 90 minutos o impostor que vai enganar o DevFest inteiro", "speaker": "Gabul", "raw": "Workshop - Quem é a máquina? Construa em 90 minutos o impostor que vai enganar o DevFest inteiro - Gabul", "talk_id": null, "startMin": 640, "endMin": 735}, {"start": "11h55", "end": "13h30", "type": "Almoço", "title": "", "speaker": "", "raw": "Almoço", "talk_id": null, "startMin": 715, "endMin": 810}, {"start": "13h30", "end": "13h45", "type": "Dinâmica", "title": "", "speaker": "", "raw": "Dinâmica", "talk_id": null, "startMin": 810, "endMin": 825}, {"start": "13h45", "end": "14h45", "type": "Workshop", "title": "A Autópsia da IA: Como a máquina realmente enxerga, pensa e toma decisões", "speaker": "Vittor Britis", "raw": "Workshop - A Autópsia da IA: Como a máquina realmente enxerga, pensa e toma decisões - Vittor Britis", "talk_id": null, "startMin": 825, "endMin": 885}, {"start": "14h45", "end": "15h30", "type": "Palestra", "title": "IA confiável não nasce no prompt: qualidade, testes e guardrails em produtos com LLM", "speaker": "Eduardo Neves de Souza", "raw": "IA confiável não nasce no prompt: qualidade, testes e guardrails em produtos com LLM - Eduardo Neves de Souza", "talk_id": "t059", "startMin": 885, "endMin": 930}, {"start": "15h30", "end": "16h15", "type": "Coffee break", "title": "", "speaker": "", "raw": "Coffee break", "talk_id": null, "startMin": 930, "endMin": 975}, {"start": "16h15", "end": "17h", "type": "Palestra", "title": "DORA na Era da IA: Medindo Impacto sem Criar Métricas que Enganam", "speaker": "Darci Neto", "raw": "DORA na Era da IA: Medindo Impacto sem Criar Métricas que Enganam - Darci Neto", "talk_id": "t051", "startMin": 975, "endMin": 1020}, {"start": "17h", "end": "17h", "type": "Encerramento", "title": "", "speaker": "", "raw": "encaminhar para o encerramento", "talk_id": null, "startMin": 1020, "endMin": 1030}, {"start": "17h", "end": "17h40", "type": "Encerramento", "title": "", "speaker": "", "raw": "Encerramento no palco principal com transmissão para o pátio", "talk_id": null, "startMin": 1020, "endMin": 1060}], "trilha4": [{"start": "09h15", "end": "10h", "type": "Palestra", "title": "AI Agentcs: SDD - Spec Driven Development no SLDC - Ciclo de desenvolvimento de software e Graph Engennier", "speaker": "SABRINA SANTOS DA SILVA", "raw": "Palestra AI Agentcs: SDD - Spec Driven Development no SLDC - Ciclo de desenvolvimento de software e Graph Engennier - SABRINA SANTOS DA SILVA", "talk_id": "t054", "startMin": 555, "endMin": 600}, {"start": "10h", "end": "11h", "type": "Workshop", "title": "Magalu Cloud (a confirmar)", "speaker": "Valéria Baptista", "raw": "EM STAND BY -  Workshop - Magalu Cloud - Valeria Baptista", "talk_id": null, "pending": true, "startMin": 600, "endMin": 660}, {"start": "11h", "end": "12h", "type": "Workshop", "title": "Seu 1º RAG de Bolso: construindo com Clean Code para Agentes", "speaker": "Ulises Bravo", "raw": "Workshop - Seu 1º RAG de Bolso: construindo com Clean Code para Agentes - Ulises Bravo", "talk_id": "t045", "startMin": 660, "endMin": 720}, {"start": "12h15", "end": "13h30", "type": "Almoço", "title": "", "speaker": "", "raw": "Almoço", "talk_id": null, "startMin": 735, "endMin": 810}, {"start": "13h30", "end": "13h45", "type": "Dinâmica", "title": "", "speaker": "", "raw": "Dinâmica", "talk_id": null, "startMin": 810, "endMin": 825}, {"start": "13h45", "end": "14h30", "type": "Palestra", "title": "Orquestrando Data Pipelines com Leoflow no GKE e BigQuer", "speaker": "Alisson David", "raw": "Palestra - Orquestrando Data Pipelines com Leoflow no GKE e BigQuer - Alisson David", "talk_id": null, "startMin": 825, "endMin": 870}, {"start": "14h30", "end": "15h15", "type": "Palestra", "title": "Antes de escalar agentes: cinco decisões de arquitetura e governança que evitam a automação errada", "speaker": "Youssef Bouguerra", "raw": "Antes de escalar agentes: cinco decisões de arquitetura e governança que evitam a automação errada - Youssef Bouguerra", "talk_id": "t050", "startMin": 870, "endMin": 915}, {"start": "15h30", "end": "16h15", "type": "Coffee break", "title": "", "speaker": "", "raw": "Coffee break", "talk_id": null, "startMin": 930, "endMin": 975}, {"start": "16h15", "end": "17h", "type": "Palestra", "title": "De dias para minutos: automatizando engenharia CAD com Python, APIs e agentes inteligentes", "speaker": "Douglas Gomes", "raw": "Palestra - De dias para minutos: automatizando engenharia CAD com Python, APIs e agentes inteligentes - Douglas Gomes", "talk_id": "t043", "startMin": 975, "endMin": 1020}, {"start": "17h", "end": "17h", "type": "Encerramento", "title": "", "speaker": "", "raw": "encaminhar para o encerramento", "talk_id": null, "startMin": 1020, "endMin": 1030}, {"start": "17h", "end": "17h40", "type": "Encerramento", "title": "", "speaker": "", "raw": "Encerramento no palco principal com transmissão para o pátio", "talk_id": null, "startMin": 1020, "endMin": 1060}], "networking": [{"start": "09h30", "end": "10h30", "type": "Mentoria", "title": "para Tech Leads: o que realmente sustenta um time de engenharia de alta performance", "speaker": "Gabriel Schmitt Kohlrausch", "raw": "Mentoria para Tech Leads: o que realmente sustenta um time de engenharia de alta performance - Gabriel Schmitt Kohlrausch", "talk_id": "t031", "startMin": 570, "endMin": 630}, {"start": "10h45", "end": "11h35", "type": "Roda de conversa", "title": "sobre Produto", "speaker": "Comunidade Produteiros", "raw": "Roda de conversa sobre Produto - Comunidade Produteiros", "talk_id": null, "startMin": 645, "endMin": 695}, {"start": "12h15", "end": "13h30", "type": "Almoço", "title": "", "speaker": "", "raw": "Almoço", "talk_id": null, "startMin": 735, "endMin": 810}, {"start": "13h45", "end": "14h35", "type": "Roda de conversa", "title": "Liderança, performande e produtividade", "speaker": "", "raw": "Roda de conversa - Liderança, performande e produtividade", "talk_id": null, "startMin": 825, "endMin": 875}, {"start": "15h30", "end": "16h15", "type": "Coffee break", "title": "", "speaker": "", "raw": "Coffee break", "talk_id": null, "startMin": 930, "endMin": 975}, {"start": "17h", "end": "17h", "type": "Encerramento", "title": "", "speaker": "", "raw": "encaminhar para o encerramento", "talk_id": null, "startMin": 1020, "endMin": 1030}, {"start": "17h", "end": "17h40", "type": "Encerramento", "title": "", "speaker": "", "raw": "Encerramento no palco principal com transmissão para o pátio", "talk_id": null, "startMin": 1020, "endMin": 1060}]};
+
+// Nomes temáticos das 4 trilhas, cruzando os 3 pilares do tema do evento
+// ("Criar, proteger, escalonar: desenvolvedores e criadores na era agêntica")
+// com a identidade visual de Halloween do DevFestPoa26 (31/10/2026 —
+// "Nem todo monstro mora debaixo da cama. Alguns estão no seu código.").
+const TRACK_NAMES = {
+  trilha1: {
+    emoji: '🧙‍♀️',
+    nome: 'Trilha da Bruxa',
+    subtitulo: 'Mobile, Frontend & Design',
+    pilar: null,
+    hue: 285,
+  },
+  trilha2: {
+    emoji: '🐺',
+    nome: 'Trilha do Lobisomem',
+    subtitulo: 'Liderança, Carreira & Escala',
+    pilar: 'Escalonar',
+    hue: 28,
+  },
+  trilha3: {
+    emoji: '🧛',
+    nome: 'Trilha do Vampiro',
+    subtitulo: 'Segurança & Qualidade',
+    pilar: 'Proteger',
+    hue: 350,
+  },
+  trilha4: {
+    emoji: '🧟',
+    nome: 'Trilha Frankenstein',
+    subtitulo: 'IA, Agentes & Dados',
+    pilar: 'Criar',
+    hue: 152,
+  },
+};
+const VENUE_ORDER = ['auditorio', 'trilha1', 'trilha2', 'trilha3', 'trilha4', 'networking'];
+const VENUE_LABELS = {
+  auditorio: { emoji: '🎤', nome: 'Auditório' },
+  trilha1: { emoji: TRACK_NAMES.trilha1.emoji, nome: TRACK_NAMES.trilha1.nome },
+  trilha2: { emoji: TRACK_NAMES.trilha2.emoji, nome: TRACK_NAMES.trilha2.nome },
+  trilha3: { emoji: TRACK_NAMES.trilha3.emoji, nome: TRACK_NAMES.trilha3.nome },
+  trilha4: { emoji: TRACK_NAMES.trilha4.emoji, nome: TRACK_NAMES.trilha4.nome },
+  networking: { emoji: '🤝', nome: 'Sala de Networking' },
+};
+
 
 // Gênero inferido pelo primeiro nome da pessoa palestrante (não é um dado que ela
 // preencheu no formulário — é só uma estimativa a partir do nome, revisada manualmente
@@ -1539,6 +1775,19 @@ function render(){
     topRight.appendChild(resultsBtn);
   }
 
+  const gradeBtn = document.createElement('button');
+  gradeBtn.className = 'link-btn';
+  gradeBtn.textContent = view === 'grade' ? '← Voltar' : '📅 Grade oficial';
+  gradeBtn.onclick = () => {
+    if(view === 'grade'){
+      view = isAdminEmail(voterEmail) ? 'results' : (cursor >= order.length ? 'locked' : 'voting');
+    } else {
+      view = 'grade';
+    }
+    render();
+  };
+  topRight.appendChild(gradeBtn);
+
   if(view === 'voting'){
     const answered = Object.keys(votes).length;
     progressFill.style.width = (answered/order.length*100) + '%';
@@ -1554,6 +1803,11 @@ function render(){
 
   if(view === 'results'){
     renderResults(stage);
+    return;
+  }
+
+  if(view === 'grade'){
+    renderGradeOficial(stage);
     return;
   }
 }
@@ -1770,6 +2024,198 @@ function renderLocked(stage){
     view = 'landing';
     render();
   };
+}
+
+/* ================= GRADE OFICIAL DO EVENTO ================= */
+let gradeTab = 'dia'; // dia | trilha | horario
+let gradeSelectedVenue = 'auditorio';
+const GRADE_DAY_START = 9 * 60;   // 09:00
+const GRADE_DAY_END = 17 * 60 + 40; // 17:40
+const GRADE_PX_PER_MIN = 1.7;
+
+const PAUSA_TYPES = new Set(['Almoço', 'Coffee break', 'Dinâmica', 'Info', 'Encerramento', 'Abertura']);
+const TYPE_HUE = {
+  'Palestra': 195,
+  'Palestra patrocinada': 45,
+  'Workshop': 268,
+  'Lab': 12,
+  'Roda de conversa': 322,
+  'Mentoria': 118,
+};
+function typeStyle(type){
+  if(PAUSA_TYPES.has(type)) return '';
+  const hue = TYPE_HUE[type] ?? 210;
+  return `border-left-color:hsl(${hue} 70% 60%); background:hsla(${hue},70%,60%,0.10);`;
+}
+function typeBadgeStyle(type){
+  const hue = TYPE_HUE[type] ?? 210;
+  return `color:hsl(${hue} 75% 68%); background:hsla(${hue},75%,68%,0.14);`;
+}
+function fmtMin(min){
+  const h = Math.floor(min/60), m = min%60;
+  return `${String(h).padStart(2,'0')}h${m ? String(m).padStart(2,'0') : ''}`;
+}
+
+function renderGradeOficial(stage){
+  stage.innerHTML = `
+    <div class="grade-wrap">
+      <div class="grade-header">
+        <div class="theme-line">
+          <span class="theme-word c">Criar</span>·
+          <span class="theme-word p">proteger</span>·
+          <span class="theme-word s">escalonar</span>
+        </div>
+        <h2 class="grade-title">Grade oficial · DevFestPoa26</h2>
+        <p class="grade-subtitle">31 de outubro de 2026 · Faculdade Dom Bosco, Porto Alegre — 🎃 edição de Halloween</p>
+        <div class="grade-track-legend">
+          ${['trilha1','trilha2','trilha3','trilha4'].map(v => {
+            const t = TRACK_NAMES[v];
+            return `<div class="grade-legend-chip" style="border-color:hsla(${t.hue},70%,65%,0.4); background:hsla(${t.hue},70%,65%,0.08);">
+              <span class="grade-legend-emoji">${t.emoji}</span>
+              <span>
+                <div class="grade-legend-name" style="color:hsl(${t.hue} 75% 70%)">${t.nome}${t.pilar ? ` <span class="grade-legend-pilar">· ${t.pilar}</span>` : ''}</div>
+                <div class="grade-legend-sub">${t.subtitulo}</div>
+              </span>
+            </div>`;
+          }).join('')}
+        </div>
+        <div class="admin-tabs grade-tabs">
+          <button class="tab-btn ${gradeTab==='dia' ? 'active' : ''}" id="gradeTabDia">Dia completo</button>
+          <button class="tab-btn ${gradeTab==='trilha' ? 'active' : ''}" id="gradeTabTrilha">Por trilha</button>
+          <button class="tab-btn ${gradeTab==='horario' ? 'active' : ''}" id="gradeTabHorario">Por horário</button>
+        </div>
+      </div>
+      <div id="gradeBody"></div>
+    </div>
+  `;
+  document.getElementById('gradeTabDia').onclick = () => { gradeTab='dia'; render(); };
+  document.getElementById('gradeTabTrilha').onclick = () => { gradeTab='trilha'; render(); };
+  document.getElementById('gradeTabHorario').onclick = () => { gradeTab='horario'; render(); };
+
+  const body = document.getElementById('gradeBody');
+  if(gradeTab === 'dia') renderGradeDia(body);
+  else if(gradeTab === 'trilha') renderGradeTrilha(body);
+  else renderGradeHorario(body);
+}
+
+function gradeItemInner(it){
+  const clickable = !!it.talk_id;
+  const badge = `<span class="grade-item-badge" style="${typeBadgeStyle(it.type)}">${it.type}</span>`;
+  const pending = it.pending ? `<span class="grade-pending">a confirmar</span>` : '';
+  if(PAUSA_TYPES.has(it.type)){
+    return `<div class="grade-pausa-inner">${it.type}${it.raw && it.type==='Info' ? `<span class="grade-pausa-raw">${it.raw}</span>` : ''}</div>`;
+  }
+  return `
+    <div class="grade-item-time">${it.start} – ${it.end}</div>
+    ${badge} ${pending}
+    <div class="grade-item-title ${clickable ? 'grade-item-linkable' : ''}">${it.title || it.raw}</div>
+    ${it.speaker ? `<div class="grade-item-speaker">${it.speaker}</div>` : ''}
+  `;
+}
+
+function renderGradeDia(body){
+  const totalMin = GRADE_DAY_END - GRADE_DAY_START;
+  const totalHeight = totalMin * GRADE_PX_PER_MIN;
+  const hourMarks = [];
+  for(let m = Math.ceil(GRADE_DAY_START/60)*60; m <= GRADE_DAY_END; m += 60){
+    hourMarks.push(m);
+  }
+
+  body.innerHTML = `
+    <div class="grade-day-scroll">
+      <div class="grade-day-header">
+        <div class="grade-time-gutter-header"></div>
+        ${VENUE_ORDER.map(v => {
+          const label = VENUE_LABELS[v];
+          const t = TRACK_NAMES[v];
+          return `<div class="grade-venue-header" ${t ? `style="border-top-color:hsl(${t.hue} 70% 60%)"` : ''}>
+            <div class="grade-venue-emoji">${label.emoji}</div>
+            <div class="grade-venue-name">${label.nome}</div>
+            ${t ? `<div class="grade-venue-sub">${t.subtitulo}</div>` : ''}
+          </div>`;
+        }).join('')}
+      </div>
+      <div class="grade-day-body" style="height:${totalHeight}px">
+        <div class="grade-time-gutter" style="height:${totalHeight}px">
+          ${hourMarks.map(m => `<div class="grade-hour-mark" style="top:${(m-GRADE_DAY_START)*GRADE_PX_PER_MIN}px">${fmtMin(m)}</div>`).join('')}
+        </div>
+        ${VENUE_ORDER.map(v => `
+          <div class="grade-venue-col" style="height:${totalHeight}px">
+            ${hourMarks.map(m => `<div class="grade-hour-line" style="top:${(m-GRADE_DAY_START)*GRADE_PX_PER_MIN}px"></div>`).join('')}
+            ${(SCHEDULE[v]||[]).map(it => {
+              const top = (it.startMin - GRADE_DAY_START) * GRADE_PX_PER_MIN;
+              const height = Math.max((it.endMin - it.startMin) * GRADE_PX_PER_MIN - 3, 16);
+              const cls = PAUSA_TYPES.has(it.type) ? 'grade-item grade-item-pausa' : 'grade-item';
+              return `<div class="${cls} ${it.talk_id ? 'clickable-card' : ''}" data-talk-id="${it.talk_id||''}" style="top:${top}px; height:${height}px; ${typeStyle(it.type)}">${gradeItemInner(it)}</div>`;
+            }).join('')}
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+  wireGradeClickables(body);
+}
+
+function renderGradeTrilha(body){
+  body.innerHTML = `
+    <div class="track-pills grade-venue-pills">
+      ${VENUE_ORDER.map(v => {
+        const label = VENUE_LABELS[v];
+        return `<button class="track-pill ${gradeSelectedVenue===v ? 'active' : ''}" data-venue="${v}">${label.emoji} ${label.nome}</button>`;
+      }).join('')}
+    </div>
+    <div class="grade-agenda-list">
+      ${(SCHEDULE[gradeSelectedVenue]||[]).map(it => {
+        const cls = PAUSA_TYPES.has(it.type) ? 'grade-agenda-item grade-item-pausa' : 'grade-agenda-item';
+        return `<div class="${cls} ${it.talk_id ? 'clickable-card' : ''}" data-talk-id="${it.talk_id||''}" style="${typeStyle(it.type)}">${gradeItemInner(it)}</div>`;
+      }).join('')}
+    </div>
+  `;
+  body.querySelectorAll('.grade-venue-pills .track-pill').forEach(btn => {
+    btn.onclick = () => { gradeSelectedVenue = btn.dataset.venue; render(); };
+  });
+  wireGradeClickables(body);
+}
+
+function renderGradeHorario(body){
+  const byTime = {};
+  VENUE_ORDER.forEach(v => {
+    (SCHEDULE[v]||[]).forEach(it => {
+      if(!byTime[it.startMin]) byTime[it.startMin] = [];
+      byTime[it.startMin].push({venue: v, item: it});
+    });
+  });
+  const times = Object.keys(byTime).map(Number).sort((a,b) => a-b);
+
+  body.innerHTML = `
+    <div class="grade-horario-list">
+      ${times.map(t => `
+        <div class="grade-horario-block">
+          <div class="grade-horario-time">${fmtMin(t)}</div>
+          <div class="grade-horario-row">
+            ${byTime[t].map(({venue, item}) => {
+              const label = VENUE_LABELS[venue];
+              const cls = PAUSA_TYPES.has(item.type) ? 'grade-horario-card grade-item-pausa' : 'grade-horario-card';
+              return `
+                <div class="${cls} ${item.talk_id ? 'clickable-card' : ''}" data-talk-id="${item.talk_id||''}" style="${typeStyle(item.type)}">
+                  <div class="grade-horario-venue">${label.emoji} ${label.nome}</div>
+                  ${gradeItemInner(item)}
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  wireGradeClickables(body);
+}
+
+function wireGradeClickables(container){
+  container.querySelectorAll('.clickable-card[data-talk-id]').forEach(el => {
+    if(!el.dataset.talkId) return;
+    el.onclick = () => openTalkDetail(el.dataset.talkId);
+  });
 }
 
 /* ---------------- results (aggregated across all voters) ---------------- */
