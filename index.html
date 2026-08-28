@@ -1596,15 +1596,10 @@ async function init(){
       render();
       return;
     }
-    const parsed = await backendGetVoter(voterId);
-    if(parsed){
-      order = parsed.order;
-      votes = parsed.votes || {};
-      cursor = firstUnanswered();
-      view = (cursor >= order.length) ? 'locked' : 'voting';
-      render();
-      return;
-    }
+    // votação encerrada para quem não é admin — vai direto pra grade oficial
+    view = 'grade';
+    render();
+    return;
   }
   view = 'landing';
   render();
@@ -1629,32 +1624,15 @@ async function startSession(rawEmail){
   await sSet('device-voter-id', voterId, false);
 
   if(isAdminEmail(email)){
-    // administradores só visualizam o ranking, não entram no fluxo de votação
+    // administradores continuam vendo tudo: ranking, trilhas, progresso e grade
     view = 'results';
     render();
     return;
   }
 
-  const existing = await backendGetVoter(voterId);
-  if(existing){
-    order = existing.order;
-    votes = existing.votes || {};
-    if(Object.keys(votes).length >= order.length){
-      view = 'locked';
-      render();
-      return;
-    }
-    cursor = firstUnanswered();
-    view = 'voting';
-    render();
-    return;
-  }
-
-  order = shuffle(TALKS.map(t=>t.id), seedFromString(voterId));
-  votes = {};
-  cursor = 0;
-  await persist();
-  view = 'voting';
+  // votação encerrada — qualquer outro e-mail vai direto pra grade oficial,
+  // sem entrar no fluxo de votação nem ver o ranking
+  view = 'grade';
   render();
 }
 
@@ -1796,20 +1774,21 @@ function render(){
     resultsBtn.textContent = 'Atualizar ranking';
     resultsBtn.onclick = () => { view = 'results'; render(); };
     topRight.appendChild(resultsBtn);
-  }
 
-  const gradeBtn = document.createElement('button');
-  gradeBtn.className = 'link-btn';
-  gradeBtn.textContent = view === 'grade' ? '← Voltar' : '📅 Grade oficial';
-  gradeBtn.onclick = () => {
-    if(view === 'grade'){
-      view = isAdminEmail(voterEmail) ? 'results' : (cursor >= order.length ? 'locked' : 'voting');
-    } else {
-      view = 'grade';
-    }
-    render();
-  };
-  topRight.appendChild(gradeBtn);
+    const gradeBtn = document.createElement('button');
+    gradeBtn.className = 'link-btn';
+    gradeBtn.textContent = view === 'grade' ? '← Voltar ao ranking' : '📅 Grade oficial';
+    gradeBtn.onclick = () => {
+      view = (view === 'grade') ? 'results' : 'grade';
+      render();
+    };
+    topRight.appendChild(gradeBtn);
+  } else {
+    const gradeChip = document.createElement('div');
+    gradeChip.className = 'voter-chip';
+    gradeChip.textContent = '📅 Grade oficial';
+    topRight.appendChild(gradeChip);
+  }
 
   if(view === 'voting'){
     const answered = Object.keys(votes).length;
@@ -1843,12 +1822,12 @@ function renderLanding(stage){
         <span class="theme-word p">proteger</span>·
         <span class="theme-word s">escalonar</span>
       </div>
-      <h1>Avalie as propostas sem saber quem palestra.</h1>
-      <p class="desc">${TALKS.length} propostas de conteúdo para o DevFest Porto Alegre 2026. Cada uma recebe uma nota padrão (1–5) e uma nota de desempate (0–2). A ordem é embaralhada e nenhum nome de autor é exibido. Cada e-mail vota uma única vez.</p>
+      <h1>Confira a grade oficial do DevFestPoa26.</h1>
+      <p class="desc">A votação de conteúdo já foi encerrada. Digite seu e-mail pra acessar a grade completa do dia — trilhas, horários e detalhes de cada palestra. 🎃 31 de outubro de 2026, Faculdade Dom Bosco.</p>
       <div class="landing-form">
         <input id="emailInput" type="email" placeholder="seu-email@exemplo.com" maxlength="120" autocomplete="email" inputmode="email">
         ${landingError ? `<div class="landing-error">${landingError}</div>` : ''}
-        <button class="primary-btn" id="startBtn">Começar votação</button>
+        <button class="primary-btn" id="startBtn">Ver grade oficial</button>
       </div>
       <div class="landing-meta">devfestportoalegre.com.br</div>
     </div>
