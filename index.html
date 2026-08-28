@@ -1351,11 +1351,11 @@ async function castVote(talkId, nota, desempate){
 /* ---------------- modal de detalhes da palestra (colunas A–N da planilha) ---------------- */
 function openTalkDetail(talkId){
   detailTalkId = talkId;
-  render();
+  renderTalkDetailModal(); // só atualiza o modal, sem refazer a tela de trás (preserva o scroll)
 }
 function closeTalkDetail(){
   detailTalkId = null;
-  render();
+  renderTalkDetailModal();
 }
 function renderTalkDetailModal(){
   const root = document.getElementById('modalRoot');
