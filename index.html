@@ -1112,6 +1112,14 @@ main{
   display:inline-block;
   margin-bottom:6px;
 }
+.grade-item-badges{
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px;
+  margin-bottom:2px;
+}
+.grade-item-badges .grade-item-badge{margin-bottom:0;}
+.grade-nivel-badge{border:1px solid;}
 .grade-pending{
   font-family:var(--font-mono);
   font-size:9.5px;
@@ -2128,16 +2136,22 @@ function gradeItemInner(it){
   `;
 }
 
-// Versão compacta usada só na timeline "Dia completo": prioriza mostrar o
-// título inteiro (sem cortar) e omite badge/speaker, que já aparecem
-// nas outras duas visões (Por trilha / Por horário) e no modal ao clicar.
+// Versão compacta usada na timeline "Dia completo": agora que cada célula é
+// uma linha de tabela (cresce em altura conforme o conteúdo, sem cortar),
+// já dá pra mostrar o tipo e o nível de complexidade também, com o título
+// sempre inteiro.
 function gradeItemInnerCompact(it){
   const clickable = !!it.talk_id;
   if(PAUSA_TYPES.has(it.type)){
     return `<div class="grade-pausa-inner">${it.type}</div>`;
   }
+  const badge = `<span class="grade-item-badge" style="${typeBadgeStyle(it.type)}">${it.type}</span>`;
+  const pending = it.pending ? `<span class="grade-pending">a confirmar</span>` : '';
+  const talk = it.talk_id ? TALKS.find(t => t.id === it.talk_id) : null;
+  const nivelBadge = talk ? `<span class="grade-item-badge grade-nivel-badge" style="${nivelStyle(talk.nivel)}">${talk.nivel}</span>` : '';
   return `
     <div class="grade-item-time">${it.start}–${it.end}</div>
+    <div class="grade-item-badges">${badge}${nivelBadge}${pending}</div>
     <div class="grade-item-title ${clickable ? 'grade-item-linkable' : ''}">${it.title || it.raw}</div>
   `;
 }
