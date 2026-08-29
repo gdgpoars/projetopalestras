@@ -508,6 +508,21 @@ main{
   background:#4ADE80;
   transition:width .3s ease;
 }
+.gender-stat-box{border:1px solid rgba(240,171,252,0.35);}
+.gender-stat-name{
+  align-self:flex-start;
+  font-family:var(--font-mono);
+  font-weight:600;
+  font-size:11px;
+  color:#F0ABFC;
+}
+.gender-stat-fill{background:#F0ABFC;}
+.gender-stat-sub{
+  font-family:var(--font-mono);
+  font-size:9.5px;
+  color:var(--text-dimmer);
+  margin-top:-2px;
+}
 
 .admin-tabs{display:flex; gap:8px; margin-top:18px;}
 .tab-btn{
@@ -2338,6 +2353,13 @@ async function renderResults(stage){
     return {nivel: niv, total, allocated, pct};
   }).filter(s => s.total > 0);
 
+  // Recorte de gênero entre as palestras já selecionadas (alocadas na grade)
+  const allocatedTalks = TALKS.filter(t => allocations[t.id]);
+  const totalAllocated = allocatedTalks.length;
+  const femaleAllocated = allocatedTalks.filter(t => effectiveGender(t.id) === 'F').length;
+  const femalePct = totalAllocated ? Math.round((femaleAllocated / totalAllocated) * 100) : 0;
+  const genderStat = {allocated: femaleAllocated, total: totalAllocated, pct: femalePct};
+
   if(progressList.length === 0){
     stage.innerHTML = `<div class="empty-state">Ainda não há votos registrados por ninguém neste dispositivo compartilhado.<br>Assim que a equipe começar a votar, o ranking e a lista de votantes aparecem aqui.</div>`;
     return;
@@ -2380,6 +2402,12 @@ async function renderResults(stage){
               <div class="nivel-stat-bar"><div class="nivel-stat-fill" style="width:${s.pct}%"></div></div>
             </div>
           `).join('')}
+          <div class="nivel-stat-box gender-stat-box" data-gender-stat="1">
+            <div class="nivel-stat-name gender-stat-name">👧 Mulheres</div>
+            <div class="nivel-stat-line">${genderStat.allocated} / ${genderStat.total} <span class="nivel-stat-pct">${genderStat.pct}%</span></div>
+            <div class="nivel-stat-bar"><div class="nivel-stat-fill gender-stat-fill" style="width:${genderStat.pct}%"></div></div>
+            <div class="gender-stat-sub">${genderStat.allocated} mulher${genderStat.allocated===1?'':'es'} em ${genderStat.total} palestra${genderStat.total===1?'':'s'} selecionada${genderStat.total===1?'':'s'}</div>
+          </div>
         </div>
         <table class="results-table">
           <thead>
@@ -2523,7 +2551,7 @@ async function renderResults(stage){
       const container = cb.closest('tr') || cb.closest('.track-card');
       if(container) container.classList.toggle('allocated', checked); // feedback imediato
       allocations[talkId] = checked; // atualiza cópia local para recalcular os quadrados na hora
-      updateNivelStatsUI(allocations);
+      updateNivelStatsUI(allocations, genderOverrides);
       await backendSetAllocation(talkId, checked);
     };
   });
@@ -2535,12 +2563,13 @@ async function renderResults(stage){
       const next = current === 'F' ? 'M' : 'F';
       genderOverrides[talkId] = next;
       btn.textContent = next === 'F' ? '👧' : '👦';
+      updateNivelStatsUI(allocations, genderOverrides);
       await backendSetGenderOverride(talkId, next);
     };
   });
 }
 
-function updateNivelStatsUI(allocations){
+function updateNivelStatsUI(allocations, genderOverrides){
   const row = document.querySelector('.nivel-stats-row');
   if(!row) return;
   const NIVEL_ORDER = ['Iniciante', 'Intermediário', 'Avançado', 'Todos os níveis'];
@@ -2555,6 +2584,19 @@ function updateNivelStatsUI(allocations){
     box.querySelector('.nivel-stat-line').innerHTML = `${allocated} / ${total} <span class="nivel-stat-pct">${pct}%</span>`;
     box.querySelector('.nivel-stat-fill').style.width = pct + '%';
   });
+
+  if(genderOverrides){
+    const allocatedTalks = TALKS.filter(t => allocations[t.id]);
+    const total = allocatedTalks.length;
+    const female = allocatedTalks.filter(t => (genderOverrides[t.id] || GENDER_GUESS[t.id] || 'M') === 'F').length;
+    const pct = total ? Math.round((female / total) * 100) : 0;
+    const genderBox = row.querySelector('[data-gender-stat]');
+    if(genderBox){
+      genderBox.querySelector('.nivel-stat-line').innerHTML = `${female} / ${total} <span class="nivel-stat-pct">${pct}%</span>`;
+      genderBox.querySelector('.nivel-stat-fill').style.width = pct + '%';
+      genderBox.querySelector('.gender-stat-sub').textContent = `${female} mulher${female===1?'':'es'} em ${total} palestra${total===1?'':'s'} selecionada${total===1?'':'s'}`;
+    }
+  }
 }
 
 function csvEscape(v){
