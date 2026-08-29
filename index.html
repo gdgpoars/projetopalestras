@@ -1461,6 +1461,37 @@ async function backendSetAllocation(talkId, checked){
   return sSet('allocations', JSON.stringify(current), true);
 }
 
+/* ---------------- confirmações da aba "Selecionados" (presença + material) ---------------- */
+const CONFIRMATIONS_COLLECTION = 'devfest2026_confirmations';
+async function backendGetConfirmations(){
+  if(firebaseReady){
+    try{
+      const doc = await firestoreDb.collection(CONFIRMATIONS_COLLECTION).doc('state').get();
+      return (doc.exists && doc.data().talks) ? doc.data().talks : {};
+    }catch(e){
+      console.error('Firestore get confirmations falhou, tentando storage local', e);
+    }
+  }
+  const raw = await sGet('confirmations', true);
+  return raw ? JSON.parse(raw) : {};
+}
+async function backendSetConfirmation(talkId, field, checked){
+  if(firebaseReady){
+    try{
+      await firestoreDb.collection(CONFIRMATIONS_COLLECTION).doc('state').set(
+        {talks: {[talkId]: {[field]: checked}}, updatedAt: firebase.firestore.FieldValue.serverTimestamp()},
+        {merge:true}
+      );
+      return true;
+    }catch(e){
+      console.error('Firestore set confirmation falhou, tentando storage local', e);
+    }
+  }
+  const current = await backendGetConfirmations();
+  current[talkId] = {...(current[talkId]||{}), [field]: checked};
+  return sSet('confirmations', JSON.stringify(current), true);
+}
+
 /* ---------------- correção manual do gênero inferido ---------------- */
 const GENDER_OVERRIDES_COLLECTION = 'devfest2026_gender_overrides';
 async function backendGetGenderOverrides(){
@@ -2544,7 +2575,7 @@ function wireGradeClickables(container){
 }
 
 /* ---------------- results (aggregated across all voters) ---------------- */
-let adminTab = 'ranking'; // ranking | trilhas | progress
+let adminTab = 'ranking'; // ranking | trilhas | progress | selecionados
 let selectedTrack = 'front';
 let detailTalkId = null;
 
@@ -2558,6 +2589,7 @@ async function renderResults(stage){
   const allVoters = await backendGetAllVoters();
   const allocations = await backendGetAllocations();
   const genderOverrides = await backendGetGenderOverrides();
+  const confirmations = await backendGetConfirmations();
   function effectiveGender(talkId){
     return genderOverrides[talkId] || GENDER_GUESS[talkId] || 'M';
   }
@@ -2626,6 +2658,16 @@ async function renderResults(stage){
   const checkedNotInGrade = TALKS.filter(t => allocations[t.id] && !GRADE_TALK_IDS.has(t.id));
   const hasDivergence = inGradeNotChecked.length > 0 || checkedNotInGrade.length > 0;
 
+  // Lista de propostas selecionadas (com horário confirmado na grade), com
+  // seus dados de contato e o horário/formato reais que constam na grade.
+  const selectedList = TALKS.filter(t => GRADE_TALK_IDS.has(t.id)).map(t => {
+    const item = findScheduleItemForTalk(t.id);
+    const conf = confirmations[t.id] || {};
+    return {talk: t, item, presenca: !!conf.presenca, material: !!conf.material};
+  }).sort((a,b) => a.item.startMin - b.item.startMin);
+  const presencaCount = selectedList.filter(s => s.presenca).length;
+  const materialCount = selectedList.filter(s => s.material).length;
+
   if(progressList.length === 0){
     stage.innerHTML = `<div class="empty-state">Ainda não há votos registrados por ninguém neste dispositivo compartilhado.<br>Assim que a equipe começar a votar, o ranking e a lista de votantes aparecem aqui.</div>`;
     return;
@@ -2652,6 +2694,7 @@ async function renderResults(stage){
           <button class="tab-btn ${adminTab==='ranking' ? 'active' : ''}" id="tabRanking">Ranking</button>
           <button class="tab-btn ${adminTab==='trilhas' ? 'active' : ''}" id="tabTrilhas">Trilhas</button>
           <button class="tab-btn ${adminTab==='progress' ? 'active' : ''}" id="tabProgress">Progresso dos votantes (${progressList.length})</button>
+          <button class="tab-btn ${adminTab==='selecionados' ? 'active' : ''}" id="tabSelecionados">Selecionados (${selectedList.length})</button>
         </div>
       </div>
 
@@ -2786,7 +2829,7 @@ async function renderResults(stage){
             </div>
           `;
         })()}
-      ` : `
+      ` : adminTab === 'progress' ? `
         <div class="backup-actions">
           <button class="link-btn" id="exportProgressCsvBtn">↓ Baixar progresso (CSV)</button>
         </div>
@@ -2807,6 +2850,50 @@ async function renderResults(stage){
             `).join('')}
           </tbody>
         </table>
+      ` : `
+        <div class="backup-actions">
+          <button class="link-btn" id="exportSelecionadosCsvBtn">↓ Baixar selecionados (CSV)</button>
+        </div>
+        <div class="nivel-stats-row">
+          <div class="nivel-stat-box" data-selected-stat="presenca">
+            <div class="nivel-stat-name" style="color:hsl(195 75% 68%); background:hsla(195,75%,68%,0.14); border-color:hsla(195,75%,68%,0.35);">Confirmaram presença</div>
+            <div class="nivel-stat-line">${presencaCount} / ${selectedList.length} <span class="nivel-stat-pct">${selectedList.length ? Math.round(presencaCount/selectedList.length*100) : 0}%</span></div>
+            <div class="nivel-stat-bar"><div class="nivel-stat-fill" style="width:${selectedList.length ? Math.round(presencaCount/selectedList.length*100) : 0}%"></div></div>
+          </div>
+          <div class="nivel-stat-box" data-selected-stat="material">
+            <div class="nivel-stat-name" style="color:hsl(268 75% 68%); background:hsla(268,75%,68%,0.14); border-color:hsla(268,75%,68%,0.35);">Enviaram material</div>
+            <div class="nivel-stat-line">${materialCount} / ${selectedList.length} <span class="nivel-stat-pct">${selectedList.length ? Math.round(materialCount/selectedList.length*100) : 0}%</span></div>
+            <div class="nivel-stat-bar"><div class="nivel-stat-fill" style="width:${selectedList.length ? Math.round(materialCount/selectedList.length*100) : 0}%"></div></div>
+          </div>
+        </div>
+        <table class="results-table">
+          <thead>
+            <tr><th>Horário</th><th>Proposta</th><th>Formato</th><th>Speaker</th><th>Confirmou presença?</th><th>Enviou material?</th></tr>
+          </thead>
+          <tbody>
+            ${selectedList.map(s => `
+              <tr class="clickable-row" data-talk-id="${s.talk.id}">
+                <td class="small-dim">${s.item.start}</td>
+                <td>
+                  <div class="ttitle">${s.talk.titulo}</div>
+                  <div class="small-dim">${(s.talk.contato && s.talk.contato.email) || ''}</div>
+                </td>
+                <td class="small-dim">${s.item.type}</td>
+                <td class="small-dim">${(s.talk.contato && s.talk.contato.nome) || '—'}</td>
+                <td class="allocate-cell">
+                  <label class="allocate-label">
+                    <input type="checkbox" class="confirm-checkbox" data-field="presenca" data-talk-id="${s.talk.id}" ${s.presenca ? 'checked' : ''}>
+                  </label>
+                </td>
+                <td class="allocate-cell">
+                  <label class="allocate-label">
+                    <input type="checkbox" class="confirm-checkbox" data-field="material" data-talk-id="${s.talk.id}" ${s.material ? 'checked' : ''}>
+                  </label>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
       `}
     </div>
   `;
@@ -2814,9 +2901,11 @@ async function renderResults(stage){
   const tabRanking = document.getElementById('tabRanking');
   const tabTrilhas = document.getElementById('tabTrilhas');
   const tabProgress = document.getElementById('tabProgress');
+  const tabSelecionados = document.getElementById('tabSelecionados');
   if(tabRanking) tabRanking.onclick = () => { adminTab = 'ranking'; render(); };
   if(tabTrilhas) tabTrilhas.onclick = () => { adminTab = 'trilhas'; render(); };
   if(tabProgress) tabProgress.onclick = () => { adminTab = 'progress'; render(); };
+  if(tabSelecionados) tabSelecionados.onclick = () => { adminTab = 'selecionados'; render(); };
 
   const csvBtn = document.getElementById('exportCsvBtn');
   if(csvBtn) csvBtn.onclick = () => exportRankingCsv(rows, voterCount, allocations, genderOverrides);
@@ -2884,6 +2973,27 @@ async function renderResults(stage){
       render(); // recarrega a aba pra refletir o novo estado sem divergência
     };
   }
+  document.querySelectorAll('.confirm-checkbox').forEach(cb => {
+    cb.onclick = (e) => e.stopPropagation();
+    cb.onchange = async (e) => {
+      e.stopPropagation();
+      const talkId = cb.dataset.talkId;
+      const field = cb.dataset.field;
+      const checked = cb.checked;
+      await backendSetConfirmation(talkId, field, checked);
+      // atualiza os quadrados de progresso sem precisar recarregar a aba inteira
+      const allRows = [...document.querySelectorAll(`.confirm-checkbox[data-field="${field}"]`)];
+      const doneCount = allRows.filter(x => x.checked).length;
+      const box = document.querySelector(`[data-selected-stat="${field}"]`);
+      if(box){
+        const pct = allRows.length ? Math.round(doneCount/allRows.length*100) : 0;
+        box.querySelector('.nivel-stat-line').innerHTML = `${doneCount} / ${allRows.length} <span class="nivel-stat-pct">${pct}%</span>`;
+        box.querySelector('.nivel-stat-fill').style.width = pct + '%';
+      }
+    };
+  });
+  const selCsvBtn = document.getElementById('exportSelecionadosCsvBtn');
+  if(selCsvBtn) selCsvBtn.onclick = () => exportSelecionadosCsv(selectedList);
 }
 
 function updateNivelStatsUI(allocations, genderOverrides){
@@ -2974,6 +3084,23 @@ function exportProgressCsv(progressList){
   });
   const csv = '\ufeff' + lines.join('\n');
   triggerDownload(`devfest-poa-2026-progresso-votantes-${timestamp()}.csv`, 'text/csv;charset=utf-8', csv);
+}
+function exportSelecionadosCsv(selectedList){
+  const header = ['horario','titulo','formato','nome','email','confirmou_presenca','enviou_material'];
+  const lines = [header.join(';')];
+  selectedList.forEach(s => {
+    lines.push([
+      s.item.start,
+      csvEscape(s.talk.titulo),
+      csvEscape(s.item.type),
+      csvEscape((s.talk.contato && s.talk.contato.nome) || ''),
+      csvEscape((s.talk.contato && s.talk.contato.email) || ''),
+      s.presenca ? 'Sim' : 'Não',
+      s.material ? 'Sim' : 'Não'
+    ].join(';'));
+  });
+  const csv = '\ufeff' + lines.join('\n');
+  triggerDownload(`devfest-poa-2026-selecionados-${timestamp()}.csv`, 'text/csv;charset=utf-8', csv);
 }
 function exportTracksCsv(rowsByTrack){
   const header = ['trilha','posicao_na_trilha','titulo','formato','nivel','tags','nota_media','desempate_media','qtd_votos'];
