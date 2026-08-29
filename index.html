@@ -1013,6 +1013,43 @@ main{
   margin-bottom:16px;
 }
 
+.email-actions-row{
+  display:flex;
+  gap:8px;
+  margin-bottom:18px;
+}
+.email-confirm-btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  flex:1;
+  font-family:var(--font-display);
+  font-weight:600;
+  font-size:13.5px;
+  color:#04231C;
+  background:var(--create);
+  border:none;
+  padding:13px 16px;
+  border-radius:12px;
+  cursor:pointer;
+  transition:transform .12s ease, opacity .12s ease;
+}
+.email-confirm-btn:hover{transform:translateY(-1px); opacity:0.92;}
+.email-copy-btn{
+  font-family:var(--font-mono);
+  font-size:12px;
+  color:var(--text-dim);
+  background:var(--bg-elev-2);
+  border:1px solid var(--border);
+  padding:13px 16px;
+  border-radius:12px;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:all .12s ease;
+}
+.email-copy-btn:hover{border-color:var(--text-dim); color:var(--text);}
+
 .conflict-banner{
   display:flex;
   gap:12px;
@@ -1743,6 +1780,121 @@ function closeTalkDetail(){
   detailTalkId = null;
   renderTalkDetailModal();
 }
+/* ---------------- e-mail de confirmação para quem foi selecionado ---------------- */
+function findScheduleItemForTalk(talkId){
+  for(const venue of VENUE_ORDER){
+    const item = (SCHEDULE[venue] || []).find(it => it.talk_id === talkId);
+    if(item) return item;
+  }
+  return null;
+}
+function formatDuration(item){
+  const min = item.endMin - item.startMin;
+  return `${min} minutos`;
+}
+function buildConfirmationEmail(talk, item){
+  const nome = (talk.contato && talk.contato.nome) ? talk.contato.nome.split(' ')[0] : 'tudo bem';
+  const horario = item.start;
+  const isPalestra = item.type === 'Palestra' && talk.formato.toLowerCase().startsWith('palestra');
+  const subject = 'Seu conteúdo foi selecionado para o DevFest Porto Alegre 2026';
+
+  if(isPalestra){
+    const body = `Olá, ${nome}! 👻
+Temos uma ótima notícia: sua submissão foi selecionada para fazer parte do DevFest Porto Alegre 2026! 🚀
+Recebemos muitas propostas incríveis no nosso Call for Papers e ficamos muito felizes em poder contar com você na nossa programação. 💜
+
+🎤 Seu conteúdo
+Formato: Palestra
+Duração: 30 minutos
+Horário de início: ${horario}
+Data: 31 de outubro de 2026
+Local: Faculdade Dom Bosco — Porto Alegre/RS
+
+Conforme informado no formulário de submissão, o tempo destinado às palestras é de 30 minutos. Esse tempo contempla todo o conteúdo da apresentação, por isso pedimos que sua proposta seja planejada considerando esse limite.
+
+🌐 Site do evento: https://www.devfestportoalegre.com.br
+
+📍 Sobre o dia do evento
+Pedimos que palestrantes e demais participantes da programação estejam no local com pelo menos 1 hora a 45 minutos de antecedência em relação ao início do seu conteúdo.
+Assim teremos tempo para realizar o credenciamento, alinhar os últimos detalhes, conhecer o espaço e garantir que tudo esteja preparado para a sua participação. 💜
+
+✅ Precisamos do seu aceite
+Como estamos centralizando todas as informações e confirmações da programação por e-mail, pedimos que você responda a este e-mail confirmando:
+
+1. Que está ciente e de acordo com a duração de 30 minutos da palestra;
+2. Que aceita participar do DevFest Porto Alegre 2026;
+3. Que possui disponibilidade para estar conosco no dia 31/10/2026;
+4. Que está de acordo com o horário inicialmente previsto para o seu conteúdo.
+
+⏰ Pedimos que seu aceite seja enviado até 31/08/2026, às 12h.
+
+Pode responder de forma simples, por exemplo:
+"Estou ciente e de acordo com os 30 minutos de duração da palestra e confirmo minha participação no DevFest Porto Alegre 2026 no dia 31/10/2026."
+
+Caso não tenha disponibilidade ou não possa aceitar as condições acima, pedimos também que nos sinalize por este mesmo e-mail dentro do prazo.
+
+Estamos muito felizes em ter você conosco e esperamos construir juntos uma experiência incrível para a comunidade! 🚀🎃
+
+Nos vemos no DevFest! 💜
+
+Abraços,
+Fernanda dos Santos
+Líder da Comissão de Organização
+DevFest Porto Alegre 2026`;
+    return {subject, body};
+  }
+
+  const formato = item.type;
+  const duracao = formatDuration(item);
+  const body = `Olá, ${nome}! 👻
+Temos uma ótima notícia: sua submissão foi selecionada para fazer parte do DevFest Porto Alegre 2026! 🚀
+Recebemos muitas propostas incríveis no nosso Call for Papers e ficamos muito felizes em poder contar com você na nossa programação. 💜
+
+🧪 Seu conteúdo
+Formato: ${formato}
+Duração: ${duracao}
+Horário de início: ${horario}
+Data: 31 de outubro de 2026
+Local: Faculdade Dom Bosco — Porto Alegre/RS
+
+🌐 Site do evento: https://www.devfestportoalegre.com.br
+
+Seu conteúdo foi alocado na nossa grade considerando o formato proposto e a experiência que queremos proporcionar aos participantes. 💜
+
+📍 Sobre o dia do evento
+Pedimos que palestrantes, facilitadores e mentores estejam no local com pelo menos 1 hora a 45 minutos de antecedência em relação ao início do seu conteúdo.
+Assim teremos tempo para realizar o credenciamento, apresentar o espaço, alinhar os detalhes da atividade e garantir que você tenha tudo o que precisa para começar com tranquilidade. ✨
+
+✅ Precisamos do seu aceite
+Como estamos centralizando todas as informações e confirmações da programação por e-mail, pedimos que você responda a este e-mail confirmando:
+
+1. Que está de acordo com o formato e a duração previstos para o seu conteúdo;
+2. Que aceita participar do DevFest Porto Alegre 2026;
+3. Que possui disponibilidade para estar conosco no dia 31/10/2026;
+4. Que está de acordo com o horário inicialmente previsto para o seu conteúdo.
+
+⏰ Pedimos que seu aceite seja enviado até 31/08/2026, às 12h.
+
+Pode responder de forma simples, por exemplo:
+"Confirmo meu aceite para participar do DevFest Porto Alegre 2026, no formato ${formato.toLowerCase()}, com duração de ${duracao}, no dia 31/10/2026, no horário informado."
+
+Caso não tenha disponibilidade ou não possa aceitar as condições acima, pedimos também que nos sinalize por este mesmo e-mail dentro do prazo.
+
+Estamos muito felizes em ter você conosco e mal podemos esperar para colocar essa experiência em prática! 🚀🎃
+
+Nos vemos no DevFest! 💜
+
+Abraços,
+Fernanda dos Santos
+Líder da Comissão de Organização
+DevFest Porto Alegre 2026`;
+  return {subject, body};
+}
+function openGmailCompose(to, subject, body){
+  const url = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.open(url, '_blank', 'noopener');
+}
+
 function renderTalkDetailModal(){
   const root = document.getElementById('modalRoot');
   if(!root) return;
@@ -1760,6 +1912,8 @@ function renderTalkDetailModal(){
   const waLink = c.whatsapp ? `https://wa.me/${c.whatsapp}` : null;
   const formatoBase = talk.formato.split('(')[0].trim();
   const conflict = hasDurationConflict(talk);
+  const scheduleItem = findScheduleItemForTalk(talk.id);
+  const canSendEmail = isAdminEmail(voterEmail) && scheduleItem && c.email;
 
   root.innerHTML = `
     <div class="modal-overlay" id="modalOverlay">
@@ -1771,6 +1925,13 @@ function renderTalkDetailModal(){
           <span class="nivel-badge" style="${nivelStyle(talk.nivel)}">${talk.nivel}</span>
         </div>
         ${c.carimbo ? `<div class="modal-timestamp">Enviado em ${c.carimbo}</div>` : ''}
+
+        ${canSendEmail ? `
+          <div class="email-actions-row">
+            <button class="email-confirm-btn" id="sendConfirmEmailBtn">✉️ Preparar e-mail de seleção (${scheduleItem.start}, ${scheduleItem.type})</button>
+            <button class="email-copy-btn" id="copyConfirmEmailBtn" title="Copia o texto do e-mail, caso o link do Gmail não preencha tudo">📋 Copiar texto</button>
+          </div>
+        ` : ''}
 
         ${conflict ? `
           <div class="conflict-banner">
@@ -1816,6 +1977,27 @@ function renderTalkDetailModal(){
   document.getElementById('modalOverlay').addEventListener('click', (e) => {
     if(e.target.id === 'modalOverlay') closeTalkDetail();
   });
+  const sendBtn = document.getElementById('sendConfirmEmailBtn');
+  if(sendBtn){
+    sendBtn.onclick = () => {
+      const {subject, body} = buildConfirmationEmail(talk, scheduleItem);
+      openGmailCompose(c.email, subject, body);
+    };
+  }
+  const copyBtn = document.getElementById('copyConfirmEmailBtn');
+  if(copyBtn){
+    copyBtn.onclick = async () => {
+      const {subject, body} = buildConfirmationEmail(talk, scheduleItem);
+      const fullText = `Para: ${c.email}\nAssunto: ${subject}\n\n${body}`;
+      try{
+        await navigator.clipboard.writeText(fullText);
+        copyBtn.textContent = '✅ Copiado!';
+        setTimeout(() => { copyBtn.textContent = '📋 Copiar texto'; }, 1800);
+      }catch(e){
+        alert('Não consegui copiar automaticamente. Selecione o texto manualmente.');
+      }
+    };
+  }
 }
 
 function render(){
