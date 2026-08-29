@@ -804,6 +804,31 @@ main{
 }
 .loading-dots{font-family:var(--font-mono); color:var(--text-dimmer); text-align:center; padding:40px;}
 
+.save-error-toast{
+  position:fixed;
+  bottom:24px;
+  left:50%;
+  transform:translateX(-50%) translateY(20px);
+  background:#3A1414;
+  border:1px solid var(--danger);
+  color:#FFD9D9;
+  font-family:var(--font-mono);
+  font-size:12.5px;
+  padding:12px 18px;
+  border-radius:10px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.4);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .2s ease, transform .2s ease;
+  z-index:200;
+  max-width:90vw;
+  text-align:center;
+}
+.save-error-toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+
 /* ---------------- linhas/cards clicáveis ---------------- */
 .clickable-row{cursor:pointer; transition:background .12s ease;}
 .clickable-row:hover td{background:rgba(94,234,212,0.05);}
@@ -2940,15 +2965,27 @@ async function renderResults(stage){
       }
       allocations[talkId] = checked; // atualiza cópia local para recalcular os quadrados na hora
       updateNivelStatsUI(allocations, genderOverrides);
-      await backendSetAllocation(talkId, checked);
+      const ok = await backendSetAllocation(talkId, checked);
+      if(!ok){
+        allocations[talkId] = !checked;
+        cb.checked = !checked;
+        if(container){
+          container.classList.toggle('allocated', !checked);
+          const gtoggle = container.querySelector('.gender-toggle');
+          const isFemale = gtoggle && gtoggle.textContent.trim() === '👧';
+          container.classList.toggle('women-allocated', !checked && isFemale);
+        }
+        updateNivelStatsUI(allocations, genderOverrides);
+        showSaveError('Não salvou o "Alocado". Confira as regras do Firestore.');
+      }
     };
   });
   document.querySelectorAll('.gender-toggle').forEach(btn => {
     btn.onclick = async (e) => {
       e.stopPropagation();
       const talkId = btn.dataset.talkId;
-      const current = genderOverrides[talkId] || GENDER_GUESS[talkId] || 'M';
-      const next = current === 'F' ? 'M' : 'F';
+      const previous = genderOverrides[talkId] || GENDER_GUESS[talkId] || 'M';
+      const next = previous === 'F' ? 'M' : 'F';
       genderOverrides[talkId] = next;
       btn.textContent = next === 'F' ? '👧' : '👦';
       const container = btn.closest('tr') || btn.closest('.track-card');
@@ -2958,7 +2995,18 @@ async function renderResults(stage){
         btn.classList.toggle('gender-toggle-highlight', isAllocated && next === 'F');
       }
       updateNivelStatsUI(allocations, genderOverrides);
-      await backendSetGenderOverride(talkId, next);
+      const ok = await backendSetGenderOverride(talkId, next);
+      if(!ok){
+        genderOverrides[talkId] = previous;
+        btn.textContent = previous === 'F' ? '👧' : '👦';
+        if(container){
+          const isAllocated = container.classList.contains('allocated');
+          container.classList.toggle('women-allocated', isAllocated && previous === 'F');
+          btn.classList.toggle('gender-toggle-highlight', isAllocated && previous === 'F');
+        }
+        updateNivelStatsUI(allocations, genderOverrides);
+        showSaveError('Não salvou a correção de gênero. Confira as regras do Firestore.');
+      }
     };
   });
   const unmarkBtn = document.getElementById('unmarkNotInGradeBtn');
@@ -2980,7 +3028,12 @@ async function renderResults(stage){
       const talkId = cb.dataset.talkId;
       const field = cb.dataset.field;
       const checked = cb.checked;
-      await backendSetConfirmation(talkId, field, checked);
+      const ok = await backendSetConfirmation(talkId, field, checked);
+      if(!ok){
+        cb.checked = !checked; // reverte, já que não foi salvo de verdade
+        showSaveError('Não salvou. Confira se a regra do Firestore para "devfest2026_confirmations" foi publicada.');
+        return;
+      }
       // atualiza os quadrados de progresso sem precisar recarregar a aba inteira
       const allRows = [...document.querySelectorAll(`.confirm-checkbox[data-field="${field}"]`)];
       const doneCount = allRows.filter(x => x.checked).length;
@@ -2994,6 +3047,20 @@ async function renderResults(stage){
   });
   const selCsvBtn = document.getElementById('exportSelecionadosCsvBtn');
   if(selCsvBtn) selCsvBtn.onclick = () => exportSelecionadosCsv(selectedList);
+}
+
+function showSaveError(msg){
+  let toast = document.getElementById('saveErrorToast');
+  if(!toast){
+    toast = document.createElement('div');
+    toast.id = 'saveErrorToast';
+    toast.className = 'save-error-toast';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = '⚠️ ' + msg;
+  toast.classList.add('show');
+  clearTimeout(toast._hideTimer);
+  toast._hideTimer = setTimeout(() => toast.classList.remove('show'), 6000);
 }
 
 function updateNivelStatsUI(allocations, genderOverrides){
