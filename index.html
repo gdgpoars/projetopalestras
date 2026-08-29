@@ -550,6 +550,7 @@ main{
   margin-bottom:10px;
 }
 .divergence-group{margin-top:12px;}
+.divergence-fix-btn{margin-bottom:10px;}
 .divergence-group-title{
   font-family:var(--font-mono);
   font-size:12px;
@@ -2508,6 +2509,7 @@ async function renderResults(stage){
             ${checkedNotInGrade.length > 0 ? `
               <div class="divergence-group">
                 <div class="divergence-group-title">✅ Marcadas como Alocado, mas <strong>não aparecem na grade</strong> (${checkedNotInGrade.length})</div>
+                <button class="link-btn divergence-fix-btn" id="unmarkNotInGradeBtn">✕ Desmarcar todas as que não estão na grade</button>
                 <ul class="divergence-list">
                   ${checkedNotInGrade.map(t => `<li class="clickable-card" data-talk-id="${t.id}">${t.titulo}</li>`).join('')}
                 </ul>
@@ -2688,6 +2690,18 @@ async function renderResults(stage){
       await backendSetGenderOverride(talkId, next);
     };
   });
+  const unmarkBtn = document.getElementById('unmarkNotInGradeBtn');
+  if(unmarkBtn){
+    unmarkBtn.onclick = async () => {
+      unmarkBtn.disabled = true;
+      unmarkBtn.textContent = 'Desmarcando…';
+      for(const t of checkedNotInGrade){
+        allocations[t.id] = false;
+        await backendSetAllocation(t.id, false);
+      }
+      render(); // recarrega a aba pra refletir o novo estado sem divergência
+    };
+  }
 }
 
 function updateNivelStatsUI(allocations, genderOverrides){
