@@ -834,6 +834,8 @@ main{
 .clickable-row:hover td{background:rgba(94,234,212,0.05);}
 .clickable-row.allocated td{background:rgba(74,222,128,0.12); border-color:rgba(74,222,128,0.18);}
 .clickable-row.allocated:hover td{background:rgba(74,222,128,0.18);}
+.clickable-row.not-confirmed td{background:rgba(255,150,60,0.14);}
+.clickable-row.not-confirmed:hover td{background:rgba(255,150,60,0.20);}
 .clickable-row.women-allocated td:first-child{box-shadow:inset 3px 0 0 #F472B6;}
 .in-grade-tag{
   display:inline-block;
@@ -2980,7 +2982,7 @@ async function renderResults(stage){
           </thead>
           <tbody>
             ${selectedList.map(s => `
-              <tr class="clickable-row" data-talk-id="${s.talk.id}">
+              <tr class="clickable-row ${!s.presenca ? 'not-confirmed' : ''}" data-talk-id="${s.talk.id}">
                 <td class="small-dim">${s.item.start}</td>
                 <td>
                   <div class="ttitle">${s.talk.titulo}</div>
@@ -3125,6 +3127,10 @@ async function renderResults(stage){
         const pct = allRows.length ? Math.round(doneCount/allRows.length*100) : 0;
         box.querySelector('.nivel-stat-line').innerHTML = `${doneCount} / ${allRows.length} <span class="nivel-stat-pct">${pct}%</span>`;
         box.querySelector('.nivel-stat-fill').style.width = pct + '%';
+      }
+      if(field === 'presenca'){
+        const row = cb.closest('tr');
+        if(row) row.classList.toggle('not-confirmed', !checked);
       }
     };
   });
