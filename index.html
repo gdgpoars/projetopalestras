@@ -1074,6 +1074,24 @@ main{
   transition:all .12s ease;
 }
 .email-copy-btn:hover{border-color:var(--text-dim); color:var(--text);}
+.whatsapp-confirm-btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  flex:1;
+  font-family:var(--font-display);
+  font-weight:600;
+  font-size:13.5px;
+  color:#FFFFFF;
+  background:#25D366;
+  border:none;
+  padding:13px 16px;
+  border-radius:12px;
+  cursor:pointer;
+  transition:transform .12s ease, opacity .12s ease;
+}
+.whatsapp-confirm-btn:hover{transform:translateY(-1px); opacity:0.92;}
 
 .conflict-banner{
   display:flex;
@@ -1951,6 +1969,43 @@ function openGmailCompose(to, subject, body){
   window.open(url, '_blank', 'noopener');
 }
 
+function buildWhatsAppReminder(talk, item){
+  const nome = (talk.contato && talk.contato.nome) ? talk.contato.nome.split(' ')[0] : 'tudo bem';
+  const horario = item.start;
+  const isPalestra = item.type === 'Palestra' && talk.formato.toLowerCase().startsWith('palestra');
+  const formato = isPalestra ? 'Palestra' : item.type;
+  const duracao = isPalestra ? '30 minutos' : formatDuration(item);
+
+  return `Oi, ${nome}! 👋💜
+
+Passando para lembrar que enviamos por e-mail o resultado da sua submissão no Call for Papers do DevFest Porto Alegre 2026. 🎃🚀
+
+Você foi selecionado(a) com o conteúdo:
+
+🎤 ${talk.titulo}
+📌 Formato: ${formato}
+⏱️ Duração: ${duracao}
+🕐 Horário de início: ${horario}
+📅 Data: 31/10/2026
+
+⏰ O prazo para enviar sua resposta é amanhã, 31/08, até às 12h.
+
+⚠️ Importante: o aceite precisa ser feito obrigatoriamente respondendo ao e-mail que enviamos. É por lá que estamos centralizando e oficializando todas as confirmações da programação.
+
+📩 Toda e qualquer solicitação, alteração ou dúvida relacionada à sua participação também deve ser formalizada por e-mail:
+
+gdgpoars@gmail.com
+Aos cuidados de Fernanda dos Santos — líder da organização do DevFest Porto Alegre 2026.
+
+Se ainda não encontrou o e-mail, dá uma olhadinha no spam/lixo eletrônico também. 👀
+
+Estamos muito felizes em ter você com a gente! 💜🎃`;
+}
+function openWhatsAppReminder(phone, message){
+  const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+  window.open(url, '_blank', 'noopener');
+}
+
 function renderTalkDetailModal(){
   const root = document.getElementById('modalRoot');
   if(!root) return;
@@ -1970,6 +2025,7 @@ function renderTalkDetailModal(){
   const conflict = hasDurationConflict(talk);
   const scheduleItem = findScheduleItemForTalk(talk.id);
   const canSendEmail = isAdminEmail(voterEmail) && scheduleItem && c.email;
+  const canSendWhatsApp = isAdminEmail(voterEmail) && scheduleItem && c.whatsapp;
 
   root.innerHTML = `
     <div class="modal-overlay" id="modalOverlay">
@@ -1986,6 +2042,13 @@ function renderTalkDetailModal(){
           <div class="email-actions-row">
             <button class="email-confirm-btn" id="sendConfirmEmailBtn">✉️ Preparar e-mail de seleção (${scheduleItem.start}, ${scheduleItem.type})</button>
             <button class="email-copy-btn" id="copyConfirmEmailBtn" title="Copia o texto do e-mail, caso o link do Gmail não preencha tudo">📋 Copiar texto</button>
+          </div>
+        ` : ''}
+
+        ${canSendWhatsApp ? `
+          <div class="email-actions-row">
+            <button class="whatsapp-confirm-btn" id="sendWhatsAppReminderBtn">📱 Lembrete por WhatsApp</button>
+            <button class="email-copy-btn" id="copyWhatsAppReminderBtn" title="Copia o texto da mensagem">📋 Copiar texto</button>
           </div>
         ` : ''}
 
@@ -2049,6 +2112,26 @@ function renderTalkDetailModal(){
         await navigator.clipboard.writeText(fullText);
         copyBtn.textContent = '✅ Copiado!';
         setTimeout(() => { copyBtn.textContent = '📋 Copiar texto'; }, 1800);
+      }catch(e){
+        alert('Não consegui copiar automaticamente. Selecione o texto manualmente.');
+      }
+    };
+  }
+  const sendWaBtn = document.getElementById('sendWhatsAppReminderBtn');
+  if(sendWaBtn){
+    sendWaBtn.onclick = () => {
+      const message = buildWhatsAppReminder(talk, scheduleItem);
+      openWhatsAppReminder(c.whatsapp, message);
+    };
+  }
+  const copyWaBtn = document.getElementById('copyWhatsAppReminderBtn');
+  if(copyWaBtn){
+    copyWaBtn.onclick = async () => {
+      const message = buildWhatsAppReminder(talk, scheduleItem);
+      try{
+        await navigator.clipboard.writeText(message);
+        copyWaBtn.textContent = '✅ Copiado!';
+        setTimeout(() => { copyWaBtn.textContent = '📋 Copiar texto'; }, 1800);
       }catch(e){
         alert('Não consegui copiar automaticamente. Selecione o texto manualmente.');
       }
