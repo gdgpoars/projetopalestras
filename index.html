@@ -217,6 +217,10 @@ main{
   font-size:12px;
   color:var(--text-dimmer);
 }
+.landing-back-btn{
+  display:inline-block;
+  margin-top:22px;
+}
 
 /* ---------- Card ---------- */
 .card{
@@ -1372,7 +1376,7 @@ main{
     <div class="brand-dots"><span></span><span></span><span></span></div>
     <div>
       <div class="brand-text">DevFest POA 2026</div>
-      <div class="brand-sub">Votação cega de conteúdo</div>
+      <div class="brand-sub">Grade oficial · 31/10/2026</div>
     </div>
   </div>
   <div class="topbar-right" id="topbarRight"></div>
@@ -1789,20 +1793,15 @@ function seedFromString(str){
 /* ---------------- init ---------------- */
 async function init(){
   const savedId = await sGet('device-voter-id', false);
-  if(savedId){
+  if(savedId && isAdminEmail(savedId)){
     voterId = savedId;
     voterEmail = savedId;
-    if(isAdminEmail(voterEmail)){
-      view = 'results';
-      render();
-      return;
-    }
-    // votação encerrada para quem não é admin — vai direto pra grade oficial
-    view = 'grade';
+    view = 'results';
     render();
     return;
   }
-  view = 'landing';
+  // a grade oficial é a página padrão pra qualquer pessoa que abrir o link
+  view = 'grade';
   render();
 }
 
@@ -1820,20 +1819,15 @@ async function startSession(rawEmail){
     render();
     return;
   }
-  voterEmail = email;
-  voterId = email;
-  await sSet('device-voter-id', voterId, false);
-
-  if(isAdminEmail(email)){
-    // administradores continuam vendo tudo: ranking, trilhas, progresso e grade
-    view = 'results';
+  if(!isAdminEmail(email)){
+    landingError = 'Esse e-mail não tem acesso administrativo.';
     render();
     return;
   }
-
-  // votação encerrada — qualquer outro e-mail vai direto pra grade oficial,
-  // sem entrar no fluxo de votação nem ver o ranking
-  view = 'grade';
+  voterEmail = email;
+  voterId = email;
+  await sSet('device-voter-id', voterId, false);
+  view = 'results';
   render();
 }
 
@@ -2195,10 +2189,11 @@ function render(){
     };
     topRight.appendChild(gradeBtn);
   } else {
-    const gradeChip = document.createElement('div');
-    gradeChip.className = 'voter-chip';
-    gradeChip.textContent = '📅 Grade oficial';
-    topRight.appendChild(gradeChip);
+    const loginBtn = document.createElement('button');
+    loginBtn.className = 'link-btn';
+    loginBtn.textContent = '🔐 Login ADM';
+    loginBtn.onclick = () => { landingError = ''; view = 'landing'; render(); };
+    topRight.appendChild(loginBtn);
   }
 
   if(view === 'voting'){
@@ -2233,13 +2228,14 @@ function renderLanding(stage){
         <span class="theme-word p">proteger</span>·
         <span class="theme-word s">escalonar</span>
       </div>
-      <h1>Confira a grade oficial do DevFestPoa26.</h1>
-      <p class="desc">A votação de conteúdo já foi encerrada. Digite seu e-mail pra acessar a grade completa do dia — trilhas, horários e detalhes de cada palestra. 🎃 31 de outubro de 2026, Faculdade Dom Bosco.</p>
+      <h1>Login administrativo</h1>
+      <p class="desc">Acesso restrito à organização do DevFest Porto Alegre 2026. Digite o e-mail administrativo para ver ranking, trilhas e progresso.</p>
       <div class="landing-form">
-        <input id="emailInput" type="email" placeholder="seu-email@exemplo.com" maxlength="120" autocomplete="email" inputmode="email">
+        <input id="emailInput" type="email" placeholder="e-mail administrativo" maxlength="120" autocomplete="email" inputmode="email">
         ${landingError ? `<div class="landing-error">${landingError}</div>` : ''}
-        <button class="primary-btn" id="startBtn">Ver grade oficial</button>
+        <button class="primary-btn" id="startBtn">Entrar</button>
       </div>
+      <button class="link-btn landing-back-btn" id="backToGradeBtn">← Voltar para a grade oficial</button>
       <div class="landing-meta">devfestportoalegre.com.br</div>
     </div>
   `;
@@ -2247,6 +2243,7 @@ function renderLanding(stage){
   const btn = document.getElementById('startBtn');
   input.addEventListener('keydown', e => { if(e.key === 'Enter') tryStart(); });
   btn.addEventListener('click', tryStart);
+  document.getElementById('backToGradeBtn').onclick = () => { landingError = ''; view = 'grade'; render(); };
   function tryStart(){
     const v = input.value.trim();
     if(!v || !isValidEmail(v)){
