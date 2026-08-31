@@ -2015,13 +2015,53 @@ function renderTalkDetailModal(){
     return;
   }
   const c = talk.contato || {};
+  const formatoBase = talk.formato.split('(')[0].trim();
+  const isAdmin = isAdminEmail(voterEmail);
+
+  if(!isAdmin){
+    // Versão pública: só o que faz sentido mostrar pra qualquer pessoa vendo a
+    // grade — nome, LinkedIn, resumo e tags. Sem e-mail, WhatsApp, motivação
+    // ou ações administrativas.
+    root.innerHTML = `
+      <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-card">
+          <button class="modal-close" id="modalCloseBtn" aria-label="Fechar">✕</button>
+
+          <div class="modal-evidence-row">
+            <span class="format-badge" style="${tagStyle(formatoBase)}">${talk.formato}</span>
+            <span class="nivel-badge" style="${nivelStyle(talk.nivel)}">${talk.nivel}</span>
+          </div>
+
+          <h2 class="modal-title">${talk.titulo}</h2>
+          <div class="tags">${talk.tags.map(tag => `<span class="tag" style="${tagStyle(tag)}">${tag}</span>`).join('')}</div>
+
+          <div class="modal-contact-card">
+            <div class="modal-contact-name">${c.nome || 'Nome não informado'}</div>
+            ${c.linkedin ? `
+              <div class="modal-contact-links">
+                <a class="contact-link li" href="${c.linkedin}" target="_blank" rel="noopener">🔗 LinkedIn</a>
+              </div>
+            ` : ''}
+          </div>
+
+          <div class="modal-section-label">Resumo</div>
+          <p class="modal-body-text">${talk.resumo}</p>
+        </div>
+      </div>
+    `;
+    document.getElementById('modalCloseBtn').onclick = closeTalkDetail;
+    document.getElementById('modalOverlay').addEventListener('click', (e) => {
+      if(e.target.id === 'modalOverlay') closeTalkDetail();
+    });
+    return;
+  }
+
   const deckUrl = (talk.deck && talk.deck.match(/https?:\/\/\S+/)) ? talk.deck.match(/https?:\/\/\S+/)[0] : null;
   const waLink = c.whatsapp ? `https://wa.me/${c.whatsapp}` : null;
-  const formatoBase = talk.formato.split('(')[0].trim();
   const conflict = hasDurationConflict(talk);
   const scheduleItem = findScheduleItemForTalk(talk.id);
-  const canSendEmail = isAdminEmail(voterEmail) && scheduleItem && c.email;
-  const canSendWhatsApp = isAdminEmail(voterEmail) && scheduleItem && c.whatsapp;
+  const canSendEmail = scheduleItem && c.email;
+  const canSendWhatsApp = scheduleItem && c.whatsapp;
 
   root.innerHTML = `
     <div class="modal-overlay" id="modalOverlay">
